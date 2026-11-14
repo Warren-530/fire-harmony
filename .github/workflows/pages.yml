@@ -1,0 +1,77 @@
+# Build the web app and publish it on GitHub Pages at https://warren-530.github.io/fire-harmony/
+# The data are not in the repository. They live in the Hugging Face dataset warrensaw530/fire-harmony: the build copies
+# the app's files (about 720 MB, from one archive, v1.0/site_data.tar.gz) next to the app, because each read through the
+# dataset's redirect took 1 to 3 s. The 6.5 GB of hotspot files (only for the hotspot CSV) are too big for Pages and stay
+# in the dataset (VITE_HOTSPOTS_URL).
+name: Deploy the web app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit -p tsconfig.app.json
+      - name: Unit tests
+        run: npx vitest run
+      - name: Copy DuckDB's Parquet and JSON extensions next to the app
+        run: bash scripts/fetch_duckdb_ext.sh
+      - name: Build
+        run: npx vite build --base /fire-harmony/
+        env:
+          VITE_DATA_URL: data/
+          VITE_HOTSPOTS_URL: https://huggingface.co/datasets/warrensaw530/fire-harmony/resolve/main/v1.0/hotspots/
+          VITE_DOWNLOADS_URL: https://huggingface.co/datasets/warrensaw530/fire-harmony/resolve/main/v1.0/
+          # the relay of the Ask assistant (assistant/apps_script.gs, a Google Apps Script web app); remove to turn Ask off
+          VITE_ASSISTANT_URL: https://script.google.com/macros/s/AKfycbytb62ahmGVugQ-1FrhgpNi7r_v0xm6lrtBc4QKxYhBdF8BHwYwJaq3v13mDF8yoZZK/exec
+      - name: Copy the app's data from the Hugging Face dataset
+        # one archive of every app file (scripts/deploy_data_hf.py --site-archive): one request instead of 12,000
+        run: |
+          curl -fsSL --retry 5 --retry-delay 10 -o site_data.tar.gz \
+            https://huggingface.co/datasets/warrensaw530/fire-harmony/resolve/main/v1.0/site_data.tar.gz
+          mkdir -p dist/data
+          # files the app only offers as downloads come from the dataset (VITE_DOWNLOADS_URL), and the report's EDA tables
+          # are not used by the app: leaving them out keeps the site near 600 MB, so Pages publishes it in time
+          tar -xzf site_data.tar.gz -C dist/data \
+            --exclude=area_monthly.parquet --exclude=cells.parquet --exclude=map_l3.parquet --exclude=map_l4.parquet \
+            --exclude=cell_l3.parquet --exclude=cell_l4.parquet --exclude=clim_l3.parquet --exclude=drivers.parquet \
+            --exclude=drivers_models.parquet --exclude=outlook.parquet --exclude=haze.parquet --exclude=eda
+          rm site_data.tar.gz
+          test -f dist/data/web/index.json
+          du -sh dist dist/data
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

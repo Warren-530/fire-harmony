@@ -1,0 +1,45 @@
+# secrets
+.env
+*.env
+.netrc
+
+# data (raw data lives in ~/nasa_work/data, outside the repo)
+data/
+data_products/*
+!data_products/.gitkeep
+*.parquet
+*.nc
+*.nc4
+*.hdf
+*.h5
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# node / app
+app/node_modules/
+app/dist/
+app/.vercel/
+
+# report build
+report/_output/
+report/.quarto/
+
+# os
+.DS_Store
+Thumbs.db
+
+# generated or scratch
+fireharmony.egg-info/
+report/report.typ
+app/qa/*/
+app/test-results/
+*.log
+
+# DuckDB extensions copied in by app/scripts/fetch_duckdb_ext.sh (binaries, not kept in git)
+app/public/duckdb-ext/
+video/voice/

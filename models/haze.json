@@ -1,0 +1,2116 @@
+{
+ "season_months": [
+  7,
+  11
+ ],
+ "fit_years": [
+  2002,
+  2025
+ ],
+ "sources": {
+  "sumatra": [
+   "IDN-1136",
+   "IDN-381",
+   "IDN-539",
+   "IDN-492",
+   "IDN-1930",
+   "IDN-1225",
+   "IDN-1230",
+   "IDN-1229",
+   "IDN-1231",
+   "IDN-1796"
+  ],
+  "borneo": [
+   "IDN-1228",
+   "IDN-1931",
+   "IDN-1234",
+   "IDN-1185",
+   "MYS-1187",
+   "MYS-1186",
+   "MYS-4833",
+   "BRN-1181",
+   "BRN-1182",
+   "BRN-1183",
+   "BRN-1184"
+  ]
+ },
+ "who_daily_guideline": 15.0,
+ "cities": {
+  "Kuala Lumpur": {
+   "n_months": 120,
+   "r2_fit": 0.8325,
+   "r2_cv": 0.7928,
+   "rmse_cv": 3.394,
+   "resid_sd": 3.145,
+   "normal_by_month": {
+    "7": 9.801,
+    "8": 9.889,
+    "9": 14.201,
+    "10": 20.977,
+    "11": 26.187
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.2174,
+    "borneo": 0.0185
+   },
+   "lat": 3.139,
+   "lon": 101.687,
+   "country": "MYS",
+   "r2_month_cv": 0.5351,
+   "r2_full_cv": 0.7928,
+   "r2_fire_beyond_month": 0.5544,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0534,
+    "r2_full_cv": 0.7227,
+    "r2_fire_beyond_month": 0.707
+   },
+   "smoke_2015_aug_oct": 18.3,
+   "smoke_2015_aug_oct_per_who_annual": 3.66,
+   "pm25_cnn_2015_aug_oct": 31.8,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.36
+  },
+  "George Town": {
+   "n_months": 120,
+   "r2_fit": 0.9275,
+   "r2_cv": 0.9196,
+   "rmse_cv": 3.177,
+   "resid_sd": 3.11,
+   "normal_by_month": {
+    "7": 12.78,
+    "8": 12.898,
+    "9": 17.022,
+    "10": 27.498,
+    "11": 41.663
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.061,
+    "borneo": 0.0
+   },
+   "lat": 5.414,
+   "lon": 100.329,
+   "country": "MYS",
+   "r2_month_cv": 0.9133,
+   "r2_full_cv": 0.9196,
+   "r2_fire_beyond_month": 0.0734,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1431,
+    "r2_full_cv": 0.5248,
+    "r2_fire_beyond_month": 0.4454
+   },
+   "smoke_2015_aug_oct": 4.57,
+   "smoke_2015_aug_oct_per_who_annual": 0.91,
+   "pm25_cnn_2015_aug_oct": 23.96,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.79
+  },
+  "Johor Bahru": {
+   "n_months": 120,
+   "r2_fit": 0.8423,
+   "r2_cv": 0.8123,
+   "rmse_cv": 3.844,
+   "resid_sd": 3.632,
+   "normal_by_month": {
+    "7": 9.162,
+    "8": 8.246,
+    "9": 12.967,
+    "10": 20.588,
+    "11": 28.199
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.1279,
+    "borneo": 0.1108
+   },
+   "lat": 1.492,
+   "lon": 103.741,
+   "country": "MYS",
+   "r2_month_cv": 0.517,
+   "r2_full_cv": 0.8123,
+   "r2_fire_beyond_month": 0.6114,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0832,
+    "r2_full_cv": 0.7116,
+    "r2_fire_beyond_month": 0.6855
+   },
+   "smoke_2015_aug_oct": 21.62,
+   "smoke_2015_aug_oct_per_who_annual": 4.32,
+   "pm25_cnn_2015_aug_oct": 34.49,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.9
+  },
+  "Kuching": {
+   "n_months": 120,
+   "r2_fit": 0.6323,
+   "r2_cv": 0.5071,
+   "rmse_cv": 2.922,
+   "resid_sd": 2.6,
+   "normal_by_month": {
+    "7": 5.304,
+    "8": 7.344,
+    "9": 7.457,
+    "10": 9.345,
+    "11": 10.92
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0951
+   },
+   "lat": 1.553,
+   "lon": 110.359,
+   "country": "MYS",
+   "r2_month_cv": 0.1961,
+   "r2_full_cv": 0.5071,
+   "r2_fire_beyond_month": 0.3868,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0823,
+    "r2_full_cv": 0.5969,
+    "r2_fire_beyond_month": 0.5608
+   },
+   "smoke_2015_aug_oct": 10.33,
+   "smoke_2015_aug_oct_per_who_annual": 2.07,
+   "pm25_cnn_2015_aug_oct": 14.04,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.81
+  },
+  "Kota Kinabalu": {
+   "n_months": 120,
+   "r2_fit": 0.8236,
+   "r2_cv": 0.7809,
+   "rmse_cv": 1.434,
+   "resid_sd": 1.326,
+   "normal_by_month": {
+    "7": 3.975,
+    "8": 3.784,
+    "9": 4.46,
+    "10": 7.198,
+    "11": 8.889
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0333,
+    "borneo": 0.0648
+   },
+   "lat": 5.98,
+   "lon": 116.073,
+   "country": "MYS",
+   "r2_month_cv": 0.2573,
+   "r2_full_cv": 0.7809,
+   "r2_fire_beyond_month": 0.705,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0728,
+    "r2_full_cv": 0.52,
+    "r2_fire_beyond_month": 0.4824
+   },
+   "smoke_2015_aug_oct": 9.54,
+   "smoke_2015_aug_oct_per_who_annual": 1.91,
+   "pm25_cnn_2015_aug_oct": 13.2,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.64
+  },
+  "Singapore": {
+   "n_months": 120,
+   "r2_fit": 0.8423,
+   "r2_cv": 0.8123,
+   "rmse_cv": 3.844,
+   "resid_sd": 3.632,
+   "normal_by_month": {
+    "7": 9.162,
+    "8": 8.246,
+    "9": 12.967,
+    "10": 20.588,
+    "11": 28.199
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.1279,
+    "borneo": 0.1108
+   },
+   "lat": 1.352,
+   "lon": 103.82,
+   "country": "SGP",
+   "r2_month_cv": 0.517,
+   "r2_full_cv": 0.8123,
+   "r2_fire_beyond_month": 0.6114,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0999,
+    "r2_full_cv": 0.7147,
+    "r2_fire_beyond_month": 0.683
+   },
+   "smoke_2015_aug_oct": 21.62,
+   "smoke_2015_aug_oct_per_who_annual": 4.32,
+   "pm25_cnn_2015_aug_oct": 34.49,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.9
+  },
+  "Pekanbaru": {
+   "n_months": 120,
+   "r2_fit": 0.8894,
+   "r2_cv": 0.8673,
+   "rmse_cv": 3.303,
+   "resid_sd": 3.108,
+   "normal_by_month": {
+    "7": 8.806,
+    "8": 10.328,
+    "9": 13.822,
+    "10": 21.601,
+    "11": 32.785
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.1036,
+    "borneo": 0.0
+   },
+   "lat": 0.507,
+   "lon": 101.448,
+   "country": "IDN",
+   "r2_month_cv": 0.8454,
+   "r2_full_cv": 0.8673,
+   "r2_fire_beyond_month": 0.1419,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0444,
+    "r2_full_cv": 0.7187,
+    "r2_fire_beyond_month": 0.7056
+   },
+   "smoke_2015_aug_oct": 7.77,
+   "smoke_2015_aug_oct_per_who_annual": 1.55,
+   "pm25_cnn_2015_aug_oct": 20.51,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.1
+  },
+  "Palangka Raya": {
+   "n_months": 120,
+   "r2_fit": 0.7552,
+   "r2_cv": 0.7029,
+   "rmse_cv": 4.828,
+   "resid_sd": 4.516,
+   "normal_by_month": {
+    "7": 2.948,
+    "8": 1.139,
+    "9": 3.602,
+    "10": 10.689,
+    "11": 15.192
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.2324
+   },
+   "lat": -2.208,
+   "lon": 113.917,
+   "country": "IDN",
+   "r2_month_cv": 0.2018,
+   "r2_full_cv": 0.7029,
+   "r2_fire_beyond_month": 0.6277,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": -0.0206,
+    "r2_full_cv": 0.3148,
+    "r2_fire_beyond_month": 0.3287
+   },
+   "smoke_2015_aug_oct": 25.25,
+   "smoke_2015_aug_oct_per_who_annual": 5.05,
+   "pm25_cnn_2015_aug_oct": 24.27,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.85
+  },
+  "Bandar Seri Begawan": {
+   "n_months": 120,
+   "r2_fit": 0.7395,
+   "r2_cv": 0.6745,
+   "rmse_cv": 1.709,
+   "resid_sd": 1.576,
+   "normal_by_month": {
+    "7": 3.513,
+    "8": 3.619,
+    "9": 4.157,
+    "10": 7.052,
+    "11": 7.946
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0197,
+    "borneo": 0.063
+   },
+   "lat": 4.8833,
+   "lon": 114.9333,
+   "country": "BRN",
+   "r2_month_cv": 0.2587,
+   "r2_full_cv": 0.6745,
+   "r2_fire_beyond_month": 0.5609,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.081,
+    "r2_full_cv": 0.5594,
+    "r2_fire_beyond_month": 0.5206
+   },
+   "smoke_2015_aug_oct": 8.32,
+   "smoke_2015_aug_oct_per_who_annual": 1.66,
+   "pm25_cnn_2015_aug_oct": 11.18,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.24
+  },
+  "Balikpapan": {
+   "n_months": 120,
+   "r2_fit": 0.7488,
+   "r2_cv": 0.7223,
+   "rmse_cv": 2.998,
+   "resid_sd": 2.938,
+   "normal_by_month": {
+    "7": 3.171,
+    "8": 2.102,
+    "9": 5.191,
+    "10": 11.281,
+    "11": 14.261
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0191,
+    "borneo": 0.0773
+   },
+   "lat": -1.25,
+   "lon": 116.83,
+   "country": "IDN",
+   "r2_month_cv": 0.5463,
+   "r2_full_cv": 0.7223,
+   "r2_fire_beyond_month": 0.388,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1585,
+    "r2_full_cv": 0.7096,
+    "r2_fire_beyond_month": 0.6549
+   },
+   "smoke_2015_aug_oct": 9.83,
+   "smoke_2015_aug_oct_per_who_annual": 1.97,
+   "pm25_cnn_2015_aug_oct": 15.51,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 3.1
+  },
+  "Banda Aceh": {
+   "n_months": 120,
+   "r2_fit": 0.8075,
+   "r2_cv": 0.7837,
+   "rmse_cv": 2.095,
+   "resid_sd": 2.037,
+   "normal_by_month": {
+    "7": 3.604,
+    "8": 1.846,
+    "9": 1.488,
+    "10": 5.82,
+    "11": 13.257
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0717,
+    "borneo": 0.0008
+   },
+   "lat": 5.55,
+   "lon": 95.32,
+   "country": "IDN",
+   "r2_month_cv": 0.7217,
+   "r2_full_cv": 0.7837,
+   "r2_fire_beyond_month": 0.2229,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.3067,
+    "r2_full_cv": 0.2901,
+    "r2_fire_beyond_month": -0.0239
+   },
+   "smoke_2015_aug_oct": 5.46,
+   "smoke_2015_aug_oct_per_who_annual": 1.09,
+   "pm25_cnn_2015_aug_oct": 8.77,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 1.75
+  },
+  "Bandar Lampung": {
+   "n_months": 120,
+   "r2_fit": 0.7011,
+   "r2_cv": 0.6645,
+   "rmse_cv": 4.832,
+   "resid_sd": 4.7,
+   "normal_by_month": {
+    "7": 13.757,
+    "8": 14.958,
+    "9": 18.792,
+    "10": 27.011,
+    "11": 32.105
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0881,
+    "borneo": 0.0262
+   },
+   "lat": -5.4281,
+   "lon": 105.2681,
+   "country": "IDN",
+   "r2_month_cv": 0.6126,
+   "r2_full_cv": 0.6645,
+   "r2_fire_beyond_month": 0.134,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1657,
+    "r2_full_cv": 0.3035,
+    "r2_fire_beyond_month": 0.1651
+   },
+   "smoke_2015_aug_oct": 9.45,
+   "smoke_2015_aug_oct_per_who_annual": 1.89,
+   "pm25_cnn_2015_aug_oct": 30.01,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.0
+  },
+  "Banjarmasin": {
+   "n_months": 120,
+   "r2_fit": 0.845,
+   "r2_cv": 0.8182,
+   "rmse_cv": 2.964,
+   "resid_sd": 2.819,
+   "normal_by_month": {
+    "7": 2.999,
+    "8": 3.054,
+    "9": 6.433,
+    "10": 13.86,
+    "11": 19.289
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0717
+   },
+   "lat": -3.32,
+   "lon": 114.59,
+   "country": "IDN",
+   "r2_month_cv": 0.749,
+   "r2_full_cv": 0.8182,
+   "r2_fire_beyond_month": 0.2756,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0081,
+    "r2_full_cv": 0.2105,
+    "r2_fire_beyond_month": 0.2041
+   },
+   "smoke_2015_aug_oct": 7.79,
+   "smoke_2015_aug_oct_per_who_annual": 1.56,
+   "pm25_cnn_2015_aug_oct": 12.53,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.51
+  },
+  "Batam": {
+   "n_months": 120,
+   "r2_fit": 0.8621,
+   "r2_cv": 0.8402,
+   "rmse_cv": 3.848,
+   "resid_sd": 3.683,
+   "normal_by_month": {
+    "7": 7.591,
+    "8": 5.937,
+    "9": 11.51,
+    "10": 19.792,
+    "11": 29.12
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.1063,
+    "borneo": 0.1205
+   },
+   "lat": 1.13,
+   "lon": 104.05,
+   "country": "IDN",
+   "r2_month_cv": 0.592,
+   "r2_full_cv": 0.8402,
+   "r2_fire_beyond_month": 0.6083,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0999,
+    "r2_full_cv": 0.7147,
+    "r2_fire_beyond_month": 0.683
+   },
+   "smoke_2015_aug_oct": 21.06,
+   "smoke_2015_aug_oct_per_who_annual": 4.21,
+   "pm25_cnn_2015_aug_oct": 33.1,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.62
+  },
+  "Jambi": {
+   "n_months": 120,
+   "r2_fit": 0.8424,
+   "r2_cv": 0.817,
+   "rmse_cv": 3.13,
+   "resid_sd": 2.993,
+   "normal_by_month": {
+    "7": 7.583,
+    "8": 8.203,
+    "9": 12.264,
+    "10": 18.739,
+    "11": 25.23
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0656,
+    "borneo": 0.0599
+   },
+   "lat": -1.59,
+   "lon": 103.61,
+   "country": "IDN",
+   "r2_month_cv": 0.7,
+   "r2_full_cv": 0.817,
+   "r2_fire_beyond_month": 0.39,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0053,
+    "r2_full_cv": 0.3675,
+    "r2_fire_beyond_month": 0.3641
+   },
+   "smoke_2015_aug_oct": 11.42,
+   "smoke_2015_aug_oct_per_who_annual": 2.28,
+   "pm25_cnn_2015_aug_oct": 23.89,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.78
+  },
+  "Medan": {
+   "n_months": 120,
+   "r2_fit": 0.8717,
+   "r2_cv": 0.8477,
+   "rmse_cv": 2.539,
+   "resid_sd": 2.402,
+   "normal_by_month": {
+    "7": 7.105,
+    "8": 6.341,
+    "9": 8.678,
+    "10": 14.611,
+    "11": 23.046
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.1706,
+    "borneo": 0.0
+   },
+   "lat": 3.5819,
+   "lon": 98.6481,
+   "country": "IDN",
+   "r2_month_cv": 0.6801,
+   "r2_full_cv": 0.8477,
+   "r2_fire_beyond_month": 0.5241,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": -0.0087,
+    "r2_full_cv": 0.5617,
+    "r2_fire_beyond_month": 0.5655
+   },
+   "smoke_2015_aug_oct": 12.79,
+   "smoke_2015_aug_oct_per_who_annual": 2.56,
+   "pm25_cnn_2015_aug_oct": 24.51,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.9
+  },
+  "Padang": {
+   "n_months": 120,
+   "r2_fit": 0.6741,
+   "r2_cv": 0.6115,
+   "rmse_cv": 3.745,
+   "resid_sd": 3.535,
+   "normal_by_month": {
+    "7": 2.871,
+    "8": 3.078,
+    "9": 6.449,
+    "10": 11.275,
+    "11": 14.726
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.162,
+    "borneo": 0.0092
+   },
+   "lat": -0.9581,
+   "lon": 100.3581,
+   "country": "IDN",
+   "r2_month_cv": 0.4214,
+   "r2_full_cv": 0.6115,
+   "r2_fire_beyond_month": 0.3286,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0554,
+    "r2_full_cv": 0.614,
+    "r2_fire_beyond_month": 0.5914
+   },
+   "smoke_2015_aug_oct": 13.14,
+   "smoke_2015_aug_oct_per_who_annual": 2.63,
+   "pm25_cnn_2015_aug_oct": 17.75,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 3.55
+  },
+  "Palembang": {
+   "n_months": 120,
+   "r2_fit": 0.8158,
+   "r2_cv": 0.7897,
+   "rmse_cv": 4.273,
+   "resid_sd": 4.12,
+   "normal_by_month": {
+    "7": 6.126,
+    "8": 4.601,
+    "9": 11.984,
+    "10": 19.749,
+    "11": 25.257
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0643,
+    "borneo": 0.1236
+   },
+   "lat": -2.9781,
+   "lon": 104.7481,
+   "country": "IDN",
+   "r2_month_cv": 0.5816,
+   "r2_full_cv": 0.7897,
+   "r2_fire_beyond_month": 0.4973,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0091,
+    "r2_full_cv": 0.2912,
+    "r2_fire_beyond_month": 0.2848
+   },
+   "smoke_2015_aug_oct": 18.25,
+   "smoke_2015_aug_oct_per_who_annual": 3.65,
+   "pm25_cnn_2015_aug_oct": 27.75,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 5.55
+  },
+  "Pontianak": {
+   "n_months": 120,
+   "r2_fit": 0.7484,
+   "r2_cv": 0.7033,
+   "rmse_cv": 2.742,
+   "resid_sd": 2.602,
+   "normal_by_month": {
+    "7": 5.265,
+    "8": 6.223,
+    "9": 7.817,
+    "10": 11.141,
+    "11": 15.006
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0012,
+    "borneo": 0.1058
+   },
+   "lat": -0.03,
+   "lon": 109.32,
+   "country": "IDN",
+   "r2_month_cv": 0.3812,
+   "r2_full_cv": 0.7033,
+   "r2_fire_beyond_month": 0.5205,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1046,
+    "r2_full_cv": 0.7191,
+    "r2_fire_beyond_month": 0.6863
+   },
+   "smoke_2015_aug_oct": 11.58,
+   "smoke_2015_aug_oct_per_who_annual": 2.32,
+   "pm25_cnn_2015_aug_oct": 17.91,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 3.58
+  },
+  "Samarinda": {
+   "n_months": 120,
+   "r2_fit": 0.8437,
+   "r2_cv": 0.8262,
+   "rmse_cv": 2.673,
+   "resid_sd": 2.612,
+   "normal_by_month": {
+    "7": 3.224,
+    "8": 2.434,
+    "9": 5.751,
+    "10": 12.571,
+    "11": 17.406
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0923
+   },
+   "lat": -0.5,
+   "lon": 117.15,
+   "country": "IDN",
+   "r2_month_cv": 0.6699,
+   "r2_full_cv": 0.8262,
+   "r2_fire_beyond_month": 0.4735,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1585,
+    "r2_full_cv": 0.7096,
+    "r2_fire_beyond_month": 0.6549
+   },
+   "smoke_2015_aug_oct": 10.03,
+   "smoke_2015_aug_oct_per_who_annual": 2.01,
+   "pm25_cnn_2015_aug_oct": 16.33,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 3.27
+  },
+  "Tarakan": {
+   "n_months": 120,
+   "r2_fit": 0.7581,
+   "r2_cv": 0.7226,
+   "rmse_cv": 1.889,
+   "resid_sd": 1.818,
+   "normal_by_month": {
+    "7": 1.928,
+    "8": 1.64,
+    "9": 2.948,
+    "10": 5.877,
+    "11": 5.77
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0928
+   },
+   "lat": 3.3,
+   "lon": 117.633,
+   "country": "IDN",
+   "r2_month_cv": 0.2203,
+   "r2_full_cv": 0.7226,
+   "r2_fire_beyond_month": 0.6442,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0987,
+    "r2_full_cv": 0.872,
+    "r2_fire_beyond_month": 0.8579
+   },
+   "smoke_2015_aug_oct": 10.08,
+   "smoke_2015_aug_oct_per_who_annual": 2.02,
+   "pm25_cnn_2015_aug_oct": 11.54,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.31
+  },
+  "Bintulu": {
+   "n_months": 120,
+   "r2_fit": 0.6983,
+   "r2_cv": 0.615,
+   "rmse_cv": 2.001,
+   "resid_sd": 1.825,
+   "normal_by_month": {
+    "7": 3.307,
+    "8": 4.135,
+    "9": 4.07,
+    "10": 6.233,
+    "11": 7.005
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0836
+   },
+   "lat": 3.1664,
+   "lon": 113.036,
+   "country": "MYS",
+   "r2_month_cv": 0.152,
+   "r2_full_cv": 0.615,
+   "r2_fire_beyond_month": 0.546,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.1183,
+    "r2_full_cv": 0.7886,
+    "r2_fire_beyond_month": 0.7602
+   },
+   "smoke_2015_aug_oct": 9.08,
+   "smoke_2015_aug_oct_per_who_annual": 1.82,
+   "pm25_cnn_2015_aug_oct": 10.25,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.05
+  },
+  "Ipoh": {
+   "n_months": 120,
+   "r2_fit": 0.8686,
+   "r2_cv": 0.8539,
+   "rmse_cv": 2.563,
+   "resid_sd": 2.504,
+   "normal_by_month": {
+    "7": 13.156,
+    "8": 14.446,
+    "9": 19.088,
+    "10": 24.037,
+    "11": 30.529
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0987,
+    "borneo": 0.0
+   },
+   "lat": 4.6,
+   "lon": 101.065,
+   "country": "MYS",
+   "r2_month_cv": 0.8001,
+   "r2_full_cv": 0.8539,
+   "r2_fire_beyond_month": 0.2691,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0975,
+    "r2_full_cv": 0.6393,
+    "r2_fire_beyond_month": 0.6003
+   },
+   "smoke_2015_aug_oct": 7.4,
+   "smoke_2015_aug_oct_per_who_annual": 1.48,
+   "pm25_cnn_2015_aug_oct": 27.6,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 5.52
+  },
+  "Melaka": {
+   "n_months": 120,
+   "r2_fit": 0.9124,
+   "r2_cv": 0.8914,
+   "rmse_cv": 2.978,
+   "resid_sd": 2.757,
+   "normal_by_month": {
+    "7": 11.85,
+    "8": 13.345,
+    "9": 17.589,
+    "10": 27.423,
+    "11": 35.053
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0851,
+    "borneo": 0.0
+   },
+   "lat": 2.2064,
+   "lon": 102.2465,
+   "country": "MYS",
+   "r2_month_cv": 0.8814,
+   "r2_full_cv": 0.8914,
+   "r2_fire_beyond_month": 0.0849,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0735,
+    "r2_full_cv": 0.6787,
+    "r2_fire_beyond_month": 0.6533
+   },
+   "smoke_2015_aug_oct": 6.38,
+   "smoke_2015_aug_oct_per_who_annual": 1.28,
+   "pm25_cnn_2015_aug_oct": 23.81,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 4.76
+  },
+  "Miri": {
+   "n_months": 120,
+   "r2_fit": 0.6252,
+   "r2_cv": 0.5541,
+   "rmse_cv": 1.801,
+   "resid_sd": 1.702,
+   "normal_by_month": {
+    "7": 3.294,
+    "8": 3.459,
+    "9": 3.543,
+    "10": 5.844,
+    "11": 6.297
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0196,
+    "borneo": 0.0559
+   },
+   "lat": 4.3999,
+   "lon": 113.9845,
+   "country": "MYS",
+   "r2_month_cv": 0.1317,
+   "r2_full_cv": 0.5541,
+   "r2_fire_beyond_month": 0.4864,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0794,
+    "r2_full_cv": 0.5661,
+    "r2_fire_beyond_month": 0.5287
+   },
+   "smoke_2015_aug_oct": 7.54,
+   "smoke_2015_aug_oct_per_who_annual": 1.51,
+   "pm25_cnn_2015_aug_oct": 9.92,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 1.98
+  },
+  "Sandakan": {
+   "n_months": 120,
+   "r2_fit": 0.7467,
+   "r2_cv": 0.7129,
+   "rmse_cv": 1.269,
+   "resid_sd": 1.228,
+   "normal_by_month": {
+    "7": 2.735,
+    "8": 2.336,
+    "9": 3.229,
+    "10": 5.406,
+    "11": 5.02
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0005,
+    "borneo": 0.06
+   },
+   "lat": 5.843,
+   "lon": 118.108,
+   "country": "MYS",
+   "r2_month_cv": 0.2237,
+   "r2_full_cv": 0.7129,
+   "r2_fire_beyond_month": 0.6301,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0351,
+    "r2_full_cv": 0.7425,
+    "r2_fire_beyond_month": 0.7331
+   },
+   "smoke_2015_aug_oct": 6.56,
+   "smoke_2015_aug_oct_per_who_annual": 1.31,
+   "pm25_cnn_2015_aug_oct": 9.77,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 1.95
+  },
+  "Seremban": {
+   "n_months": 120,
+   "r2_fit": 0.8247,
+   "r2_cv": 0.771,
+   "rmse_cv": 3.569,
+   "resid_sd": 3.217,
+   "normal_by_month": {
+    "7": 8.71,
+    "8": 8.702,
+    "9": 12.782,
+    "10": 19.512,
+    "11": 24.057
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.2485,
+    "borneo": 0.0181
+   },
+   "lat": 2.7105,
+   "lon": 101.94,
+   "country": "MYS",
+   "r2_month_cv": 0.4518,
+   "r2_full_cv": 0.771,
+   "r2_fire_beyond_month": 0.5823,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0534,
+    "r2_full_cv": 0.7227,
+    "r2_fire_beyond_month": 0.707
+   },
+   "smoke_2015_aug_oct": 20.59,
+   "smoke_2015_aug_oct_per_who_annual": 4.12,
+   "pm25_cnn_2015_aug_oct": 31.84,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 6.37
+  },
+  "Tawau": {
+   "n_months": 120,
+   "r2_fit": 0.795,
+   "r2_cv": 0.7682,
+   "rmse_cv": 1.463,
+   "resid_sd": 1.418,
+   "normal_by_month": {
+    "7": 1.846,
+    "8": 1.436,
+    "9": 2.556,
+    "10": 5.738,
+    "11": 5.968
+   },
+   "ug_per_1000_hotspots": {
+    "sumatra": 0.0,
+    "borneo": 0.0747
+   },
+   "lat": 4.271,
+   "lon": 117.896,
+   "country": "MYS",
+   "r2_month_cv": 0.3103,
+   "r2_full_cv": 0.7682,
+   "r2_fire_beyond_month": 0.664,
+   "merra2_target": {
+    "n_months": 120,
+    "r2_month_cv": 0.0853,
+    "r2_full_cv": 0.8677,
+    "r2_fire_beyond_month": 0.8554
+   },
+   "smoke_2015_aug_oct": 8.11,
+   "smoke_2015_aug_oct_per_who_annual": 1.62,
+   "pm25_cnn_2015_aug_oct": 10.06,
+   "pm25_cnn_2015_aug_oct_per_who_annual": 2.01
+  }
+ },
+ "target_check": {
+  "cities": {
+   "Kuala Lumpur": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.323,
+      "-2": 0.284,
+      "-1": 0.195,
+      "0": 0.351,
+      "1": -0.031,
+      "2": -0.161,
+      "3": -0.048
+     },
+     "lat flipped": {
+      "-3": 0.409,
+      "-2": 0.438,
+      "-1": 0.508,
+      "0": 0.422,
+      "1": -0.003,
+      "2": -0.119,
+      "3": -0.072
+     },
+     "lon flipped": {
+      "-3": 0.258,
+      "-2": 0.365,
+      "-1": 0.292,
+      "0": 0.496,
+      "1": 0.142,
+      "2": -0.033,
+      "3": -0.086
+     }
+    },
+    "anomaly_r_lag0": 0.898,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.898,
+     "lat flipped": 0.603,
+     "lon flipped": 0.604
+    },
+    "season_cnn": {
+     "7": 12.1,
+     "8": 14.6,
+     "9": 19.4,
+     "10": 24.7,
+     "11": 26.8
+    },
+    "season_merra2": {
+     "7": 21.9,
+     "8": 23.2,
+     "9": 23.5,
+     "10": 20.5,
+     "11": 12.3
+    }
+   },
+   "George Town": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.141,
+      "-2": -0.104,
+      "-1": -0.249,
+      "0": -0.27,
+      "1": -0.303,
+      "2": -0.084,
+      "3": 0.199
+     },
+     "lat flipped": {
+      "-3": 0.212,
+      "-2": 0.304,
+      "-1": 0.249,
+      "0": 0.158,
+      "1": -0.031,
+      "2": 0.009,
+      "3": 0.09
+     },
+     "lon flipped": {
+      "-3": 0.162,
+      "-2": 0.215,
+      "-1": 0.072,
+      "0": 0.229,
+      "1": 0.032,
+      "2": -0.039,
+      "3": 0.056
+     }
+    },
+    "anomaly_r_lag0": 0.609,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.609,
+     "lat flipped": 0.373,
+     "lon flipped": 0.473
+    },
+    "season_cnn": {
+     "7": 13.4,
+     "8": 14.0,
+     "9": 18.3,
+     "10": 28.4,
+     "11": 41.8
+    },
+    "season_merra2": {
+     "7": 16.9,
+     "8": 15.2,
+     "9": 13.6,
+     "10": 12.0,
+     "11": 9.7
+    }
+   },
+   "Johor Bahru": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.236,
+      "-2": 0.414,
+      "-1": 0.456,
+      "0": 0.506,
+      "1": 0.09,
+      "2": -0.114,
+      "3": -0.117
+     },
+     "lat flipped": {
+      "-3": 0.264,
+      "-2": 0.408,
+      "-1": 0.368,
+      "0": 0.276,
+      "1": -0.019,
+      "2": -0.162,
+      "3": -0.112
+     },
+     "lon flipped": {
+      "-3": 0.161,
+      "-2": 0.306,
+      "-1": 0.514,
+      "0": 0.738,
+      "1": 0.303,
+      "2": -0.022,
+      "3": -0.12
+     }
+    },
+    "anomaly_r_lag0": 0.903,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.903,
+     "lat flipped": 0.729,
+     "lon flipped": 0.765
+    },
+    "season_cnn": {
+     "7": 11.2,
+     "8": 14.2,
+     "9": 20.0,
+     "10": 25.2,
+     "11": 28.9
+    },
+    "season_merra2": {
+     "7": 15.6,
+     "8": 18.5,
+     "9": 23.6,
+     "10": 20.8,
+     "11": 12.0
+    }
+   },
+   "Kuching": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.17,
+      "-2": 0.336,
+      "-1": 0.532,
+      "0": 0.675,
+      "1": 0.258,
+      "2": 0.037,
+      "3": 0.073
+     },
+     "lat flipped": {
+      "-3": 0.467,
+      "-2": 0.575,
+      "-1": 0.681,
+      "0": 0.555,
+      "1": 0.084,
+      "2": -0.086,
+      "3": -0.086
+     },
+     "lon flipped": {
+      "-3": 0.102,
+      "-2": 0.288,
+      "-1": 0.534,
+      "0": 0.752,
+      "1": 0.347,
+      "2": 0.116,
+      "3": 0.093
+     }
+    },
+    "anomaly_r_lag0": 0.827,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.827,
+     "lat flipped": 0.809,
+     "lon flipped": 0.809
+    },
+    "season_cnn": {
+     "7": 5.9,
+     "8": 10.4,
+     "9": 11.2,
+     "10": 11.7,
+     "11": 11.3
+    },
+    "season_merra2": {
+     "7": 14.0,
+     "8": 24.5,
+     "9": 25.1,
+     "10": 15.6,
+     "11": 6.1
+    }
+   },
+   "Kota Kinabalu": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.212,
+      "-2": 0.379,
+      "-1": 0.413,
+      "0": 0.541,
+      "1": -0.016,
+      "2": 0.051,
+      "3": 0.372
+     },
+     "lat flipped": {
+      "-3": 0.463,
+      "-2": 0.51,
+      "-1": 0.257,
+      "0": -0.147,
+      "1": -0.231,
+      "2": 0.056,
+      "3": 0.574
+     },
+     "lon flipped": {
+      "-3": 0.049,
+      "-2": 0.151,
+      "-1": 0.268,
+      "0": 0.631,
+      "1": 0.253,
+      "2": 0.16,
+      "3": 0.206
+     }
+    },
+    "anomaly_r_lag0": 0.852,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.852,
+     "lat flipped": 0.201,
+     "lon flipped": 0.662
+    },
+    "season_cnn": {
+     "7": 4.7,
+     "8": 6.5,
+     "9": 7.7,
+     "10": 9.3,
+     "11": 9.2
+    },
+    "season_merra2": {
+     "7": 10.9,
+     "8": 14.0,
+     "9": 13.0,
+     "10": 10.0,
+     "11": 8.0
+    }
+   },
+   "Singapore": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.364,
+      "-2": 0.455,
+      "-1": 0.465,
+      "0": 0.471,
+      "1": 0.08,
+      "2": -0.072,
+      "3": -0.099
+     },
+     "lat flipped": {
+      "-3": 0.385,
+      "-2": 0.454,
+      "-1": 0.383,
+      "0": 0.253,
+      "1": -0.015,
+      "2": -0.108,
+      "3": -0.082
+     },
+     "lon flipped": {
+      "-3": 0.2,
+      "-2": 0.316,
+      "-1": 0.511,
+      "0": 0.7,
+      "1": 0.231,
+      "2": -0.057,
+      "3": -0.117
+     }
+    },
+    "anomaly_r_lag0": 0.885,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.885,
+     "lat flipped": 0.735,
+     "lon flipped": 0.723
+    },
+    "season_cnn": {
+     "7": 11.2,
+     "8": 14.2,
+     "9": 20.0,
+     "10": 25.2,
+     "11": 28.9
+    },
+    "season_merra2": {
+     "7": 13.3,
+     "8": 16.0,
+     "9": 20.0,
+     "10": 17.3,
+     "11": 9.9
+    }
+   },
+   "Pekanbaru": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.248,
+      "-2": 0.222,
+      "-1": 0.087,
+      "0": -0.082,
+      "1": -0.249,
+      "2": -0.15,
+      "3": 0.203
+     },
+     "lat flipped": {
+      "-3": 0.287,
+      "-2": 0.332,
+      "-1": 0.26,
+      "0": 0.233,
+      "1": -0.072,
+      "2": -0.1,
+      "3": 0.137
+     },
+     "lon flipped": {
+      "-3": 0.231,
+      "-2": 0.329,
+      "-1": 0.249,
+      "0": 0.242,
+      "1": -0.088,
+      "2": -0.171,
+      "3": 0.083
+     }
+    },
+    "anomaly_r_lag0": 0.533,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.533,
+     "lat flipped": 0.73,
+     "lon flipped": 0.485
+    },
+    "season_cnn": {
+     "7": 9.8,
+     "8": 12.3,
+     "9": 16.0,
+     "10": 23.1,
+     "11": 33.1
+    },
+    "season_merra2": {
+     "7": 18.3,
+     "8": 22.9,
+     "9": 22.7,
+     "10": 18.2,
+     "11": 7.8
+    }
+   },
+   "Palangka Raya": {
+    "r_by_lag": {
+     "as decoded": {
+      "-3": 0.342,
+      "-2": 0.543,
+      "-1": 0.727,
+      "0": 0.705,
+      "1": 0.385,
+      "2": 0.129,
+      "3": -0.009
+     },
+     "lat flipped": {
+      "-3": 0.238,
+      "-2": 0.396,
+      "-1": 0.565,
+      "0": 0.617,
+      "1": 0.279,
+      "2": -0.022,
+      "3": -0.146
+     },
+     "lon flipped": {
+      "-3": 0.236,
+      "-2": 0.384,
+      "-1": 0.47,
+      "0": 0.336,
+      "1": 0.018,
+      "2": -0.181,
+      "3": -0.228
+     }
+    },
+    "anomaly_r_lag0": 0.817,
+    "anomaly_r_lag0_by_grid": {
+     "as decoded": 0.817,
+     "lat flipped": 0.729,
+     "lon flipped": 0.496
+    },
+    "season_cnn": {
+     "7": 4.4,
+     "8": 8.5,
+     "9": 12.7,
+     "10": 16.4,
+     "11": 16.0
+    },
+    "season_merra2": {
+     "7": 16.3,
+     "8": 38.6,
+     "9": 55.0,
+     "10": 39.3,
+     "11": 14.5
+    }
+   }
+  },
+  "r_by_lag": {
+   "as decoded": {
+    "-3": 0.255,
+    "-2": 0.316,
+    "-1": 0.328,
+    "0": 0.362,
+    "1": 0.027,
+    "2": -0.045,
+    "3": 0.072
+   },
+   "lat flipped": {
+    "-3": 0.341,
+    "-2": 0.427,
+    "-1": 0.409,
+    "0": 0.296,
+    "1": -0.001,
+    "2": -0.067,
+    "3": 0.038
+   },
+   "lon flipped": {
+    "-3": 0.175,
+    "-2": 0.294,
+    "-1": 0.364,
+    "0": 0.515,
+    "1": 0.155,
+    "2": -0.028,
+    "3": -0.014
+   }
+  },
+  "best_lag": 0,
+  "anomaly_r_lag0_mean": {
+   "as decoded": 0.79,
+   "lat flipped": 0.614,
+   "lon flipped": 0.627
+  },
+  "field_r_mean_by_month": {
+   "as decoded": 0.589,
+   "lat flipped": 0.147,
+   "lon flipped": 0.135,
+   "read as lon by lat": 0.005
+  },
+  "pekanbaru": {
+   "2015-09": {
+    "cnn": 20.8,
+    "merra2": 76.3
+   },
+   "2016-09": {
+    "cnn": 10.7,
+    "merra2": 9.4
+   },
+   "2015-11": {
+    "cnn": 36.4,
+    "merra2": 8.4
+   },
+   "2016-11": {
+    "cnn": 33.6,
+    "merra2": 5.7
+   },
+   "2019-11": {
+    "cnn": 36.9,
+    "merra2": 12.5
+   }
+  },
+  "day_check": {
+   "date": "2015-09-15",
+   "city": "Pekanbaru",
+   "cell": [
+    0.5,
+    101.25
+   ],
+   "dims": [
+    "time",
+    "lat",
+    "lon"
+   ],
+   "source_file_ug_m3": 16.697,
+   "table_ug_m3": 16.697,
+   "hourly_max_ug_m3": 25.2,
+   "field_max_ug_m3": 85.7
+  },
+  "verdict": "decoded right; the product differs from raw MERRA-2",
+  "cnn_over_merra2_mean": {
+   "september": {
+    "Kuala Lumpur": 0.83,
+    "George Town": 1.35,
+    "Johor Bahru": 0.85,
+    "Kuching": 0.45,
+    "Kota Kinabalu": 0.59,
+    "Singapore": 1.0,
+    "Pekanbaru": 0.7,
+    "Palangka Raya": 0.23
+   },
+   "november": {
+    "Kuala Lumpur": 2.18,
+    "George Town": 4.31,
+    "Johor Bahru": 2.41,
+    "Kuching": 1.85,
+    "Kota Kinabalu": 1.15,
+    "Singapore": 2.92,
+    "Pekanbaru": 4.24,
+    "Palangka Raya": 1.1
+   }
+  },
+  "note": "The source file of 2015-09-15 (fetched again) gives 16.70 at Pekanbaru, as the table does (16.70), with the dimensions time, lat, lon. The table matches its grid: lag 0 fits best (0.362 on average at the 8 cities), the swings from year to year agree best as decoded (0.79, against 0.614 and 0.627 with the grid flipped), and the field as decoded matches MERRA-2 far better than flipped or transposed (0.589 against 0.147 at most). The difference is in the product. The CNN correction damps the smoke peaks (Pekanbaru, September 2015: 20.8 against 76.3 in raw MERRA-2) and rises every year to November, the start of the wet season, whatever the fire does (Pekanbaru: 36.4, 33.6, 36.9). Raw MERRA-2 aerosols take their fire emissions from MODIS fire radiative power (QFED), so they are not independent of fire counts either. The haze model's month of year term absorbs the November rise; the fire terms are read beyond it (r2_fire_beyond_month)."
+ },
+ "who_annual_guideline": 5.0,
+ "more_cities": {
+  "rule": {
+   "r2_cv_min": 0.5,
+   "r2_fire_beyond_month_min": 0.05
+  },
+  "rule_text": "Kept when, on years left out, the model explains at least half of the changes of the city's monthly PM2.5 in the fire season (R2 0.5), and the fire explains at least 5% of what the month of year leaves. All eight cities of the first release pass it.",
+  "domain": {
+   "lat": [
+    -12.0,
+    12.0
+   ],
+   "lon": [
+    90.0,
+    130.0
+   ]
+  },
+  "first_cities": [
+   "George Town",
+   "Johor Bahru",
+   "Kota Kinabalu",
+   "Kuala Lumpur",
+   "Kuching",
+   "Palangka Raya",
+   "Pekanbaru",
+   "Singapore"
+  ],
+  "first_cities_pass": {
+   "Kuala Lumpur": true,
+   "Kuching": true,
+   "Singapore": true,
+   "Kota Kinabalu": true,
+   "George Town": true,
+   "Palangka Raya": true,
+   "Pekanbaru": true,
+   "Johor Bahru": true
+  },
+  "kept": [
+   {
+    "name": "Bandar Seri Begawan",
+    "country": "BRN",
+    "lat": 4.8833,
+    "lon": 114.9333,
+    "r2_cv": 0.6745,
+    "r2_month_cv": 0.2587,
+    "r2_fire_beyond_month": 0.5609,
+    "n_months": 120,
+    "cell": [
+     5.0,
+     115.0
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Balikpapan",
+    "country": "IDN",
+    "lat": -1.25,
+    "lon": 116.83,
+    "r2_cv": 0.7223,
+    "r2_month_cv": 0.5463,
+    "r2_fire_beyond_month": 0.388,
+    "n_months": 120,
+    "cell": [
+     -1.5,
+     116.875
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Banda Aceh",
+    "country": "IDN",
+    "lat": 5.55,
+    "lon": 95.32,
+    "r2_cv": 0.7837,
+    "r2_month_cv": 0.7217,
+    "r2_fire_beyond_month": 0.2229,
+    "n_months": 120,
+    "cell": [
+     5.5,
+     95.625
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Bandar Lampung",
+    "country": "IDN",
+    "lat": -5.4281,
+    "lon": 105.2681,
+    "r2_cv": 0.6645,
+    "r2_month_cv": 0.6126,
+    "r2_fire_beyond_month": 0.134,
+    "n_months": 120,
+    "cell": [
+     -5.5,
+     105.0
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Banjarmasin",
+    "country": "IDN",
+    "lat": -3.32,
+    "lon": 114.59,
+    "r2_cv": 0.8182,
+    "r2_month_cv": 0.749,
+    "r2_fire_beyond_month": 0.2756,
+    "n_months": 120,
+    "cell": [
+     -3.5,
+     114.375
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Batam",
+    "country": "IDN",
+    "lat": 1.13,
+    "lon": 104.05,
+    "r2_cv": 0.8402,
+    "r2_month_cv": 0.592,
+    "r2_fire_beyond_month": 0.6083,
+    "n_months": 120,
+    "cell": [
+     1.0,
+     103.75
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Jambi",
+    "country": "IDN",
+    "lat": -1.59,
+    "lon": 103.61,
+    "r2_cv": 0.817,
+    "r2_month_cv": 0.7,
+    "r2_fire_beyond_month": 0.39,
+    "n_months": 120,
+    "cell": [
+     -1.5,
+     103.75
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Medan",
+    "country": "IDN",
+    "lat": 3.5819,
+    "lon": 98.6481,
+    "r2_cv": 0.8477,
+    "r2_month_cv": 0.6801,
+    "r2_fire_beyond_month": 0.5241,
+    "n_months": 120,
+    "cell": [
+     3.5,
+     98.75
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Padang",
+    "country": "IDN",
+    "lat": -0.9581,
+    "lon": 100.3581,
+    "r2_cv": 0.6115,
+    "r2_month_cv": 0.4214,
+    "r2_fire_beyond_month": 0.3286,
+    "n_months": 120,
+    "cell": [
+     -1.0,
+     100.625
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Palembang",
+    "country": "IDN",
+    "lat": -2.9781,
+    "lon": 104.7481,
+    "r2_cv": 0.7897,
+    "r2_month_cv": 0.5816,
+    "r2_fire_beyond_month": 0.4973,
+    "n_months": 120,
+    "cell": [
+     -3.0,
+     105.0
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Pontianak",
+    "country": "IDN",
+    "lat": -0.03,
+    "lon": 109.32,
+    "r2_cv": 0.7033,
+    "r2_month_cv": 0.3812,
+    "r2_fire_beyond_month": 0.5205,
+    "n_months": 120,
+    "cell": [
+     0.0,
+     109.375
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Samarinda",
+    "country": "IDN",
+    "lat": -0.5,
+    "lon": 117.15,
+    "r2_cv": 0.8262,
+    "r2_month_cv": 0.6699,
+    "r2_fire_beyond_month": 0.4735,
+    "n_months": 120,
+    "cell": [
+     -0.5,
+     116.875
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Tarakan",
+    "country": "IDN",
+    "lat": 3.3,
+    "lon": 117.633,
+    "r2_cv": 0.7226,
+    "r2_month_cv": 0.2203,
+    "r2_fire_beyond_month": 0.6442,
+    "n_months": 120,
+    "cell": [
+     3.5,
+     117.5
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Bintulu",
+    "country": "MYS",
+    "lat": 3.1664,
+    "lon": 113.036,
+    "r2_cv": 0.615,
+    "r2_month_cv": 0.152,
+    "r2_fire_beyond_month": 0.546,
+    "n_months": 120,
+    "cell": [
+     3.0,
+     113.125
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Ipoh",
+    "country": "MYS",
+    "lat": 4.6,
+    "lon": 101.065,
+    "r2_cv": 0.8539,
+    "r2_month_cv": 0.8001,
+    "r2_fire_beyond_month": 0.2691,
+    "n_months": 120,
+    "cell": [
+     4.5,
+     101.25
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Melaka",
+    "country": "MYS",
+    "lat": 2.2064,
+    "lon": 102.2465,
+    "r2_cv": 0.8914,
+    "r2_month_cv": 0.8814,
+    "r2_fire_beyond_month": 0.0849,
+    "n_months": 120,
+    "cell": [
+     2.0,
+     102.5
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Miri",
+    "country": "MYS",
+    "lat": 4.3999,
+    "lon": 113.9845,
+    "r2_cv": 0.5541,
+    "r2_month_cv": 0.1317,
+    "r2_fire_beyond_month": 0.4864,
+    "n_months": 120,
+    "cell": [
+     4.5,
+     113.75
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Sandakan",
+    "country": "MYS",
+    "lat": 5.843,
+    "lon": 118.108,
+    "r2_cv": 0.7129,
+    "r2_month_cv": 0.2237,
+    "r2_fire_beyond_month": 0.6301,
+    "n_months": 120,
+    "cell": [
+     6.0,
+     118.125
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Seremban",
+    "country": "MYS",
+    "lat": 2.7105,
+    "lon": 101.94,
+    "r2_cv": 0.771,
+    "r2_month_cv": 0.4518,
+    "r2_fire_beyond_month": 0.5823,
+    "n_months": 120,
+    "cell": [
+     2.5,
+     101.875
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Tawau",
+    "country": "MYS",
+    "lat": 4.271,
+    "lon": 117.896,
+    "r2_cv": 0.7682,
+    "r2_month_cv": 0.3103,
+    "r2_fire_beyond_month": 0.664,
+    "n_months": 120,
+    "cell": [
+     4.5,
+     118.125
+    ],
+    "shares_cell_with": []
+   }
+  ],
+  "not_enough_skill": [
+   {
+    "name": "Alor Setar",
+    "country": "MYS",
+    "lat": 6.1133,
+    "lon": 100.3729,
+    "r2_cv": 0.9038,
+    "r2_month_cv": 0.8989,
+    "r2_fire_beyond_month": 0.0494,
+    "n_months": 120,
+    "cell": [
+     6.0,
+     100.625
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Hat Yai",
+    "country": "THA",
+    "lat": 6.9964,
+    "lon": 100.4714,
+    "r2_cv": 0.714,
+    "r2_month_cv": 0.7146,
+    "r2_fire_beyond_month": -0.0021,
+    "n_months": 120,
+    "cell": [
+     7.0,
+     100.625
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Kuantan",
+    "country": "MYS",
+    "lat": 3.83,
+    "lon": 103.32,
+    "r2_cv": 0.4088,
+    "r2_month_cv": 0.3607,
+    "r2_fire_beyond_month": 0.0752,
+    "n_months": 120,
+    "cell": [
+     4.0,
+     103.125
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Bengkulu",
+    "country": "IDN",
+    "lat": -3.8,
+    "lon": 102.27,
+    "r2_cv": 0.3977,
+    "r2_month_cv": 0.2611,
+    "r2_fire_beyond_month": 0.1849,
+    "n_months": 120,
+    "cell": [
+     -4.0,
+     102.5
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Sibu",
+    "country": "MYS",
+    "lat": 2.303,
+    "lon": 111.843,
+    "r2_cv": 0.3927,
+    "r2_month_cv": 0.1064,
+    "r2_fire_beyond_month": 0.3204,
+    "n_months": 120,
+    "cell": [
+     2.5,
+     111.875
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Kota Bharu",
+    "country": "MYS",
+    "lat": 6.13,
+    "lon": 102.24,
+    "r2_cv": 0.3682,
+    "r2_month_cv": 0.2831,
+    "r2_fire_beyond_month": 0.1187,
+    "n_months": 120,
+    "cell": [
+     6.0,
+     102.5
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Kuala Terengganu",
+    "country": "MYS",
+    "lat": 5.3304,
+    "lon": 103.12,
+    "r2_cv": 0.2596,
+    "r2_month_cv": 0.0592,
+    "r2_fire_beyond_month": 0.2131,
+    "n_months": 120,
+    "cell": [
+     5.5,
+     103.125
+    ],
+    "shares_cell_with": []
+   },
+   {
+    "name": "Jakarta",
+    "country": "IDN",
+    "lat": -6.1725,
+    "lon": 106.8275,
+    "r2_cv": 0.0059,
+    "r2_month_cv": -0.056,
+    "r2_fire_beyond_month": 0.0586,
+    "n_months": 120,
+    "cell": [
+     -6.0,
+     106.875
+    ],
+    "shares_cell_with": []
+   }
+  ],
+  "grid_cells": {
+   "Kuala Lumpur": [
+    3.0,
+    101.875
+   ],
+   "George Town": [
+    5.5,
+    100.625
+   ],
+   "Johor Bahru": [
+    1.5,
+    103.75
+   ],
+   "Kuching": [
+    1.5,
+    110.625
+   ],
+   "Kota Kinabalu": [
+    6.0,
+    116.25
+   ],
+   "Singapore": [
+    1.5,
+    103.75
+   ],
+   "Pekanbaru": [
+    0.5,
+    101.25
+   ],
+   "Palangka Raya": [
+    -2.0,
+    113.75
+   ],
+   "Medan": [
+    3.5,
+    98.75
+   ],
+   "Banda Aceh": [
+    5.5,
+    95.625
+   ],
+   "Padang": [
+    -1.0,
+    100.625
+   ],
+   "Jambi": [
+    -1.5,
+    103.75
+   ],
+   "Palembang": [
+    -3.0,
+    105.0
+   ],
+   "Bengkulu": [
+    -4.0,
+    102.5
+   ],
+   "Bandar Lampung": [
+    -5.5,
+    105.0
+   ],
+   "Batam": [
+    1.0,
+    103.75
+   ],
+   "Pontianak": [
+    0.0,
+    109.375
+   ],
+   "Banjarmasin": [
+    -3.5,
+    114.375
+   ],
+   "Samarinda": [
+    -0.5,
+    116.875
+   ],
+   "Balikpapan": [
+    -1.5,
+    116.875
+   ],
+   "Tarakan": [
+    3.5,
+    117.5
+   ],
+   "Jakarta": [
+    -6.0,
+    106.875
+   ],
+   "Ipoh": [
+    4.5,
+    101.25
+   ],
+   "Alor Setar": [
+    6.0,
+    100.625
+   ],
+   "Kota Bharu": [
+    6.0,
+    102.5
+   ],
+   "Kuala Terengganu": [
+    5.5,
+    103.125
+   ],
+   "Kuantan": [
+    4.0,
+    103.125
+   ],
+   "Seremban": [
+    2.5,
+    101.875
+   ],
+   "Melaka": [
+    2.0,
+    102.5
+   ],
+   "Sibu": [
+    2.5,
+    111.875
+   ],
+   "Bintulu": [
+    3.0,
+    113.125
+   ],
+   "Miri": [
+    4.5,
+    113.75
+   ],
+   "Sandakan": [
+    6.0,
+    118.125
+   ],
+   "Tawau": [
+    4.5,
+    118.125
+   ],
+   "Bandar Seri Begawan": [
+    5.0,
+    115.0
+   ],
+   "Hat Yai": [
+    7.0,
+    100.625
+   ]
+  }
+ }
+}

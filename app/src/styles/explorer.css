@@ -1,0 +1,1027 @@
+/* The Explorer ("command centre"): the map fills the window under the header, glass panels float on it.
+   Every colour is a variable from theme.css. Phones (768 px and less): map, timeline, then the panel, one column. */
+
+/* full bleed: while the Explorer is on screen the main column has no padding, and on wide screens no footer
+   (the map is the page; the footer is on every other page) */
+.fh-main:has(> div:not([hidden]) > .fh-ex) { max-width: none; padding: 0; }
+@media (min-width: 769px) {
+  .fh-app:has(> .fh-main > div:not([hidden]) > .fh-ex) > .fh-footer { display: none; }
+}
+
+.fh-ex {
+  --fh-ex-top: 61px;
+  --panel-w: 384px;
+  --gap: 16px;
+  position: relative;
+  height: calc(100dvh - var(--fh-ex-top));
+  min-height: 600px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+.fh-ex p { margin: 0; }
+
+/* ---------------------------------------------------------------- the map (package explorer-map)
+   Local layers inside the Explorer (it isolates its stacking): the map parts sit under the panel (12) and the dock (11);
+   inside the map the hexagon tooltip is on top. --ex-free-left is where the map's free area starts (right of the panel).
+   --ex-bar-h is the height of the map's top bar (legend chip and settings pill): 36 px, 44 px on touch screens. */
+.fh-ex { --ex-z-map-ui: 10; --ex-z-tip: 14; --ex-bar-h: var(--ctl); --ex-zoom-h: 124px;
+  --ex-free-left: calc(var(--panel-w) + var(--gap) * 2); }
+.fh-ex.is-collapsed { --ex-free-left: var(--gap); }
+@media (pointer: coarse) { .fh-ex { --ex-bar-h: var(--ctl-touch); --ex-zoom-h: 148px; } }
+/* the trend map's quiet classes: no clear trend (a calm grey, darker than any clear trend on the dark map) and too
+   little fire to test (a ghost); MapView mixes the same colours for the hexagons */
+.fh-ex { --ex-trend-flat: color-mix(in srgb, var(--anom-0) 76%, var(--text-3)); --ex-trend-ghost: color-mix(in srgb, var(--text-3) 17%, transparent); }
+:root[data-theme="light"] .fh-ex { --ex-trend-flat: color-mix(in srgb, var(--anom-0) 55%, var(--text-3)); --ex-trend-ghost: color-mix(in srgb, var(--text-3) 13%, transparent); }
+/* the trend's first step each way (under 15% a decade): on the dark map a little brighter than the anomaly's, so a small
+   clear trend never reads as no trend */
+.fh-ex { --ex-trend-b1: color-mix(in srgb, var(--anom-b1) 40%, var(--anom-b2)); --ex-trend-r1: color-mix(in srgb, var(--anom-r1) 40%, var(--anom-r2)); }
+:root[data-theme="light"] .fh-ex { --ex-trend-b1: var(--anom-b1); --ex-trend-r1: var(--anom-r1); }
+/* the map never spills out, even for the moment its canvases keep their old size while the window resizes */
+.fh-ex-stage { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.fh-ex-map { position: absolute; inset: 0; overflow: hidden; }
+.fh-ex .fh-ex-map-canvas { position: absolute; inset: 0; }
+.fh-ex-map-canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+.fh-ex-drawing .maplibregl-canvas { cursor: crosshair; }
+/* the attribution: bottom right, under the zoom rail and above the dock (MapLibre adds a 10 px margin) */
+.fh-ex .maplibregl-ctrl-bottom-right { right: calc(var(--gap) - 10px); bottom: calc(var(--fh-ex-dock-h, 104px) + var(--gap) - 10px); }
+.fh-ex .maplibregl-ctrl.maplibregl-ctrl-attrib, .fh-ex .maplibregl-ctrl-attrib.maplibregl-compact {
+  border: 1px solid var(--border); background: var(--material-thin); color: var(--text-2); font-size: var(--fs-11); }
+.fh-ex .maplibregl-ctrl-attrib a { color: var(--text-2); }
+.fh-ex .maplibregl-ctrl-attrib.maplibregl-compact { min-height: 24px; }
+/* on a touch screen the round "i" stays 24 px to the eye, but takes a 44 px press: a clear ring around it, up to the
+   zoom rail above (which keeps its own presses: it is drawn over the map's controls) */
+@media (pointer: coarse), (max-width: 768px) {
+  .fh-ex .maplibregl-ctrl-attrib-button::after { content: ""; position: absolute; inset: -8px -10px -14px; border-radius: 50%; }
+  /* open, its links stay above the ring (a press on a link opens the link), and the ring takes the room to the
+     screen's edge instead */
+  .fh-ex .maplibregl-ctrl-attrib-inner { position: relative; z-index: 1; }
+  .fh-ex .maplibregl-compact-show .maplibregl-ctrl-attrib-button::after { right: calc(-1 * var(--gap)); }
+}
+/* a touch screen with the side panel (tablets): the attribution 8 px above the timeline and the zoom rail 15 px higher,
+   so the ring has 10 px all round */
+@media (pointer: coarse) and (min-width: 769px) {
+  .fh-ex .maplibregl-ctrl-bottom-right { bottom: calc(var(--fh-ex-dock-h, 104px) + var(--gap) - 2px); }
+  .fh-ex .maplibregl-ctrl-attrib-button::after { inset: -10px; }
+}
+:root[data-theme="dark"] .fh-ex .maplibregl-ctrl-attrib-button { filter: invert(1); opacity: 0.8; }
+
+/* the zoom rail: bottom right, above the attribution, so the cards from the top bar never reach it */
+.fh-ex-zoom { position: absolute; z-index: var(--ex-z-map-ui); right: var(--gap); bottom: calc(var(--fh-ex-dock-h, 104px) + var(--gap) + 32px);
+  display: grid; gap: 2px; padding: var(--sp-1); border-radius: var(--radius-lg); box-shadow: var(--elev-2);
+  transition: opacity var(--t-fast) var(--ease-out), visibility 0s linear var(--t-fast); }
+.fh-ex-zoom .ui-btn { min-height: var(--ctl); min-width: var(--ctl); color: var(--text-2); }
+.fh-ex-zoom .ui-btn:hover { color: var(--text); }
+@media (pointer: coarse) and (min-width: 769px) {
+  .fh-ex-zoom { bottom: calc(var(--fh-ex-dock-h, 104px) + var(--gap) + 47px); }
+}
+
+/* the top of the map's free area, under the top bar: the loading pill and the drawing bar stack here, centred */
+/* (a card opened during a drawing: MapControls sets --ex-top-right, so the bar glides left of the card) */
+.fh-ex-map-top { position: absolute; z-index: var(--ex-z-map-ui); top: calc(var(--gap) + var(--ex-bar-h) + var(--sp-2));
+  left: var(--ex-free-left); right: var(--ex-top-right, var(--gap)); display: flex; flex-direction: column; align-items: center; gap: var(--sp-2);
+  pointer-events: none; transition: right var(--t-med) var(--ease-out); }
+.fh-ex-map-top > * { pointer-events: auto; max-width: 100%; }
+/* the loading pill shows after 300 ms (quick loads never flash it) */
+.fh-ex-map-status { display: inline-flex; align-items: center; gap: var(--sp-2); padding: 6px var(--sp-3); border-radius: var(--radius-pill);
+  color: var(--text); font-size: var(--fs-13); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: var(--elev-2);
+  animation: fh-ex-drop var(--t-med) var(--ease-out) 300ms both; }
+.fh-ex-map-status.is-error { color: var(--critical); animation-delay: 0s; }
+@keyframes fh-ex-drop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* the trend map on a phone with the sheet at its smallest (the timeline's note is out of sight): a chip says the map
+   is one for the whole record */
+.fh-ex-trend-chip { display: none; align-items: center; gap: var(--sp-2); padding: 2px 2px 2px var(--sp-3); border-radius: var(--radius-pill);
+  color: var(--text); font-size: var(--fs-13); white-space: nowrap; box-shadow: var(--elev-2); animation: fh-ex-drop var(--t-med) var(--ease-out) both; }
+.fh-ex-trend-chip > svg { flex: none; color: var(--accent); }
+.fh-ex-trend-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.fh-ex-trend-chip .fh-ex-trend-back { border-radius: var(--radius-pill); }
+@media (max-width: 768px) {
+  .fh-ex:has(.fh-ex-sheet[data-size="peek"]) .fh-ex-trend-chip { display: inline-flex; }
+}
+@media (max-width: 360px) {
+  .fh-ex-trend-chip { gap: var(--sp-1); }
+  .fh-ex-trend-chip > svg { display: none; }
+  .fh-ex-trend-chip .fh-ex-trend-back { padding-inline: var(--sp-2); }
+}
+
+.fh-ex-spin { display: inline-block; width: 12px; height: 12px; flex: none; border: 2px solid var(--border-strong);
+  border-top-color: var(--accent); border-radius: 50%; animation: fh-ex-spin 0.8s linear infinite; }
+@keyframes fh-ex-spin { to { transform: rotate(360deg); } }
+
+/* tooltip over a hexagon (explorer/MapTip.tsx: placed clear of every panel, moved by its transform once a frame) */
+.fh-ex-tip { position: absolute; z-index: var(--ex-z-tip); display: grid; gap: 6px; width: 252px; padding: 10px var(--sp-3); border-radius: var(--radius-md);
+  pointer-events: none; color: var(--text); font-size: var(--fs-12); line-height: 1.4; box-shadow: var(--elev-2); will-change: transform; }
+.fh-ex-tip-place { font-size: var(--fs-13); font-weight: 600; }
+.fh-ex-tip-coord { color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-tip-rows { display: grid; gap: var(--sp-1); margin: 2px 0 0; padding-top: 6px; border-top: 1px solid var(--border); }
+.fh-ex-tip-rows > div { display: flex; justify-content: space-between; gap: var(--sp-3); }
+.fh-ex-tip-rows dt { color: var(--text-2); }
+.fh-ex-tip-rows dd { margin: 0; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fh-ex-tip-hint { color: var(--accent-strong); font-size: var(--fs-12); }
+.fh-ex-tip-verdict { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.fh-ex-tip-verdict > span { width: 10px; height: 10px; flex: none; border-radius: 2px; box-shadow: inset 0 0 0 1px var(--border-strong); }
+.fh-ex-tip-verdict[data-tone="rising"] > span { background: var(--anom-r3); }
+.fh-ex-tip-verdict[data-tone="falling"] > span { background: var(--anom-b3); }
+.fh-ex-tip-verdict[data-tone="flat"] > span { background: var(--ex-trend-flat); }
+.fh-ex-tip-verdict[data-tone="quiet"] { color: var(--text-2); }
+.fh-ex-tip-note { color: var(--text-2); }
+
+/* drawing bar */
+.fh-ex-draw { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-2) var(--sp-3); width: max-content;
+  max-width: min(560px, 100%); padding: 10px var(--sp-3) 10px var(--sp-4); font-size: var(--fs-13); box-shadow: var(--elev-2);
+  animation: ui-rise var(--t-med) var(--ease-out); }
+.fh-ex-draw:has(.is-error) { border-color: color-mix(in srgb, var(--critical) 60%, transparent); }
+.fh-ex-draw p.is-error { color: var(--text); font-weight: 600; }
+.fh-ex-draw-key { color: var(--text-2); font-weight: 400; }
+.fh-ex-draw-actions { display: flex; gap: 6px; }
+.fh-ex-draw .ui-btn { min-height: var(--ctl-sm); padding: var(--sp-1) var(--sp-3); }
+/* the bar lets clicks through to the map; only its buttons catch them */
+.fh-ex-map-top > .fh-ex-draw { pointer-events: none; }
+.fh-ex-draw .ui-btn { pointer-events: auto; }
+.fh-ex-draw[data-compact] { padding: 6px; gap: 6px; }
+
+/* a pulse where a hexagon is picked, and a target frame where the camera lands (none under reduced motion) */
+.fh-ex-pulse { position: absolute; z-index: var(--ex-z-map-ui); width: 0; height: 0; pointer-events: none; }
+.fh-ex-pulse::before, .fh-ex-pulse > span { content: ""; position: absolute; left: -26px; top: -26px; width: 52px; height: 52px;
+  border: 2px solid var(--accent); border-radius: 50%; animation: fh-ex-pulse 720ms var(--ease-out) both; }
+.fh-ex-pulse > span { animation-delay: 150ms; border-width: 1.5px; }
+@keyframes fh-ex-pulse { from { opacity: 0.95; transform: scale(0.25); } to { opacity: 0; transform: scale(1.45); } }
+.fh-ex-reticle { position: absolute; z-index: var(--ex-z-map-ui); pointer-events: none;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 55%, transparent)); animation: fh-ex-lock 1.7s var(--ease-out) both; }
+.fh-ex-reticle > i { position: absolute; width: 16px; height: 16px; border: 2px solid var(--accent); }
+.fh-ex-reticle > i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 4px; }
+.fh-ex-reticle > i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 4px; }
+.fh-ex-reticle > i:nth-child(3) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 4px; }
+.fh-ex-reticle > i:nth-child(4) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 4px; }
+@keyframes fh-ex-lock { 0% { opacity: 0; transform: scale(1.14); } 20% { opacity: 1; transform: none; } 72% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------------------------------------------------------------- map settings and legend (top bar, right)
+   .fh-ex-controls is the top bar: the legend chip and the settings pill; a card opens under it. MapControls sets
+   --ex-stage-h (the map's height), so a card ends above the zoom rail on wide screens (--ex-card-keep) and inside the
+   map everywhere, scrolling inside when there is not room. */
+.fh-ex-controls { position: absolute; z-index: var(--ex-z-map-ui); top: var(--gap); right: var(--gap); pointer-events: none;
+  --ex-card-keep: calc(var(--fh-ex-dock-h, 104px) + 32px + var(--ex-zoom-h) + var(--sp-2)); }
+.fh-ex-controls-bar { display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
+.fh-ex-controls-bar > *, .fh-ex-card { pointer-events: auto; }
+.fh-ex-controls-toggle, .fh-ex-legend-chip { display: inline-flex; align-items: center; gap: var(--sp-2); height: var(--ex-bar-h); padding: 0 var(--sp-3);
+  border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--material-regular); box-shadow: var(--elev-2);
+  backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
+  color: var(--text); font: inherit; font-size: var(--fs-13); font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out); }
+.fh-ex-controls-toggle:hover, .fh-ex-legend-chip:hover { border-color: var(--border-strong); }
+.fh-ex-controls-toggle[aria-expanded="true"], .fh-ex-legend-chip[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: var(--elev-2), 0 0 0 3px var(--accent-soft); }
+.fh-ex-controls-toggle > svg:first-child { color: var(--accent); }
+.fh-ex-legend-chip { gap: 10px; padding-right: 10px; color: var(--text-2); font-weight: 500; }
+.fh-ex-chevron { flex: none; color: var(--text-2); transition: transform var(--t-fast) var(--ease-out); }
+[aria-expanded="true"] > .fh-ex-chevron { transform: rotate(180deg); }
+.fh-ex-ramp { display: inline-flex; flex: none; width: 56px; height: 8px; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px var(--border); }
+.fh-ex-ramp > span, .fh-ex-mode-ramp > span { flex: 1; }
+
+/* a card under the top bar: it grows from the bar and closes faster than it opens. Its head stays; when the window is
+   short its body scrolls, fading at the edge that has more (MapControls sets data-fade). --ex-card-drop: the card opens
+   under the drawing bar when there is no room beside it. */
+.fh-ex-card { position: absolute; top: calc(100% + var(--sp-2) + var(--ex-card-drop, 0px)); right: 0; display: flex; flex-direction: column; gap: var(--sp-2);
+  width: 320px; max-width: calc(100vw - var(--gap) * 2);
+  max-height: max(160px, calc(var(--ex-stage-h, 600px) - var(--gap) * 2 - var(--ex-bar-h) - var(--sp-2) - var(--ex-card-keep) - var(--ex-card-drop, 0px)));
+  overflow: hidden; padding: var(--sp-2) 0 0; box-shadow: var(--elev-2); transform-origin: top right;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out), visibility 0s linear 0s; }
+.fh-ex-card[data-open="false"] { opacity: 0; transform: translateY(-4px) scale(0.98); visibility: hidden; pointer-events: none;
+  transition: opacity var(--t-fast) var(--ease-in), transform var(--t-fast) var(--ease-in), visibility 0s linear var(--t-fast); }
+.fh-ex-legend-card { width: 300px; }
+.fh-ex-card-head { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-2) 0 var(--sp-4); }
+.fh-ex-card-body { display: grid; gap: var(--sp-3); align-content: start; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--sp-1) var(--sp-4) var(--sp-4); }
+.fh-ex-card-body[data-fade="b"] { -webkit-mask-image: linear-gradient(#000 calc(100% - 36px), transparent); mask-image: linear-gradient(#000 calc(100% - 36px), transparent); }
+.fh-ex-card-body[data-fade="t"] { -webkit-mask-image: linear-gradient(transparent, #000 24px); mask-image: linear-gradient(transparent, #000 24px); }
+.fh-ex-card-body[data-fade="tb"] { -webkit-mask-image: linear-gradient(transparent, #000 24px, #000 calc(100% - 36px), transparent);
+  mask-image: linear-gradient(transparent, #000 24px, #000 calc(100% - 36px), transparent); }
+/* short laptop windows: the settings take less height, so the card shows them whole more often */
+@media (min-width: 769px) and (max-height: 760px) {
+  .fh-ex-mode { min-height: 62px; padding: var(--sp-2) var(--sp-2) var(--sp-3); }
+  .fh-ex-3d { min-height: 44px; padding-block: 6px; }
+}
+.fh-ex-card-title, .fh-ex-field-label, .fh-ex-controls .ui-segmented-label, .fh-ex-speed .ui-segmented-label { color: var(--text-2);
+  font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-ex-card-close { min-height: var(--ctl-sm); min-width: var(--ctl-sm); color: var(--text-2); }
+.fh-ex-field { display: grid; gap: var(--sp-2); min-width: 0; }
+
+/* the colour choices: three tiles, each with its icon and a strip of its colours */
+.fh-ex-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+.fh-ex-mode { position: relative; display: grid; justify-items: start; align-content: start; gap: 6px; min-height: 78px; padding: 10px 10px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text-2);
+  font: inherit; font-size: var(--fs-12); font-weight: 600; line-height: 1.25; text-align: left; cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.fh-ex-mode:hover { border-color: var(--border-strong); color: var(--text); }
+.fh-ex-mode[aria-checked="true"] { border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: var(--accent-soft); color: var(--text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent); }
+.fh-ex-mode-icon { display: inline-flex; color: var(--text-2); }
+.fh-ex-mode[aria-checked="true"] .fh-ex-mode-icon { color: var(--accent); }
+.fh-ex-mode-ramp { position: absolute; left: 10px; right: 10px; bottom: 7px; display: flex; height: 3px; border-radius: 2px; overflow: hidden; }
+
+.fh-ex-controls .ui-segmented { display: grid; gap: var(--sp-2); min-width: 0; }
+.fh-ex-controls .ui-segmented-options { display: flex; min-width: 0; }
+.fh-ex-controls .ui-segmented-option { flex: 1 1 0; min-width: 0; padding: var(--sp-1) var(--sp-2); }
+.fh-ex .ui-segmented-options { background: var(--surface-2); border-color: var(--border); }
+.fh-ex .ui-segmented-option { color: var(--text-2); }
+.fh-ex .ui-segmented-option:hover { color: var(--text); }
+.fh-ex .ui-segmented-option[aria-checked="true"] { color: var(--text); background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--border-strong); }
+
+/* 3D: a row with a switch */
+.fh-ex-3d { display: flex; align-items: center; gap: var(--sp-3); width: 100%; min-height: 48px; padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); font: inherit;
+  text-align: left; cursor: pointer; transition: border-color var(--t-fast) var(--ease-out); }
+.fh-ex-3d:hover { border-color: var(--border-strong); }
+.fh-ex-3d > svg { flex: none; color: var(--text-2); }
+.fh-ex-3d[aria-pressed="true"] > svg { color: var(--accent); }
+.fh-ex-3d-text { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.fh-ex-3d-title { font-size: var(--fs-13); font-weight: 600; }
+.fh-ex-3d-hint { color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-kbd { flex: none; }
+@media (hover: none) { .fh-ex-kbd { display: none; } }
+.fh-ex-switch { position: relative; flex: none; width: 34px; height: 20px; border-radius: var(--radius-pill); background: var(--surface-3);
+  box-shadow: inset 0 0 0 1px var(--border-strong); transition: background-color var(--t-fast) var(--ease-out); }
+.fh-ex-switch > span { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--text-2);
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out); }
+.fh-ex-3d[aria-pressed="true"] .fh-ex-switch { background: var(--accent); box-shadow: none; }
+.fh-ex-3d[aria-pressed="true"] .fh-ex-switch > span { transform: translateX(14px); background: var(--surface); }
+
+/* the legend */
+.fh-ex-legend-box { padding-top: 2px; }
+.fh-ex-legend { display: block; max-width: 100%; overflow: visible; }
+.fh-ex-legend-title { fill: var(--text); font-size: var(--fs-12); font-weight: 600; font-family: var(--font-sans); }
+.fh-ex-legend-tick { fill: var(--text-2); font-size: var(--fs-11); font-family: var(--font-mono); }
+.fh-ex-controls-note { color: var(--text-2); font-size: var(--fs-12); line-height: 1.45; }
+.fh-ex-trend-key { display: grid; gap: var(--sp-2); }
+.fh-ex-trend-classes { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fh-ex-trend-classes li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2);
+  color: var(--text); font-size: var(--fs-13); line-height: 1.3; }
+.fh-ex-trend-swatch { width: 14px; height: 12px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--border); }
+.fh-ex-trend-swatch.is-ghost { box-shadow: inset 0 0 0 1px var(--border-strong); }
+.fh-ex-trend-count { color: var(--text-2); font-size: var(--fs-12); font-variant-numeric: tabular-nums; }
+.fh-ex-trend-why { color: var(--text-2); font-size: var(--fs-12); line-height: 1.45; }
+.fh-ex-trend-tested { color: var(--text-2); font-size: var(--fs-12); }
+
+/* touch screens of any size (tablets too): every map and timeline control at least 44 px */
+@media (pointer: coarse) {
+  .fh-ex-zoom .ui-btn, .fh-ex-card-close, .fh-ex-player .ui-btn-icon { min-height: var(--ctl-touch); min-width: var(--ctl-touch); }
+  .fh-ex-draw .ui-btn, .fh-ex-trend-back, .fh-ex-speed .ui-segmented-option, .fh-ex-controls .ui-segmented-option,
+  .fh-ex-speed-cycle { min-height: var(--ctl-touch); }
+  .fh-ex-play { width: var(--ctl-touch); min-width: var(--ctl-touch); height: var(--ctl-touch); }
+}
+
+/* ---------------------------------------------------------------- the area panel (left; package explorer-panel)
+   Top to bottom: the place search, the place (eyebrow and name, with the keys and fold buttons), its actions (the
+   Download menu, Compare, Link), a strip of three numbers, the tabs (frosted, stuck to the top of the scroller) and
+   the tab's content, so the content starts in the upper half of the panel. On phones it is a bottom sheet (the end of
+   this file). */
+.fh-ex-panel { position: absolute; z-index: 12; top: var(--gap); left: var(--gap); bottom: var(--gap); width: var(--panel-w);
+  display: flex; flex-direction: column; overflow: hidden; animation: fh-ex-in var(--t-slow) var(--ease-out); }
+@keyframes fh-ex-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+.fh-ex-panel-top { position: relative; z-index: 3; padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border); }
+/* nothing scrolls sideways (a tab slides in from the side). What scrolls into view in a tab lands below the stuck
+   tabs (a margin on the tab's content, not a padding on the scroller: a tab that takes the focus in the stuck bar is
+   in view already, so the bar never drops) */
+.fh-ex-panel-scroll { flex: 1; min-height: 0; overflow: hidden auto; overscroll-behavior: contain; display: grid; gap: var(--sp-3);
+  align-content: start; padding: var(--sp-3) var(--sp-4) var(--sp-5); }
+.fh-ex-tabpanel, .fh-ex-tabpanel * { scroll-margin-top: var(--sp-12); }
+
+.fh-ex-area { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-2); }
+.fh-ex-area-text { display: grid; gap: 2px; min-width: 0; }
+.fh-ex-kind { color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); font-weight: 600; letter-spacing: var(--tracking-caps);
+  text-transform: uppercase; }
+.fh-ex-name { margin: 0; color: var(--text); font-size: var(--fs-20); line-height: var(--lh-20); font-weight: 650; letter-spacing: -0.01em;
+  overflow-wrap: break-word; }
+.fh-ex-area-tools { display: flex; gap: 2px; flex: none; margin: calc(var(--sp-1) * -1) calc(var(--sp-2) * -1) 0 0; }
+.fh-ex-area-tools .ui-btn-ghost { color: var(--text-2); }
+.fh-ex-area-tools .ui-btn-ghost:hover { color: var(--text); }
+
+/* the place's actions: a row of pill buttons, like the action row of a place card in a map app */
+.fh-ex-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.fh-ex .fh-ex-tool, .fh-ex-tool { min-height: var(--ctl-sm); padding: 0 var(--sp-3); gap: 6px; border: 1px solid var(--border); border-radius: var(--radius-pill);
+  background: var(--surface-2); color: var(--text); font-size: var(--fs-13); font-weight: 600;
+  transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out); }
+.fh-ex .fh-ex-tool:hover { border-color: var(--border-strong); background: var(--surface-3); }
+.fh-ex-tool > svg:first-child { flex: none; color: var(--text-2); }
+.fh-ex .fh-ex-tool:is([aria-expanded="true"], [aria-pressed="true"]) { border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-soft); }
+.fh-ex-tool:is([aria-expanded="true"], [aria-pressed="true"]) > svg:first-child { color: var(--accent); }
+.fh-ex-tool[aria-disabled="true"] { opacity: 0.6; }
+.fh-ex-tool-chev { flex: none; color: var(--text-2); transition: transform var(--t-fast) var(--ease-out); }
+.fh-ex-tool[aria-expanded="true"] .fh-ex-tool-chev { transform: rotate(180deg); }
+.fh-ex-tool-count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 var(--sp-1); border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px var(--accent); color: var(--text); font-size: var(--fs-12); font-weight: 700; }
+.fh-ex .fh-ex-tool-icon { width: var(--ctl); min-width: var(--ctl); padding: 0; justify-content: center; }
+.fh-ex-tool-icon > svg:first-child { color: var(--text-2); }
+
+.fh-ex-loading { display: flex; align-items: center; gap: var(--sp-2); color: var(--text-2); font-size: var(--fs-13); }
+.fh-ex-error { padding: 10px var(--sp-3); border: 1px solid color-mix(in srgb, var(--critical) 45%, transparent); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--critical) 10%, transparent); color: var(--text); font-size: var(--fs-14); }
+.fh-ex-note { color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+
+.fh-ex-body { display: grid; gap: var(--sp-3); min-width: 0; transition: opacity var(--t-med) var(--ease-out); }
+.fh-ex-body.is-stale { opacity: 0.6; }
+/* a sentence or a title that waits for the selected area's own numbers: lines of shimmer */
+.fh-ex-wait { display: grid; gap: var(--sp-2); }
+.fh-ex-wait .ui-skeleton { border-radius: var(--radius-sm); }
+.fh-ex-wait > .ui-skeleton:last-child:not(:first-child) { width: 72%; }
+.ui-figure-title .fh-ex-wait, .ui-figure-subtitle .fh-ex-wait { display: grid; max-width: 86%; }
+.fh-ex-wait > span.ui-skeleton { display: block; }
+.ui-figure-subtitle .fh-ex-wait { max-width: 60%; margin-top: var(--sp-1); }
+.fh-ex-fail-box { border-color: color-mix(in srgb, var(--critical) 45%, transparent); }
+.fh-ex-fail-box .ui-callout-body { display: grid; gap: var(--sp-2); justify-items: start; }
+.fh-ex-fail-box .ui-callout-body p { margin: 0; }
+.fh-ex-kpi-line-wait { color: var(--text-2); font-size: var(--fs-13); }
+
+/* the strip of three numbers: one row of 64 px, each number a button that opens its tab; a narrow strip takes the
+   short labels ("Sep 2015", "Jan to Sep") so no label is ever cut */
+.fh-ex-body { container: fh-ex-body / inline-size; }
+.fh-ex-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent); overflow: hidden; }
+.fh-ex-kpi-short { display: none; }
+@container fh-ex-body (max-width: 349px) {
+  .fh-ex-kpi-long { display: none; }
+  .fh-ex-kpi-short { display: inline; }
+  .fh-ex-kpis .fh-ex-kpi { padding-inline: var(--sp-2); }
+  .fh-ex-kpis .fh-ex-kpi-value { font-size: calc(var(--fs-stat-s) * 0.9); }
+}
+.fh-ex-kpis .fh-ex-kpi { position: relative; display: grid; align-content: start; justify-items: start; gap: 2px; min-width: 0; min-height: 64px;
+  padding: var(--sp-2) 10px; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--text); font: inherit;
+  text-align: left; transition: background-color var(--t-fast) var(--ease-out); }
+.fh-ex-kpis .fh-ex-kpi + .fh-ex-kpi { border-left: 1px solid var(--border); }
+.fh-ex-kpis button.fh-ex-kpi { cursor: pointer; }
+.fh-ex-kpis button.fh-ex-kpi:hover { background: var(--surface-3); }
+.fh-ex-kpis .fh-ex-kpi:focus-visible { outline-offset: -3px; border-radius: var(--radius-md); }
+.fh-ex-kpis .fh-ex-kpi-label { max-width: 100%; overflow: hidden; color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12);
+  white-space: nowrap; text-overflow: ellipsis; }
+/* the number and its unit: the unit moves whole to the next line when there is no room, never a word cut in two */
+.fh-ex-kpis .fh-ex-kpi-value { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--sp-1); max-width: 100%; color: var(--text);
+  font-size: var(--fs-stat-s); line-height: 1.2; white-space: nowrap; }
+.fh-ex-kpis .fh-ex-kpi-value:empty { display: none; }
+.fh-ex-kpis .ui-stat-unit { margin: 0; color: var(--text-2); font-size: var(--fs-12); white-space: nowrap; }
+.fh-ex-kpi-pill { display: flex; align-items: center; min-height: 20px; max-width: 100%; }
+.fh-ex-kpis .ui-delta { max-width: 100%; padding: 1px 6px; font-size: var(--fs-12); white-space: nowrap; }
+/* the caution of a trend with little fire (or one that does not hold among all places) sits by its number */
+.fh-ex-kpi-caution { display: inline-flex; align-self: center; margin-left: 2px; color: var(--warning); }
+:root[data-theme="light"] .fh-ex-kpi-caution { color: color-mix(in srgb, var(--warning) 55%, var(--text)); }
+.fh-ex-kpi-quiet { color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); white-space: normal; }
+/* the trend's test is still loading: a short shimmer where the word comes, never a word that may change */
+.fh-ex-kpi-pending { display: inline-block; width: 64px; height: 16px; border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%); background-size: 200% 100%;
+  animation: ui-shimmer 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .fh-ex-kpi-pending { animation: none; } }
+.fh-ex-kpis-skeleton .ui-skeleton { border-radius: 0; }
+/* the unit of the counts, a header row inside the strip (hidden where the height is short: phones, short laptops) */
+.fh-ex-kpis-caption { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--sp-1); margin: 0; padding: 2px 10px;
+  border-bottom: 1px solid var(--border); color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); }
+.fh-ex-kpis-caption > svg { flex: none; color: var(--accent); }
+@media (max-width: 768px), (max-height: 760px) {
+  .fh-ex-kpis-caption { display: none; }
+}
+/* short laptop windows (1366 x 657, 1280 x 720): tighter spacing above the tabs, so the tab's content starts in the
+   upper half of the panel */
+@media (min-width: 769px) and (max-height: 760px) {
+  .fh-ex-panel-top { padding-block: var(--sp-2); }
+  .fh-ex-panel .fh-picker { gap: var(--sp-2); }
+  .fh-ex-panel .fh-picker .fh-search-input, .fh-ex-panel .fh-picker-row .ui-chip { min-height: var(--ctl); }
+  .fh-ex-panel .fh-picker .fh-search-input { padding-block: 6px; }
+  .fh-ex-panel .fh-ex-panel-scroll { gap: var(--sp-2); padding-top: var(--sp-2); }
+  .fh-ex-panel .fh-ex-tabbar { top: calc(var(--sp-2) * -1); }
+  .fh-ex-panel .fh-ex-name { font-size: var(--fs-16); line-height: var(--lh-16); }
+  .fh-ex-kpis .fh-ex-kpi { min-height: 0; padding-block: 6px; }
+}
+/* while a new place loads: the old numbers stay, dimmed, with a light sweeping across them */
+.fh-ex-body.is-stale .fh-ex-kpis { position: relative; }
+.fh-ex-body.is-stale .fh-ex-kpis::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--text) 9%, transparent) 50%, transparent 80%);
+  background-size: 200% 100%; animation: fh-ex-sweep 1.1s linear infinite; }
+@keyframes fh-ex-sweep { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+/* the line of the small phone sheet: the month, its count and the change from normal */
+.fh-ex-kpi-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--sp-2); min-height: 22px; margin: 0; color: var(--text-2); font-size: var(--fs-13); }
+.fh-ex-kpi-line .ui-skeleton { flex: 1; }
+.fh-ex-kpi-line-month { color: var(--text); font-family: var(--font-mono); font-size: var(--fs-13); font-weight: 700; letter-spacing: var(--tracking-caps); }
+.fh-ex-kpi-line-value { color: var(--text); font-family: var(--font-mono); font-size: var(--fs-14); font-weight: 600; }
+.fh-ex-kpi-line .ui-stat-unit { margin-left: var(--sp-1); color: var(--text-2); font-family: var(--font-sans); font-size: var(--fs-12); font-weight: 500; }
+.fh-ex-kpi-line .ui-delta { align-self: center; padding: 1px 6px; font-size: var(--fs-12); }
+
+/* the numbers in words, in the Overview tab */
+.fh-ex-facts { display: grid; margin: 0; border-top: 1px solid var(--border); }
+.fh-ex-facts > div { display: grid; gap: 2px; padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); }
+.fh-ex-facts dt { color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); font-weight: 600; letter-spacing: var(--tracking-caps);
+  text-transform: uppercase; }
+.fh-ex-facts dd { display: grid; gap: 2px; margin: 0; }
+.fh-ex-fact-value { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-2); color: var(--text); font-size: var(--fs-14); font-weight: 600; }
+.fh-ex-fact-word { display: inline-flex; align-items: center; gap: var(--sp-1); }
+.fh-ex-fact-word.is-quiet { color: var(--text-2); font-weight: 500; }
+.fh-ex-fact-word > svg { flex: none; color: var(--text-2); }
+.fh-ex-facts [data-trend="caution"]:is([data-verdict="rising"], [data-verdict="falling"]) .fh-ex-fact-word > svg { color: var(--warning); }
+.fh-ex-fact-note { color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+
+/* the brief and the cards inside the panel */
+.fh-ex-panel .ui-card { padding: 14px var(--sp-4); border-radius: var(--radius-md); border-color: var(--border); box-shadow: none;
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent); }
+.fh-ex-panel .ui-card-accent { border-left: 2px solid var(--accent); }
+.fh-ex-brief { margin: 0; color: var(--text); font-size: var(--fs-13); line-height: 1.55; }
+.fh-ex-brief.is-clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.fh-ex-more { justify-self: start; padding: 0; border: 0; background: none; color: var(--accent-strong); font: inherit; font-size: var(--fs-12);
+  font-weight: 600; cursor: pointer; }
+.fh-ex-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="light"] .fh-ex-more { color: var(--ember-700); }
+.fh-ex-panel .ui-card-accent .ui-card-title { color: var(--text-2); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps);
+  text-transform: uppercase; }
+.fh-ex-panel .ui-card-accent { gap: 6px; }
+/* a card that fills a tab is the tab itself: no second frame (beats the light theme surface rule); the brief at the
+   top of the Overview tab keeps its accent card */
+.fh-ex-tabpanel > .ui-card:not(.ui-card-accent), .fh-ex-tabpanel .fh-ex-plain,
+:root[data-theme] .fh-ex-tabpanel > .ui-card:not(.ui-card-accent) { padding: 0; border: 0; background: transparent; }
+.fh-ex-tabpanel > .ui-card:not(.ui-card-accent):hover { border-color: transparent; }
+
+/* tabs: the frosted bar holds the background, so the strip itself can fade at an edge with more tabs (ui-scroll-x) */
+.fh-ex-tabbar { position: sticky; top: calc(var(--sp-3) * -1); z-index: 2; margin: 0 calc(var(--sp-4) * -1); padding: 0 var(--sp-2);
+  border-bottom: 1px solid var(--border); background: var(--material-regular); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+/* (the bar sticks, not the strip: app.css's older phone rule for a strip under the header is set back here) */
+.fh-ex-tabbar .fh-ex-tabs.ui-tabs { top: auto; gap: 0; border-bottom: 0; scroll-padding-inline: var(--sp-6); transition: none; }
+.fh-ex-tabs .ui-tab { flex: 1 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px;
+  padding: 10px 6px; font-size: var(--fs-13); white-space: nowrap; transition: color var(--t-fast) var(--ease-out); }
+.fh-ex-tabs .ui-tab:focus-visible { outline-offset: -3px; border-radius: var(--radius-sm); }
+/* the content slides in from the side of the tab picked */
+.fh-ex-tabpanel { display: grid; gap: var(--sp-3); min-width: 0; animation: ui-fade var(--t-med) var(--ease-out); }
+.fh-ex-tabpanel[data-from="right"] { animation: fh-ex-from-right var(--t-med) var(--ease-out); }
+.fh-ex-tabpanel[data-from="left"] { animation: fh-ex-from-left var(--t-med) var(--ease-out); }
+@keyframes fh-ex-from-right { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes fh-ex-from-left { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+.fh-ex-tabpanel:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-md); }
+.fh-ex-help { color: var(--text-2); font-size: var(--fs-13); line-height: 1.5; }
+.fh-ex-compare-hint { display: flex; align-items: flex-start; gap: var(--sp-2); font-size: var(--fs-12); line-height: var(--lh-12); }
+.fh-ex-compare-hint > svg { flex: none; margin-top: 1px; color: var(--text-2); }
+
+/* the yearly chart */
+.fh-ex .ui-figure-title { color: var(--text); font-size: var(--fs-14); }
+.fh-ex .ui-figure-subtitle { color: var(--text-2); font-size: var(--fs-12); line-height: 1.45; }
+.fh-ex .ui-figure-source { color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex .ui-figure-table summary { color: var(--text-2); }
+.fh-ex-keys { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); margin-top: 6px; }
+.fh-ex-chart-note { display: block; margin-top: 4px; color: var(--text); font-weight: 600; }
+.fh-ex-key { display: inline-flex; align-items: center; gap: var(--sp-1); color: var(--text-2); font-size: var(--fs-12); }
+
+/* compare: the pinned places, the switch between counts and percent of each place's mean, and the chart */
+.fh-ex-compare { display: grid; gap: var(--sp-2); min-width: 0; }
+.fh-ex-compare-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--sp-2); }
+.fh-ex-compare-label { color: var(--text-2); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-ex-pins { display: contents; margin: 0; padding: 0; list-style: none; }
+.fh-ex-pin { display: inline-flex; align-items: center; gap: 2px; max-width: 100%; min-height: var(--ctl-sm); padding-left: var(--sp-3);
+  border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--surface-2); font-size: var(--fs-13); }
+.fh-ex-pin-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fh-ex .fh-ex-pin-x { min-width: 30px; min-height: 30px; color: var(--text-2); }
+.fh-ex .fh-ex-compare-clear { min-height: var(--ctl-sm); padding: 0 var(--sp-2); color: var(--text-2); font-size: var(--fs-13); }
+.fh-ex-compare .ui-segmented-options { width: 100%; }
+.fh-ex-compare .ui-segmented-option { flex: 1 1 0; }
+.fh-ex-cmp-keys { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fh-ex-cmp-key { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 var(--sp-2); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); background: transparent; color: var(--text); font: inherit; font-size: var(--fs-12); cursor: pointer; }
+/* a hidden line: its key struck through with a dashed edge and a faded swatch (the text keeps its contrast) */
+.fh-ex-cmp-key[aria-pressed="false"] { border-style: dashed; color: var(--text-2); text-decoration: line-through; }
+.fh-ex-cmp-key[aria-pressed="false"] > svg { opacity: 0.4; }
+.fh-ex-cmp-key:hover { border-color: var(--border-strong); }
+.fh-ex-cmp-key > span:not(.fh-ex-spin) { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* three colours for the pinned places (the place in the panel is drawn in ink), read by the chart from the root */
+:root, :root[data-theme="dark"] { --ex-cmp-1: #5ea3ff; --ex-cmp-2: #ff8a4c; --ex-cmp-3: #3fd19a; }
+:root[data-theme="light"] { --ex-cmp-1: #1f63c4; --ex-cmp-2: #d0481b; --ex-cmp-3: #0f8a5f; }
+
+/* the burning calendar */
+.fh-ex-cal-box { display: grid; gap: 10px; }
+.fh-ex-cal { display: grid; gap: var(--sp-3); }
+.fh-ex-cal-grid { min-width: 0; }
+.fh-ex-cal-svg { display: block; cursor: pointer; border-radius: var(--radius-sm); }
+.fh-ex-cal-svg:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.fh-ex-cal-label { fill: var(--text-2); font-size: var(--fs-11); font-family: var(--font-mono); }
+.fh-ex-cal-label-on { fill: var(--text); font-weight: 700; }
+.fh-ex-cal-hover { stroke: var(--text-2); stroke-width: 1.5; }
+.fh-ex-cal-cursor { stroke: var(--focus); stroke-width: 2; }
+.fh-ex-cal-selected { stroke: var(--text); stroke-width: 2; filter: drop-shadow(0 0 3px var(--accent)); }
+.fh-ex-cal-side { display: grid; gap: 10px; }
+.fh-ex-cal-readout { display: grid; gap: var(--sp-1); min-height: 76px; padding: 10px var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent); }
+.fh-ex-cal-month { color: var(--text); font-size: var(--fs-14); font-weight: 600; }
+.fh-ex-cal-value { color: var(--text); font-family: var(--font-mono); font-size: var(--fs-14); }
+.fh-ex-cal-state { color: var(--text-2); font-size: var(--fs-12); }
+
+/* drivers and outlook */
+.fh-ex-drivers { display: grid; gap: 10px; transition: opacity var(--t-med) var(--ease-out); }
+.fh-ex-busy { opacity: 0.55; }
+.fh-ex-dl { display: grid; gap: 0; margin: 0; }
+.fh-ex-dl > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); }
+.fh-ex-dl dt { color: var(--text-2); font-size: var(--fs-13); }
+.fh-ex-dl dd { margin: 0; color: var(--text); font-size: var(--fs-13); font-weight: 600; text-align: right; }
+.fh-ex-outlook { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.fh-ex-outlook-item { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 10px; padding: var(--sp-3);
+  border: 1px solid var(--border); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-2) 72%, transparent); }
+.fh-ex-outlook-month { color: var(--text); font-size: var(--fs-14); font-weight: 600; }
+.fh-ex-outlook-p { grid-row: span 2; color: var(--text); font-family: var(--font-mono); font-size: var(--fs-stat-s); font-weight: 600; text-align: right; }
+.fh-ex-outlook-what { color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-outlook-bar { grid-column: 1 / -1; position: relative; height: 8px; margin: 6px 0 2px; border-radius: var(--radius-pill); background: var(--surface-3); overflow: visible; }
+.fh-ex-outlook-fill { position: absolute; inset: 0 auto 0 0; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--ember-500), var(--accent));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent); transition: width var(--t-slow) var(--ease-out); }
+.fh-ex-outlook-normal { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text); }
+.fh-ex-outlook-normal-text { color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-outlook-item .ui-badge { justify-self: end; }
+
+/* downloads: the menu of the Download button (in a layer of its own, so it is never cut by the panel) and the data
+   files dialog */
+.fh-ex-menu { position: fixed; z-index: var(--z-modal); display: grid; gap: 2px; width: 300px; max-width: calc(100vw - var(--sp-4));
+  padding: 6px; box-shadow: var(--elev-3); transform-origin: top left; animation: fh-ex-menu-in var(--t-med) var(--ease-out); }
+.fh-ex-menu[data-up] { transform-origin: bottom left; }
+@keyframes fh-ex-menu-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+.fh-ex-menu-head { margin: 0; padding: 6px 10px var(--sp-1); overflow: hidden; color: var(--text-2); font-size: var(--fs-12); font-weight: 600;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; text-overflow: ellipsis; white-space: nowrap; }
+.fh-ex-menu-item { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--ctl-touch); padding: 6px 10px; border: 0;
+  border-radius: var(--radius-md); background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer;
+  animation: ui-rise var(--t-med) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 24ms);
+  transition: background-color var(--t-fast) var(--ease-out); }
+.fh-ex-menu-item:hover:not(:disabled), .fh-ex-menu-item:focus-visible { background: var(--surface-3); }
+.fh-ex-menu-item:focus-visible { outline-offset: -2px; }
+.fh-ex-menu-item:disabled { cursor: not-allowed; opacity: 0.55; }
+.fh-ex-menu-icon { display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: var(--radius-md);
+  background: var(--surface-2); color: var(--accent); box-shadow: inset 0 0 0 1px var(--border); }
+.fh-ex-menu-text { display: grid; gap: 1px; min-width: 0; }
+.fh-ex-menu-label { font-size: var(--fs-14); font-weight: 600; }
+.fh-ex-menu-hint { color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); }
+.fh-ex-files-dialog { width: min(560px, calc(100vw - var(--sp-8))); max-height: min(80vh, 760px); margin: auto; padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  overflow: auto; overscroll-behavior: contain; color: var(--text); }
+.fh-ex-files-dialog[open] { display: grid; gap: var(--sp-3); animation: ui-rise var(--t-med) var(--ease-out); }
+.fh-ex-files-dialog::backdrop { background: color-mix(in srgb, var(--bg) 62%, transparent); backdrop-filter: blur(2px); }
+.fh-ex-files-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.fh-ex-files-head h2 { margin: 0; font-size: var(--fs-16); font-weight: 650; }
+.fh-ex-lead { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.fh-ex-files { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.fh-ex-files li { display: grid; gap: 1px; padding: 6px var(--sp-2); border-radius: var(--radius-md); }
+.fh-ex-files li:hover { background: var(--surface-3); }
+.fh-ex-file { display: flex; align-items: center; gap: var(--sp-2); min-height: var(--ctl-sm); color: var(--text); font-size: var(--fs-13); text-decoration: none; }
+a.fh-ex-file:hover { color: var(--accent-strong); }
+:root[data-theme="light"] a.fh-ex-file:hover { color: var(--ember-700); }
+.fh-ex-file-size { margin-left: auto; color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-file svg { flex: none; color: var(--text-2); }
+.fh-ex-file-about { color: var(--text-2); font-size: var(--fs-12); line-height: 1.4; }
+
+/* the panel folded away */
+.fh-ex-expand { position: absolute; z-index: 12; top: var(--gap); left: var(--gap); display: inline-flex; align-items: center; gap: var(--sp-2);
+  max-width: 280px; min-height: var(--ctl-touch); padding: 6px 14px 6px 10px; color: var(--text); font: inherit; font-size: var(--fs-14); font-weight: 600;
+  cursor: pointer; animation: ui-rise var(--t-med) var(--ease-out); }
+.fh-ex-expand:hover { border-color: var(--border-strong); }
+.fh-ex-expand-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the panel's edge, to drag it wider or narrower (explorer/PanelHandle.tsx; 1024 px and wider): a 12 px strip over the
+   edge (44 px on touch screens) with a grip that shows on hover, on focus and while dragging. During a drag nothing in
+   the page answers the pointer but the handle, and nothing is selected. */
+.fh-ex-resize { position: absolute; z-index: 13; top: calc(var(--gap) + var(--sp-4)); bottom: calc(var(--gap) + var(--sp-4));
+  left: calc(var(--gap) + var(--panel-w) - 6px); width: 12px; display: grid; place-items: center; cursor: col-resize; touch-action: none;
+  border-radius: var(--radius-pill); outline: none; }
+.fh-ex-resize-grip { width: 4px; height: 44px; border-radius: var(--radius-pill); background: var(--border-strong); box-shadow: 0 0 0 1px var(--bg);
+  opacity: 0; transition: opacity var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), height var(--t-fast) var(--ease-out); }
+.fh-ex-resize::before { content: ""; position: absolute; top: 0; bottom: 0; left: 5px; width: 2px; border-radius: 1px; background: var(--accent);
+  opacity: 0; transition: opacity var(--t-fast) var(--ease-out); }
+.fh-ex-resize:hover .fh-ex-resize-grip, .fh-ex-resize:focus-visible .fh-ex-resize-grip, .fh-ex[data-resizing] .fh-ex-resize-grip { opacity: 1; }
+.fh-ex-resize:hover::before { opacity: 0.35; }
+.fh-ex-resize:focus-visible::before, .fh-ex[data-resizing] .fh-ex-resize::before { opacity: 0.8; }
+.fh-ex-resize:focus-visible .fh-ex-resize-grip, .fh-ex[data-resizing] .fh-ex-resize-grip { height: 56px; background: var(--accent); }
+.fh-ex-resize:focus-visible { box-shadow: 0 0 0 2px var(--focus); }
+.fh-ex[data-resizing] { cursor: col-resize; user-select: none; -webkit-user-select: none; }
+.fh-ex[data-resizing] :is(.fh-ex-panel, .fh-ex-stage, .fh-ex-dock) { pointer-events: none; }
+/* (the panel follows the pointer at once while dragged: no slide in) */
+.fh-ex[data-resizing] .fh-ex-panel, .fh-ex[data-resizing] .fh-ex-dock { animation: none; }
+@media (pointer: coarse) {
+  .fh-ex-resize { left: calc(var(--gap) + var(--panel-w) - 22px); width: 44px; }
+  .fh-ex-resize::before { left: 21px; }
+  .fh-ex-resize-grip { opacity: 0.7; }
+}
+@media (prefers-reduced-motion: reduce) { .fh-ex-resize-grip, .fh-ex-resize::before { transition: none; } }
+
+/* touch screens of any size (tablets with the side panel too): every control of the panel and of the place search
+   at least 44 px */
+@media (pointer: coarse) {
+  .fh-ex .fh-ex-tool, .fh-ex .fh-ex-compare-clear, .fh-ex-pin, .fh-ex-cmp-key, .fh-ex-tabs .ui-tab, .fh-ex .fh-picker-tools .ui-chip,
+  .fh-ex .fh-picker-row .ui-chip, .fh-ex .fh-picker .fh-search-input, .fh-ex .fh-picker .fh-field .fh-input, .fh-ex-file { min-height: var(--ctl-touch); }
+  .fh-ex .fh-ex-tool-icon { width: var(--ctl-touch); min-width: var(--ctl-touch); }
+  .fh-ex .fh-ex-pin-x, .fh-ex .fh-search-clear, .fh-ex-area-tools .ui-btn-icon { min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+  .fh-ex .fh-picker .fh-suggest-close { min-height: var(--ctl-touch); padding-inline: var(--sp-3); }
+  .fh-ex .fh-picker .fh-listbox .fh-option { min-height: var(--ctl-touch); }
+  /* the drawing tools above the box, as in the phone sheet: the list of places opens below and never hides them */
+  .fh-ex-panel .fh-picker-tools { order: -1; }
+}
+
+/* ---------------------------------------------------------------- the timeline dock (bottom; package explorer-map) */
+.fh-ex-dock { position: absolute; z-index: 11; left: calc(var(--panel-w) + var(--gap) * 2); right: var(--gap); bottom: var(--gap);
+  padding: 14px 14px var(--sp-2) var(--sp-3); animation: fh-ex-up var(--t-slow) var(--ease-out); container: fh-ex-dock / inline-size; }
+@keyframes fh-ex-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.fh-ex.is-collapsed .fh-ex-dock { left: var(--gap); }
+.fh-ex-dock-skeleton { padding: var(--sp-1) 0; }
+.fh-ex-dock-inner { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.fh-ex-dock-inner.is-busy .fh-ex-scrub-line, .fh-ex-dock-inner.is-busy .fh-ex-scrub path, .fh-ex-dock-inner.is-busy .fh-ex-scrub-bar { opacity: 0.5; }
+.fh-ex-player { display: flex; align-items: center; gap: var(--sp-1); flex: none; }
+.fh-ex-play { width: 42px; min-width: 42px; height: 42px; border-radius: var(--radius-pill); padding: 0; }
+.fh-ex-player .ui-btn-ghost { color: var(--text-2); }
+.fh-ex-player .ui-btn-ghost:hover { color: var(--text); }
+/* (a fixed width beside the chart: a hovered month with a longer value, or the "Preview" badge, must not make the chart
+   narrower, which redrew it at a new scale on every move of the pointer) */
+.fh-ex-month { display: grid; gap: 1px; width: 124px; min-width: 104px; flex: none; margin: 0 6px 0 var(--sp-1); }
+.fh-ex-month-code { color: var(--text); font-size: var(--fs-16); font-weight: 700; letter-spacing: var(--tracking-caps); white-space: nowrap; }
+.fh-ex-month-value { display: inline-flex; align-items: center; gap: 6px; min-width: 0; color: var(--text-2); font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fh-ex-month-badge { padding: 0 6px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-strong); font-family: var(--font-sans);
+  font-size: var(--fs-11); font-weight: 700; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-ex-speed .ui-segmented-option { min-height: 28px; padding: var(--sp-1) var(--sp-2); font-family: var(--font-mono); font-size: var(--fs-12); }
+.fh-ex-speed-cycle { display: none; }
+
+/* the trend map has no months: a note floats over the top of the dock, and the trend's years are lit on the chart */
+.fh-ex-trend-note { position: absolute; left: 0; bottom: calc(100% + var(--sp-2)); display: flex; align-items: center; gap: var(--sp-2);
+  max-width: min(560px, calc(100% - var(--ctl) - var(--sp-6))); padding: 6px 6px 6px var(--sp-3); border-radius: var(--radius-md);
+  color: var(--text); font-size: var(--fs-13); line-height: 1.35; box-shadow: var(--elev-2); animation: ui-rise var(--t-med) var(--ease-out); }
+.fh-ex-trend-note > svg { flex: none; color: var(--accent); }
+.fh-ex-trend-note > p { flex: 1; min-width: 0; }
+.fh-ex-trend-back { flex: none; min-height: var(--ctl-sm); padding: var(--sp-1) var(--sp-3); color: var(--accent-strong); font-weight: 600; }
+.fh-ex-dock-inner.is-trend .fh-ex-month-code { color: var(--text-2); }
+.fh-ex-scrub-band rect { fill: var(--accent-soft); }
+.fh-ex-scrub-band text { fill: var(--text-2); font-size: var(--fs-11); font-family: var(--font-sans); font-weight: 600; }
+
+.fh-ex-scrub-wrap { position: relative; flex: 1; min-width: 0; }
+.fh-ex-scrub { position: relative; height: 72px; border-radius: var(--radius-sm); cursor: pointer; touch-action: none; user-select: none; }
+.fh-ex-scrub:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fh-ex-scrub-svg { display: block; overflow: visible; }
+.fh-ex-scrub-base { stroke: var(--border-strong); stroke-width: 1; }
+.fh-ex-scrub-tick { stroke: var(--border-strong); stroke-width: 1; }
+.fh-ex-scrub-tick.is-minor { stroke: var(--border); }
+.fh-ex-scrub-year { fill: var(--text-2); font-size: var(--fs-11); font-family: var(--font-mono); font-weight: 600; }
+.fh-ex-scrub-mo { fill: var(--text-3); font-size: var(--fs-11); font-family: var(--font-mono); }
+.fh-ex-scrub-line { stroke: var(--accent); stroke-width: 1.4; stroke-linejoin: round; }
+.fh-ex-scrub-bar { fill: color-mix(in srgb, var(--accent) 55%, transparent); transition: fill var(--t-fast) var(--ease-out); }
+.fh-ex-scrub-bar.is-on { fill: var(--accent); }
+.fh-ex-scrub-mark { stroke: var(--text-2); stroke-width: 1; }
+.fh-ex-scrub-chosen { stroke: var(--text-2); stroke-width: 1.5; opacity: 0.7; }
+.fh-ex-scrub-hover { stroke: var(--text-2); stroke-width: 1; }
+.fh-ex-scrub-head { transition: transform var(--t-fast) var(--ease-out); }
+.fh-ex-scrub.is-moving .fh-ex-scrub-head { transition: none; }
+.fh-ex-scrub-head line { stroke: color-mix(in srgb, var(--text) 70%, transparent); stroke-width: 1; }
+.fh-ex-scrub-head circle { fill: var(--accent); stroke: var(--bg); stroke-width: 2; filter: drop-shadow(0 0 4px var(--accent)); }
+/* the brush: the whole record in a thin strip, the years in view lit */
+.fh-ex-scrub-strip { cursor: ew-resize; }
+.fh-ex-strip-track { fill: var(--surface-3); }
+.fh-ex-strip-fire { fill: color-mix(in srgb, var(--text-3) 60%, transparent); }
+.fh-ex-strip-win { fill: transparent; stroke: var(--border-strong); stroke-width: 1; transition: fill var(--t-fast) var(--ease-out); }
+.fh-ex-scrub-strip.is-zoomed .fh-ex-strip-win { fill: color-mix(in srgb, var(--accent) 22%, transparent); stroke: var(--accent); stroke-width: 1.2; cursor: grab; }
+.fh-ex-strip-head { stroke: var(--text); stroke-width: 1.5; }
+/* the range chip sits above the plot (whose top is 8 px down the chart), in the dock's top padding, so it never hides
+   the tallest bars or the playhead */
+.fh-ex-zoom-chip { position: absolute; z-index: 2; top: -12px; right: var(--sp-1); display: inline-flex; align-items: center; gap: var(--sp-1); height: 20px;
+  padding: 0 6px 0 var(--sp-2); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--radius-pill);
+  background: var(--material-regular); color: var(--text); font: inherit; font-size: var(--fs-12); cursor: pointer; box-shadow: var(--elev-1);
+  animation: ui-fade var(--t-fast) var(--ease-out); }
+.fh-ex-zoom-chip::after { content: ""; position: absolute; inset: -11px -4px; }   /* a 44 px target on touch screens */
+.fh-ex-zoom-chip svg { color: var(--text-2); }
+.fh-ex-zoom-chip:hover { border-color: var(--accent); }
+.fh-ex-scrub-readout { position: absolute; z-index: 3; bottom: calc(100% + var(--sp-2)); display: flex; justify-content: space-between; gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2); border-radius: var(--radius-sm); color: var(--text); font-size: var(--fs-12); pointer-events: none; white-space: nowrap; }
+/* zoomed: the readout rises clear of the range chip */
+.fh-ex-scrub-wrap:has(> .fh-ex-zoom-chip) .fh-ex-scrub-readout { bottom: calc(100% + var(--sp-4)); }
+
+/* ---------------------------------------------------------------- the area picker */
+.fh-picker { display: grid; gap: 10px; min-width: 0; }
+.fh-picker-row { display: flex; gap: var(--sp-2); }
+.fh-picker-row .ui-chip { min-height: 42px; flex: none; border-radius: var(--radius-md); }
+.fh-search { position: relative; flex: 1; min-width: 0; }
+.fh-search-icon { position: absolute; top: 50%; left: var(--sp-3); transform: translateY(-50%); color: var(--text-2); pointer-events: none; }
+.fh-picker .fh-search-input { width: 100%; min-height: 42px; padding: var(--sp-2) var(--sp-10) var(--sp-2) 38px; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); font-size: var(--fs-15);
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out); }
+.fh-picker .fh-search-input::placeholder { color: var(--text-2); }
+.fh-picker .fh-search-input:hover { border-color: var(--text-3); }
+/* the shared focus ring (theme.css :focus-visible), with the border lit */
+.fh-picker .fh-search-input:focus { border-color: var(--accent); }
+.fh-picker .fh-search-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fh-search-clear { position: absolute; top: 50%; right: var(--sp-1); transform: translateY(-50%); min-width: 34px; min-height: 34px; color: var(--text-2); }
+/* the list of places: a head (what it holds, and Close: the way out on a touch screen) over the options */
+.fh-picker .fh-suggest { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30; display: flex; flex-direction: column;
+  /* (--fh-suggest-room: the room from its top to the bottom of the visible screen, set by AreaPicker while it is open) */
+  max-height: min(400px, 56vh, var(--fh-suggest-room, 400px)); overflow: hidden; border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+  background: var(--surface); box-shadow: var(--elev-2); animation: ui-rise var(--t-fast) var(--ease-out); }
+.fh-picker .fh-suggest[hidden] { display: none; }
+.fh-picker .fh-suggest-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) 14px; border-bottom: 1px solid var(--border); }
+.fh-picker .fh-suggest-what { min-width: 0; overflow: hidden; color: var(--text-2); font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12);
+  letter-spacing: var(--tracking-caps); text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.fh-picker .fh-suggest-close { flex: none; min-height: var(--ctl-sm); gap: 6px; padding: 0 10px; color: var(--text-2); font-size: var(--fs-13); }
+.fh-picker .fh-listbox { position: static; flex: 1 1 auto; min-height: 0; max-height: none; margin: 0; padding: 6px; overflow-y: auto;
+  overscroll-behavior: contain; list-style: none; border: 0; border-radius: 0; box-shadow: none; }
+.fh-picker .fh-option { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-2) 10px; border-radius: var(--radius-md);
+  color: var(--text); font-size: var(--fs-14); cursor: pointer; }
+.fh-picker .fh-option:hover { background: var(--surface-3); }
+.fh-picker .fh-option[aria-selected="true"] { background: var(--accent-soft); color: var(--text); box-shadow: var(--ring-accent); }
+.fh-option-name { min-width: 0; overflow-wrap: anywhere; }
+.fh-picker .fh-option-kind { flex: none; color: var(--text-2); font-size: var(--fs-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-picker .fh-search-note { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30; padding: 10px var(--sp-3);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--glass-strong); color: var(--text-2); font-size: var(--fs-14); }
+.fh-picker-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+/* (11 px, not the 12 px step: the three tools must share one row in the 340 px panel) */
+.fh-picker-tools .ui-chip { min-height: var(--ctl-sm); padding: var(--sp-1) 11px; }
+.fh-picker-tools .ui-chip svg { color: var(--text-2); }
+.fh-picker-tools .ui-chip[aria-pressed="true"] svg { color: var(--accent); }
+.fh-picker-tools .ui-chip[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.fh-picker .fh-circle-form { display: grid; gap: 10px; padding: var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent); animation: ui-rise var(--t-med) var(--ease-out); }
+.fh-picker .fh-form-help { margin: 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-circle-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+.fh-picker .fh-field { display: grid; gap: var(--sp-1); min-width: 0; }
+.fh-picker .fh-field label { color: var(--text-2); font-size: var(--fs-12); font-weight: 600; }
+.fh-picker .fh-field .fh-input { width: 100%; min-height: 38px; padding: 6px var(--sp-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+  background: var(--surface); color: var(--text); font-size: var(--fs-14); }
+/* the shared focus ring (theme.css :focus-visible), with the border lit */
+.fh-picker .fh-field .fh-input:focus { border-color: var(--accent); }
+.fh-picker .fh-field .fh-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fh-picker .fh-field .fh-input[aria-invalid="true"] { border-color: var(--critical); }
+.fh-circle-actions { display: flex; gap: var(--sp-2); }
+.fh-picker .fh-form-errors { display: grid; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; font-size: var(--fs-13); color: var(--text); }
+.fh-picker .fh-form-errors:empty { display: none; }
+.fh-picker .fh-form-errors li { display: flex; align-items: center; gap: 6px; }
+.fh-picker .fh-form-errors svg { width: 16px; height: 16px; flex: none; color: var(--critical); }
+
+/* a failure before anything could start */
+.fh-ex-fail { display: grid; gap: var(--sp-2); justify-items: start; max-width: 640px; margin: var(--sp-12) auto; padding: var(--sp-5) 22px; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg); background: var(--surface); }
+.fh-ex-fail-title { font-weight: 700; }
+
+/* ---------------------------------------------------------------- smaller screens */
+@media (max-width: 1100px) {
+  .fh-ex { --panel-w: 340px; }
+}
+/* the timeline: when the chart beside the player would be under about 420 px (a dock under 780 px: laptop windows up
+   to about 1240 px, iPads, phones), the player takes one row and the chart the full width under it */
+@container fh-ex-dock (max-width: 780px) {
+  .fh-ex-dock-inner { flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+  .fh-ex-player { width: 100%; }
+  .fh-ex-month { width: auto; margin-right: auto; }
+  .fh-ex-scrub-wrap { flex-basis: 100%; }
+}
+
+@media (max-width: 768px) {
+  /* the map fills the screen under the header and the panel is a bottom sheet over it (the sheet's rules: package
+     explorer-panel, at the end of this file); the page itself does not scroll */
+  .fh-ex { --gap: 10px; height: calc(100dvh - var(--fh-ex-top)); min-height: 0; overflow: hidden; }
+  .fh-ex-stage { position: absolute; inset: 0; }
+  /* (in the sheet the dock is one more row: no layer of its own, so the place search's list above it opens over it) */
+  .fh-ex-dock { position: relative; z-index: auto; left: auto; right: auto; bottom: auto; margin: 0; padding: var(--sp-2) 0; }
+  .fh-ex-collapse { display: none; }
+  /* the map: the legend chip top left, the settings pill top right, zoom and attribution bottom right; a card may use
+     the map's whole height, and the zoom rail fades while one is open */
+  .fh-ex { --ex-free-left: var(--gap); }
+  .fh-ex .maplibregl-ctrl-bottom-right { right: calc(var(--gap) - 10px); bottom: calc(var(--ex-sheet-h, 0px) + var(--gap) - 10px); }
+  /* (36 px above the sheet: room for the attribution's 44 px press between the rail and the sheet) */
+  .fh-ex-zoom { bottom: calc(var(--ex-sheet-h, 0px) + var(--gap) + 36px); }
+  /* (the attribution open takes two lines here: the rail steps up so neither covers the other) */
+  .fh-ex-stage:has(.maplibregl-compact-show) .fh-ex-zoom { bottom: calc(var(--ex-sheet-h, 0px) + var(--gap) + 56px); }
+  .fh-ex-stage:has(.fh-ex-controls[data-open="true"]) .fh-ex-zoom { opacity: 0; visibility: hidden; pointer-events: none; }
+  .fh-ex-controls { left: var(--gap); --ex-card-keep: var(--ex-sheet-h, 0px); }
+  .fh-ex-controls-bar { justify-content: space-between; }
+  .fh-ex-card { width: min(320px, 100%); }
+  .fh-ex-legend-card { left: 0; right: auto; transform-origin: top left; }
+  .fh-ex-dock-inner { flex-wrap: wrap; gap: var(--sp-2) 10px; }
+  .fh-ex-player { width: 100%; }
+  .fh-ex-month { width: auto; min-width: 0; margin-right: auto; }
+  .fh-ex-speed { display: none; }
+  .fh-ex-speed-cycle { display: inline-flex; min-width: 52px; border: 1px solid var(--border-strong); font-size: var(--fs-14); }
+  .fh-ex-scrub-wrap { flex-basis: 100%; }
+  /* the dock sits in the sheet here: the trend note goes inside it, first */
+  .fh-ex-trend-note { position: static; order: -1; width: 100%; max-width: none; box-shadow: none; animation: none; }
+  .fh-ex .ui-btn, .fh-ex .ui-chip, .fh-ex .ui-tab, .fh-ex .ui-segmented-option, .fh-picker .fh-option { min-height: 44px; }
+  .fh-ex .ui-btn-icon { min-width: 44px; }
+  .fh-ex-play { width: 44px; height: 44px; }
+  .fh-ex-zoom .ui-btn { min-height: var(--ctl-touch); min-width: var(--ctl-touch); }
+  .fh-ex-tip { display: none; }
+}
+/* small phones: the legend chip shows only its colours (its name stays in its label and tooltip) */
+@media (max-width: 400px) {
+  .fh-ex-legend-chip-text { display: none; }
+  /* the timeline's month stays on one line beside the player's buttons */
+  .fh-ex-month { margin-inline: 2px 0; }
+  .fh-ex-month-code { font-size: var(--fs-14); }
+}
+
+/* ---------------------------------------------------------------- the phone sheet (package explorer-panel)
+   The panel as a bottom sheet over the map with three heights (Sheet.tsx sets the height): small shows the handle,
+   the place and its month; half adds the actions, the timeline, the numbers and the tabs; full is the whole panel.
+   It scrolls inside, with the tabs stuck to its top; the zoom rail and the attribution ride above it. */
+@media (max-width: 768px) {
+  .fh-ex .fh-ex-sheet { position: absolute; z-index: 12; inset: auto 0 0 0; width: auto; max-height: 100%; margin: 0;
+    display: flex; flex-direction: column; overflow: hidden; border-bottom: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: var(--elev-3); transition: height var(--t-slow) var(--ease-out); animation: fh-ex-sheet-in var(--t-slow) var(--ease-out); }
+  .fh-ex .fh-ex-sheet.is-dragging { transition: none; }
+  @keyframes fh-ex-sheet-in { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .fh-ex-sheet-top { flex: none; display: grid; gap: 6px; padding: 0 var(--sp-4) var(--sp-3); touch-action: none; user-select: none; -webkit-user-select: none; }
+  .fh-ex-grip-row { display: flex; justify-content: center; margin-bottom: -6px; }
+  /* the handle: a 36 by 5 grabber in a 44 px button */
+  .fh-ex-grip { position: relative; display: grid; place-items: center; width: 88px; height: var(--ctl-touch); padding: 0; border: 0;
+    background: none; cursor: grab; touch-action: none; }
+  .fh-ex-grip > span { width: 36px; height: 5px; border-radius: 3px; background: var(--border-strong); transition: background-color var(--t-fast) var(--ease-out), width var(--t-fast) var(--ease-out); }
+  .fh-ex-grip:hover > span, .fh-ex-sheet.is-dragging .fh-ex-grip > span { width: 44px; background: var(--text-3); }
+  .fh-ex-grip:focus-visible { outline-offset: -6px; border-radius: var(--radius-md); }
+  .fh-ex-sheet .fh-ex-area { align-items: center; }
+  .fh-ex-sheet .fh-ex-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    font-size: var(--fs-16); line-height: var(--lh-16); }
+  .fh-ex-sheet .fh-ex-area-tools { gap: var(--sp-1); margin: 0; }
+  .fh-ex-sheet-play { border-radius: var(--radius-pill); }
+  /* the timeline has its own play button once the sheet is taller */
+  .fh-ex-sheet:not([data-size="peek"]) .fh-ex-sheet-play { display: none; }
+  .fh-ex-sheet .fh-ex-panel-scroll { flex: 1; min-height: 0; padding: var(--sp-1) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--border); }
+  .fh-ex-sheet[data-size="peek"] .fh-ex-panel-scroll { overflow: hidden; }
+  .fh-ex-sheet .fh-ex-panel-top { margin: 0 calc(var(--sp-4) * -1); padding: var(--sp-2) var(--sp-4) var(--sp-3); animation: ui-rise var(--t-med) var(--ease-out); }
+  .fh-ex-sheet .fh-ex-tabbar { top: calc(var(--sp-1) * -1); }
+  .fh-ex-sheet .fh-ex-dock { border: 0; border-radius: 0; background: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; animation: none; }
+  .fh-ex-sheet .fh-ex-tool, .fh-ex-sheet .fh-ex-cmp-key, .fh-ex-sheet .fh-ex-pin { min-height: var(--ctl-touch); }
+  /* the actions share one row at any width: two halves and the link */
+  .fh-ex-sheet .fh-ex-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+  .fh-ex-sheet .fh-ex-actions .fh-ex-tool { justify-content: center; }
+  .fh-ex .fh-ex-sheet .fh-ex-tool-icon { width: var(--ctl-touch); min-width: var(--ctl-touch); }
+  /* tighter rows, so half height shows the numbers, the timeline, the actions and the tabs on a 390 by 844 phone */
+  .fh-ex-sheet .fh-ex-panel-scroll { gap: var(--sp-2); }
+  .fh-ex-sheet .fh-ex-sheet-top { padding-bottom: var(--sp-2); }
+  .fh-ex-sheet .fh-ex-dock { padding-block: var(--sp-1); }
+  /* the month's line belongs to the small sheet; taller, the strip of numbers shows the same and more */
+  .fh-ex-sheet:not([data-size="peek"]) .fh-ex-kpi-line { display: none; }
+  .fh-ex-sheet[data-size="peek"] .fh-ex-sheet-top { cursor: pointer; }
+  /* the place search in the sheet: the drawing tools above the box, so its list of places never hides them */
+  .fh-ex-sheet .fh-picker { display: flex; flex-direction: column; }
+  .fh-ex-sheet .fh-picker-tools { order: -1; }
+  /* the full sheet covers the map: its rail, attribution and top bar step aside (only slivers of them would show) */
+  .fh-ex[data-sheet="full"] .fh-ex-zoom, .fh-ex[data-sheet="full"] .maplibregl-ctrl-bottom-right,
+  .fh-ex[data-sheet="full"] .fh-ex-controls { opacity: 0; visibility: hidden; pointer-events: none; }
+  .fh-ex-menu { width: min(320px, calc(100vw - var(--sp-4))); }
+}
+/* small phones: the Download button drops its chevron to keep the actions on one row, and the rows sit closer so
+   half height shows the numbers and the whole timeline */
+@media (max-width: 360px) {
+  .fh-ex-sheet .fh-ex-tool-chev { display: none; }
+  .fh-ex .fh-ex-sheet .fh-ex-tool { padding: 0 var(--sp-2); }
+  .fh-ex-sheet .fh-ex-panel-scroll { padding-top: 0; }
+  .fh-ex-sheet .fh-ex-tabbar { top: 0; }
+  .fh-ex-sheet .fh-ex-dock { padding-block: 0; }
+}
+/* the map is the page on every screen: no footer while the Explorer is shown */
+@media (max-width: 768px) {
+  .fh-app:has(> .fh-main > div:not([hidden]) > .fh-ex) > .fh-footer { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-ex-scrub-head, .fh-ex-body, .fh-ex-outlook-fill { transition: none; }
+  .fh-ex-panel, .fh-ex-dock { animation: none; }
+  .fh-ex .fh-ex-sheet, .fh-ex-tool-chev, .fh-ex-grip > span { transition: none; }
+  .fh-ex .fh-ex-sheet, .fh-ex-tabpanel[data-from], .fh-ex-tabpanel, .fh-ex-menu, .fh-ex-menu-item, .fh-ex-files-dialog[open],
+  .fh-ex-sheet .fh-ex-panel-top, .fh-ex-body.is-stale .fh-ex-kpis::after { animation: none; }
+  .fh-ex-pulse, .fh-ex-reticle { display: none; }
+  .fh-ex-map-status, .fh-ex-trend-note, .fh-ex-trend-chip, .fh-ex-zoom-chip, .fh-ex-draw { animation: none; }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+   The burning calendar at full size (explorer/CalendarDialog.tsx): the whole window, boxes sized to fit it */
+.fh-calf { position: fixed; inset: 0; width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0;
+  border: 0; border-radius: 0; color: var(--text); overflow: hidden; overscroll-behavior: contain; }
+.fh-calf::backdrop { background: color-mix(in srgb, var(--bg) 70%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .fh-calf[open] { animation: fh-calf-in var(--t-med) var(--ease-out); }
+  @keyframes fh-calf-in { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
+}
+.fh-calf-body { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--sp-2); height: 100%;
+  padding: var(--sp-3) var(--sp-4) var(--sp-3); }
+.fh-calf[data-wide] .fh-calf-body { flex-direction: row; gap: var(--sp-6); padding: var(--sp-4) var(--sp-6); }
+.fh-calf-main { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; }
+.fh-calf-gridbox { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+.fh-calf-gridbox[data-scrolls] { overflow-y: auto; align-items: flex-start; }
+.fh-calf-gridbox > .ui-skeleton { width: 100%; }
+.fh-calf-side { flex: none; display: flex; flex-direction: column; gap: var(--sp-4); min-height: 0; overflow-y: auto; }
+.fh-calf-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+.fh-calf-titles { min-width: 0; }
+.fh-calf-title { margin: 0; font-size: var(--fs-20); line-height: var(--lh-20, 1.3); font-weight: 650; text-wrap: balance; }
+.fh-calf-sub { margin: 2px 0 0; color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.fh-calf-close { flex: none; }
+.fh-calf-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.fh-calf-tools .ui-segmented { flex: 0 1 auto; }
+.fh-calf-download { gap: var(--sp-2); }
+.fh-calf-readout { display: grid; align-content: start; gap: 4px; min-height: 92px; }
+.fh-calf-month { margin: 0; color: var(--text-2); font-size: var(--fs-13); font-weight: 600; }
+.fh-calf-value { margin: 0; font-size: var(--fs-20); font-weight: 650; font-variant-numeric: tabular-nums; }
+.fh-calf-notes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--sp-3); }
+.fh-calf-readout .ui-note { margin: 0; }
+.fh-calf-legend { display: grid; gap: var(--sp-2); }
+.fh-calf-legend .ui-note { margin: 0; }
+/* the grid: years in rows, months in columns, every part placed (CalendarDialog sets the tracks) */
+.fh-calf-grid { position: relative; display: grid; align-content: center; }
+.fh-calf-row { display: contents; }
+.fh-calf-mlabel, .fh-calf-ylabel { display: flex; align-items: center; justify-content: center; color: var(--text-2);
+  font-family: var(--font-mono); font-size: var(--fs-12); font-variant-numeric: tabular-nums; line-height: 1; user-select: none; }
+.fh-calf-ylabel { justify-content: flex-end; padding-right: 6px; }
+.fh-calf-ylabel-end { justify-content: flex-start; padding: 0 0 0 6px; }
+.fh-calf-ylabel.is-on { color: var(--text); font-weight: 700; }
+.fh-calf-mlabel.is-critical { color: var(--text); font-weight: 700; }
+.fh-calf-cell { position: relative; border-radius: 3px; cursor: pointer; outline: none; }
+.fh-calf-cell:hover { box-shadow: inset 0 0 0 1.5px var(--text); }
+.fh-calf-cell.is-nodata { cursor: default;
+  background: repeating-linear-gradient(45deg, var(--surface-1) 0 2px, var(--baseline) 2px 3.6px); }
+.fh-calf-cell.is-modelled::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: repeating-linear-gradient(-45deg, transparent 0 2.4px, color-mix(in srgb, var(--text) 55%, transparent) 2.4px 4px); }
+.fh-calf-cell.is-selected { box-shadow: 0 0 0 2px var(--accent); z-index: 1; }
+.fh-calf-cell:focus-visible { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--focus); z-index: 2; }
+.fh-calf-crit { pointer-events: none; margin: -3px; border: 1.6px solid var(--text); border-radius: 6px; opacity: 0.85; z-index: 3; }
+/* narrow windows: the words stacked over and under the boxes, the readout one fixed block so the boxes never move */
+.fh-calf:not([data-wide]) .fh-calf-head { align-items: center; }
+.fh-calf:not([data-wide]) .fh-calf-title { font-size: var(--fs-16); line-height: var(--lh-16); }
+.fh-calf:not([data-wide]) .fh-calf-readout { min-height: 0; height: 44px; overflow: hidden; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 2px var(--sp-3); align-content: flex-start; }
+.fh-calf:not([data-wide]) .fh-calf-value { font-size: var(--fs-16); }
+.fh-calf:not([data-wide]) .fh-calf-readout > .ui-note:last-child { display: none; }
+@media (max-width: 480px) {
+  .fh-calf-body { padding: var(--sp-2) var(--sp-3); gap: 6px; }
+  .fh-calf-sub { display: none; }
+  .fh-calf-tools .ui-segmented-option { padding-inline: 10px; }
+  .fh-calf-download span { display: none; }
+  .fh-calf-mlabel, .fh-calf-ylabel { font-size: var(--fs-11, 11px); }
+  .fh-calf-help { display: none; }
+}
+@media (pointer: coarse) {
+  .fh-calf-tools .ui-segmented-option, .fh-calf-download, .fh-calf-close { min-height: var(--ctl-touch); }
+  .fh-calf-close, .fh-calf-download { min-width: var(--ctl-touch); }
+}
+/* the button that opens it, beside the calendar's title */
+.fh-ex-cal-titlebar { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-2); }
+.fh-ex-cal-titlebar .ui-figure-title { margin: 0; }
+.fh-ex-cal-expand { flex: none; }
+.fh-ex-little { padding: 6px var(--sp-2); border-left: 2px solid var(--warning); background: color-mix(in srgb, var(--warning) 8%, transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--text-2); }
+@media (max-width: 480px) and (max-height: 700px) {
+  .fh-calf:not([data-wide]) .fh-calf-title { font-size: var(--fs-15); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden; }
+  .fh-calf:not([data-wide]) .fh-calf-readout { height: 22px; }
+  .fh-calf:not([data-wide]) .fh-calf-readout .fh-calf-notes { display: none; }
+  .fh-calf-legend { gap: 4px; }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+   Package A: the map with the keyboard focus (a ring and a hint of its keys, WCAG 2.4.7), the legend chip's range on
+   phones, and the hotspot dots' notes */
+.fh-ex-map:has(canvas:focus-visible)::after { content: ""; position: absolute; inset: 0; z-index: var(--ex-z-map-ui); pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--focus); }
+.fh-ex-map-keys { position: absolute; z-index: var(--ex-z-map-ui); left: 50%; bottom: calc(var(--fh-ex-dock-h, 104px) + var(--gap) + 12px);
+  transform: translateX(-50%); margin: 0; padding: 6px var(--sp-3); border-radius: var(--radius-pill); color: var(--text);
+  font-size: var(--fs-13); white-space: nowrap; pointer-events: none; }
+.fh-ex-legend-chip-range { display: none; color: var(--text); font-size: var(--fs-12); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 768px) {
+  .fh-ex-legend-chip-range { display: inline; }
+  .fh-ex-map-keys { bottom: calc(var(--ex-sheet-h, 0px) + var(--gap) + 12px); }
+}
+.fh-ex-drivers-chip { justify-self: start; height: auto; min-height: var(--ctl-sm); padding-block: 6px; white-space: normal; text-align: left; }
+.fh-ex-dl > div[data-latest] dt { color: var(--text-2); }
+.fh-ex-outlook-item.is-off { display: block; padding-block: 10px; background: transparent; border-color: color-mix(in srgb, var(--border) 70%, transparent); }
+.fh-ex-outlook-off { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.fh-ex-outlook-for { margin: 0 0 var(--sp-2); color: var(--text); font-size: var(--fs-13); font-weight: 600; }
+.fh-ex-dots-chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px var(--sp-2); margin: 0; padding: 6px var(--sp-3);
+  border-radius: var(--radius-pill); color: var(--text); font-size: var(--fs-12); pointer-events: auto; }
+.fh-ex-dots-swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--ember-700); box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 2.5px var(--ember-500); }
+.fh-ex-dots-cap { color: var(--text-2); }
+.fh-ex-legend-dots { display: flex; align-items: center; gap: var(--sp-2); margin: 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-ex-firms { display: inline-flex; align-items: center; gap: 6px; min-height: var(--ctl-sm); color: var(--accent-strong, var(--accent));
+  font-size: var(--fs-13); font-weight: 600; text-decoration: none; }
+.fh-ex-firms:hover { text-decoration: underline; }
+:root[data-theme="light"] .fh-ex-firms { color: var(--ember-700); }
+@media (pointer: coarse) { .fh-ex-firms { min-height: var(--ctl-touch); } }
+
+/* the card of a first visit (explorer/Welcome.tsx), at the top of the panel */
+.fh-ex-welcome { display: grid; gap: var(--sp-2); padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-2) 80%, transparent); }
+@media (prefers-reduced-motion: no-preference) { .fh-ex-welcome { animation: ui-rise var(--t-med) var(--ease-out); } }
+.fh-ex-welcome-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-2); }
+.fh-ex-welcome-title { margin: 2px 0 0; color: var(--text); font-size: var(--fs-15); line-height: 1.35; font-weight: 650; }
+.fh-ex-welcome-close { flex: none; margin: -6px -6px 0 0; color: var(--text-2); }
+.fh-ex-welcome-lead { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.fh-ex-welcome-steps { display: flex; flex-wrap: wrap; gap: 6px var(--sp-3); margin: 0; padding: 0; list-style: none; color: var(--text); font-size: var(--fs-13); }
+.fh-ex-welcome-steps li { display: inline-flex; align-items: center; gap: 6px; }
+.fh-ex-welcome-n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
+  color: var(--on-accent, #160a03); font-size: var(--fs-12); font-weight: 700; }
+.fh-ex-welcome-start { margin: 4px 0 0; color: var(--text-2); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-ex-welcome-stories { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.fh-ex-welcome-story { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); min-height: var(--ctl-sm);
+  padding: 6px var(--sp-2) 6px var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text);
+  font-size: var(--fs-13); font-weight: 550; text-decoration: none; background: var(--surface-1); transition: border-color var(--t-fast), background var(--t-fast); }
+.fh-ex-welcome-story:hover { border-color: var(--accent); background: var(--surface-3); }
+.fh-ex-welcome-story svg { flex: none; color: var(--accent); }
+@media (pointer: coarse) { .fh-ex-welcome-story { min-height: var(--ctl-touch); } }
+
+/* touch screens: the player's speeds are 44 by 44 px */
+@media (pointer: coarse) {
+  .fh-ex-speed .ui-segmented-option { min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+}
+/* the toasts ride above the timeline dock (and the phone sheet) while the Explorer is shown (Explorer sets the lift) */
+html .ui-toasts { bottom: calc(var(--sp-5) + var(--fh-toast-lift, 0px)); }
+@media (max-width: 768px) {
+  html .ui-toasts { bottom: calc(var(--sp-4) + env(safe-area-inset-bottom, 0px) + var(--fh-toast-lift, 0px)); }
+}
+/* the top bar never runs past the map: the chip gives way first */
+.fh-ex-controls-bar > .fh-ex-legend-chip { min-width: 0; flex: 0 1 auto; overflow: hidden; }

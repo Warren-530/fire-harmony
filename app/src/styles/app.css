@@ -1,0 +1,598 @@
+/* Fire Harmony app shell: the header, the page menu, the footer, and the base rules. Colours from theme.css, sizes from
+   the scale in tokens.css. Classes start with fh- so they do not clash with MapLibre, deck.gl or Observable Plot. */
+
+/* Inter from public/fonts. Root paths work from any built CSS file, so these rules replace the relative ones
+   in tokens.css (the last matching @font-face rule wins). */
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Regular.woff2") format("woff2"), url("/fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Medium.woff2") format("woff2"), url("/fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-SemiBold.woff2") format("woff2"), url("/fonts/Inter-SemiBold.ttf") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Bold.woff2") format("woff2"), url("/fonts/Inter-Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--fs-15);
+  line-height: var(--lh-15);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+[hidden] { display: none !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- shell */
+
+.fh-app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.fh-skip {
+  position: absolute;
+  left: var(--sp-3);
+  top: -60px;
+  z-index: calc(var(--z-header) + 1);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-md);
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+.fh-skip:focus { top: var(--sp-3); }
+
+/* Header: the brand, the five pages, search, the data month and the theme. 56 px, sticky, frosted, with a soft
+   shadow once the page has scrolled. On phones and tablets (880 px and less) it is one row with a page menu, and it
+   slides away while you read down the page and comes back as soon as you scroll up (App.tsx sets
+   html[data-header-hidden]). The sticky bars under it (Methods and Data contents, the dashboard sections, the
+   Explorer's panel tabs) follow it once they are stuck. */
+html[data-header-hidden] { --fh-header-shift: calc(-1 * var(--fh-header-h)); }
+.fh-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  -webkit-backdrop-filter: saturate(1.6) blur(12px);
+  backdrop-filter: saturate(1.6) blur(12px);
+  transition: transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.fh-header[data-scrolled] { box-shadow: var(--elev-1); }
+html[data-header-hidden] .fh-header { transform: translateY(var(--fh-header-shift)); box-shadow: none; }
+/* The bars stick at the header's lower edge (--fh-header-visible-h: its height, or 0 while it is away), so only a bar
+   that is already stuck moves with it; a bar still in the flow of the page stays where it is. The Explorer's panel
+   tabs do the same where the page scrolls (768 px and less). */
+@media (max-width: 880px) {
+  html :is(.fh-doc-toc, .db-nav) { top: var(--fh-header-visible-h); transition: top var(--t-med) var(--ease-out); }
+}
+@media (max-width: 768px) {
+  html .fh-ex-tabs { top: var(--fh-header-visible-h); transition: top var(--t-med) var(--ease-out); }
+}
+html[data-header-instant] :is(.fh-header, .fh-doc-toc, .db-nav, .fh-ex-tabs) { transition: none; }
+/* Phones held sideways (the header is 48 px there): the pinned bars are compact too, 52 px at most, with 36 px chips
+   and buttons, so the short screen is left to the page. (Part of the header contract; the page files own the rest.) */
+@media (max-width: 880px) and (max-height: 500px) {
+  html .fh-doc-toc { padding-top: var(--sp-1); }
+  html .fh-doc-toc-list { padding-bottom: var(--sp-1); }
+  html .db-nav { padding-top: var(--sp-1); }
+  html .db-nav-inner { padding-block: var(--sp-1); }
+  html .db-nav .db-nav-chip, html .db-nav .db-nav-tool { min-height: var(--ctl); }
+  html .db-nav .db-nav-tool { min-width: var(--ctl); }
+}
+
+.fh-header-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  width: 100%;
+  max-width: 1328px;
+  height: calc(var(--fh-header-h) - 1px);
+  margin: 0 auto;
+  padding: 0 var(--sp-6);
+}
+
+.fh-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--ctl-touch);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-size: var(--fs-16);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fh-brand-mark { width: 28px; height: 28px; flex: none; transition: transform var(--t-slow) var(--ease-out); }
+.fh-brand:hover .fh-brand-mark { transform: rotate(-8deg) scale(1.06); }
+/* The brand and, on phones and tablets, the open page under its name. Both sit in one grid cell, so the page line
+   takes no room of its own and the link keeps its 44 px height; the line rises in when the page changes. */
+.fh-brand-wrap { --fh-mark: 28px; --fh-brand-gap: var(--sp-3); display: grid; flex: none; min-width: 0; }
+.fh-brand-wrap > * { grid-area: 1 / 1; }
+.fh-brand-page { display: none; }
+@media (max-width: 880px) {
+  .fh-brand-wrap .fh-brand-name { translate: 0 -7px; }
+  .fh-brand-page {
+    display: block; align-self: center; margin-left: calc(var(--fh-mark) + var(--fh-brand-gap)); translate: 0 10px;
+    color: var(--text-2); font-size: var(--fs-12); font-weight: 500; line-height: var(--lh-12); white-space: nowrap; pointer-events: none;
+    animation: fh-page-name-in var(--t-med) var(--ease-out);
+  }
+}
+@keyframes fh-page-name-in { from { opacity: 0; translate: 0 14px; } }
+.fh-mark-hex { fill: var(--accent); }
+.fh-mark-flame { fill: #fff3e4; }
+
+/* The page links: one line each, a soft pill that slides under the pointer from link to link, and an accent line at
+   the header's bottom edge under the open page, which slides to the next page (CSS anchor positioning). */
+.fh-nav { position: relative; align-self: stretch; display: flex; align-items: center; min-width: 0; }
+.fh-nav ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.fh-nav li { display: flex; }
+.fh-nav a {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: var(--ctl);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  font-size: var(--fs-14);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out);
+}
+.fh-nav a:active { transform: scale(0.97); transition-duration: var(--t-press); }
+/* The label reserves the width of its bold form, so the links never shift when one becomes the open page. */
+.fh-nav-label { display: inline-grid; }
+.fh-nav-label::after { content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 600; }
+.fh-nav-icon { display: inline-flex; opacity: 0.6; transition: opacity var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.fh-nav a:hover { color: var(--text); }
+.fh-nav a:hover .fh-nav-icon { opacity: 0.9; }
+.fh-nav a[aria-current="page"] { color: var(--text); font-weight: 600; }
+.fh-nav a[aria-current="page"] .fh-nav-icon { opacity: 1; color: var(--accent); }
+.fh-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  right: var(--sp-3);
+  bottom: calc((var(--ctl) - var(--fh-header-h)) / 2);
+  left: var(--sp-3);
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
+  box-shadow: var(--glow-accent);
+}
+@supports not (anchor-name: --a) { .fh-nav a:hover { background: color-mix(in srgb, var(--text) 7%, transparent); } }
+@supports (anchor-name: --a) {
+  .fh-nav { anchor-scope: --fh-nav-on, --fh-nav-hover; }
+  .fh-nav a[aria-current="page"] { anchor-name: --fh-nav-on; }
+  .fh-nav a:hover { anchor-name: --fh-nav-hover; }
+  .fh-nav a[aria-current="page"]:hover { anchor-name: --fh-nav-on, --fh-nav-hover; }
+  .fh-nav a[aria-current="page"]::after { content: none; }
+  .fh-nav::before, .fh-nav::after { content: ""; position: absolute; pointer-events: none; }
+  .fh-nav::before {
+    position-anchor: --fh-nav-hover; top: anchor(top); right: anchor(right); bottom: anchor(bottom); left: anchor(left);
+    border-radius: var(--radius-md); background: color-mix(in srgb, var(--text) 7%, transparent); opacity: 0;
+    transition: left var(--t-med) var(--ease-out), right var(--t-med) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+  }
+  .fh-nav:has(a:hover)::before { opacity: 1; }
+  .fh-nav::after {
+    position-anchor: --fh-nav-on; left: calc(anchor(left) + var(--sp-3)); right: calc(anchor(right) + var(--sp-3)); bottom: -1px; height: 2px;
+    border-radius: 2px 2px 0 0; background: var(--accent); box-shadow: var(--glow-accent);
+    transition: left var(--t-med) var(--ease-out), right var(--t-med) var(--ease-out);
+  }
+}
+
+.fh-header-tools { display: flex; align-items: center; gap: var(--sp-2); margin-left: auto; }
+.fh-search-trigger {
+  display: inline-flex; align-items: center; gap: var(--sp-3); min-height: var(--ctl); padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text-2);
+  font: inherit; font-size: var(--fs-13); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out),
+    transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.fh-search-trigger:hover { border-color: var(--text-3); color: var(--text); }
+.fh-search-trigger-text { min-width: 110px; text-align: left; }
+.fh-search-trigger-keys { display: inline-flex; }
+.fh-theme-btn, .fh-menu-btn { color: var(--text-2); }
+.fh-theme-btn svg { transition: transform var(--t-slow) var(--ease-out); }
+.fh-theme-btn:hover svg { transform: rotate(-20deg); }
+.fh-header-tools .fh-menu-btn { display: none; }
+
+.fh-data-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--ctl-sm);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--fs-13);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.fh-data-badge:hover { border-color: var(--border-strong); color: var(--text); }
+.fh-data-badge time { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+.fh-data-badge-icon { width: 14px; height: 14px; flex: none; }
+.fh-data-badge-empty { visibility: hidden; min-width: 1px; padding: 0; border: none; }
+
+/* Six page links: on narrower laptops they drop their icons (the labels stay). Up to 1299 px: a maximised browser on a
+   1280 px screen with a classic scrollbar is about 1263 px wide, where the links with their icons reach the search;
+   with the Ask button the icons need up to 1339 px. */
+@media (min-width: 881px) and (max-width: 1339px) { .fh-header .fh-nav-icon { display: none; } .fh-header .fh-nav a { padding: 0 var(--sp-2); } }
+/* the narrowest laptops (with the Ask button in the tools): tighter links, and the data badge without its icon */
+@media (min-width: 881px) and (max-width: 979px) {
+  .fh-header .fh-nav a { padding: 0 6px; }
+  .fh-header-inner { gap: var(--sp-3); }
+  .fh-header .fh-data-badge-icon { display: none; }
+}
+
+@media (max-width: 1139px) {
+  .fh-search-trigger-text, .fh-search-trigger-keys { display: none; }
+  .fh-search-trigger { justify-content: center; min-width: var(--ctl); padding: var(--sp-1); }
+  .fh-header-inner { gap: var(--sp-4); }
+}
+/* Phones and tablets: brand, search, theme and the page menu on one row; buttons of 44 px. */
+@media (max-width: 880px) {
+  .fh-header-inner { gap: var(--sp-2); padding: 0 var(--sp-2) 0 var(--sp-4); }
+  .fh-header .fh-nav { display: none; }
+  .fh-header-tools { gap: var(--sp-1); }
+  .fh-header-tools .fh-menu-btn { display: inline-flex; }
+  .fh-search-trigger, .fh-header-tools .ui-btn-icon { min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+  .fh-search-trigger { border-color: transparent; background: transparent; }
+  .fh-header-tools .fh-data-badge { margin-right: var(--sp-1); }
+}
+@media (max-width: 560px) { .fh-header-tools .fh-data-badge { display: none; } }
+@media (max-width: 359px) {
+  .fh-header .fh-brand-wrap { --fh-mark: 24px; --fh-brand-gap: var(--sp-2); }
+  .fh-header .fh-brand { gap: var(--fh-brand-gap); font-size: var(--fs-15); } .fh-header .fh-brand-mark { width: var(--fh-mark); height: var(--fh-mark); }
+}
+/* Phones held sideways: a lower bar leaves more of the short screen to the page. */
+@media (max-width: 880px) and (max-height: 500px) { :root { --fh-header-h: 48px; } }
+
+/* ---------------------------------------------------------------- page menu (phones and tablets)
+   A sheet from the bottom on phones (drag it down or tap outside to close), a panel under the menu button on tablets. */
+html:has(.fh-menu[open]) { overflow: hidden; }
+.fh-menu { width: 100%; max-width: 100%; max-height: 100%; margin: auto 0 0; padding: 0; border: none; background: transparent; color: var(--text);
+  overflow: visible; }
+.fh-menu::backdrop { background: color-mix(in srgb, var(--bg) 62%, transparent); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  animation: ui-fade var(--t-med) var(--ease-out); }
+.fh-menu[data-closing]::backdrop { animation: fh-menu-fade-out var(--t-fast) var(--ease-in) forwards; }
+.fh-menu-sheet {
+  display: grid; gap: var(--sp-2); max-height: calc(100dvh - var(--sp-6)); overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--sp-2) var(--sp-3) calc(var(--sp-4) + env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--border-strong); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--material-thick); box-shadow: var(--elev-3); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  animation: fh-sheet-in var(--t-med) var(--ease-out); touch-action: pan-y;
+}
+.fh-menu[data-closing] .fh-menu-sheet { animation: fh-sheet-out var(--t-fast) var(--ease-in) forwards; }
+.fh-menu-drag { display: grid; touch-action: none; }
+.fh-menu-grip { justify-self: center; width: 36px; height: 4px; margin: 2px 0 var(--sp-1); border-radius: var(--radius-pill); background: var(--border-strong); }
+.fh-menu-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding-left: var(--sp-2); cursor: grab; }
+.fh-menu-title { margin: 0; color: var(--text-3); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-menu-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.fh-menu-list > li { display: grid; }   /* the rows of a line are as tall as each other (two columns in landscape) */
+.fh-menu-list a {
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: var(--sp-3); min-height: 56px; padding: var(--sp-2);
+  border-radius: var(--radius-md); color: var(--text); text-decoration: none;
+  transition: background-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out);
+  animation: fh-menu-item-in var(--t-slow) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 24ms);
+}
+.fh-menu-list a:hover { background: var(--surface-3); }
+.fh-menu-list a:active { transform: scale(0.98); transition-duration: var(--t-press); }
+.fh-menu-list a[aria-current="page"] { background: var(--accent-soft); box-shadow: var(--ring-accent); }
+.fh-menu-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface-2); color: var(--text-2); }
+.fh-menu-list a[aria-current="page"] .fh-menu-icon { border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+.fh-menu-text { display: grid; gap: 2px; min-width: 0; }
+.fh-menu-name { font-size: var(--fs-15); font-weight: 600; line-height: 1.3; }
+.fh-menu-note { color: var(--text-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.fh-menu-end { display: inline-flex; color: var(--text-3); }
+.fh-menu-list a[aria-current="page"] .fh-menu-end { color: var(--accent); }
+.fh-menu-group { margin: var(--sp-1) 0 0; padding: var(--sp-3) var(--sp-2) var(--sp-1); border-top: 1px solid var(--border); color: var(--text-3);
+  font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-menu-project a { grid-template-columns: 32px minmax(0, 1fr) auto; min-height: 48px; padding-block: 6px; }
+.fh-menu-project .fh-menu-icon { width: 32px; height: 32px; }
+.fh-menu-project .fh-menu-icon svg { width: 17px; height: 17px; }
+.fh-menu-project .fh-menu-name { font-size: var(--fs-14); }
+.fh-menu-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-top: var(--sp-1);
+  padding: var(--sp-3) var(--sp-2) 0; border-top: 1px solid var(--border); color: var(--text-2); font-size: var(--fs-13); }
+.fh-menu-foot .fh-data-badge { display: inline-flex; min-height: var(--ctl-touch); }
+@media (min-width: 561px) {
+  .fh-menu { --fh-menu-max: calc(100dvh - var(--fh-header-h) - var(--sp-4));
+    width: 380px; max-height: var(--fh-menu-max); margin: calc(var(--fh-header-h) + var(--sp-2)) var(--sp-4) auto auto; }
+  .fh-menu-sheet { max-height: var(--fh-menu-max); padding: var(--sp-2) var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg); transform-origin: top right; animation-name: fh-pop-in; }
+  .fh-menu[data-closing] .fh-menu-sheet { animation-name: fh-pop-out; }
+  .fh-menu-grip { display: none; }
+  .fh-menu-head { cursor: auto; }
+}
+/* Phones held sideways: a wider panel with the pages in two columns and no footer (the header shows the data month
+   at these widths), so the whole menu fits the short screen. */
+@media (min-width: 561px) and (max-height: 500px) {
+  .fh-menu { width: min(560px, calc(100vw - var(--sp-8))); }
+  .fh-menu-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-1); }
+  .fh-menu-foot { display: none; }
+}
+@keyframes fh-sheet-in { from { transform: translateY(100%); } }
+@keyframes fh-sheet-out { to { transform: translateY(100%); } }
+@keyframes fh-pop-in { from { opacity: 0; transform: translateY(-6px) scale(0.98); } }
+@keyframes fh-pop-out { to { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+@keyframes fh-menu-item-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes fh-menu-fade-out { to { opacity: 0; } }
+
+.fh-main { flex: 1; width: 100%; max-width: 1328px; margin: 0 auto; padding: var(--sp-6) var(--sp-6) var(--sp-16); }
+.fh-main:focus { outline: none; }
+
+/* Footer: the project, the data credit, and links to Methods and Data. */
+.fh-footer { border-top: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: var(--fs-13); line-height: 1.6; }
+.fh-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: var(--sp-8) var(--sp-10);
+  max-width: 1328px;
+  margin: 0 auto;
+  padding: var(--sp-10) var(--sp-6) var(--sp-8);
+}
+.fh-footer p { margin: 0; }
+.fh-footer-brand, .fh-footer-col { display: grid; gap: var(--sp-2); align-content: start; }
+.fh-footer-brand .fh-brand { justify-self: start; margin-bottom: var(--sp-1); font-size: var(--fs-16); }
+.fh-footer-brand .fh-brand-mark { width: 24px; height: 24px; }
+.fh-footer-title { color: var(--text); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-footer-links { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+.fh-footer-links li { display: grid; }
+.fh-footer-links a { justify-self: start; color: var(--text); font-weight: 600; text-decoration: none; }
+.fh-footer-links a:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.fh-footer-links a .fh-footer-ext { margin-left: 5px; vertical-align: -1px; color: var(--text-3); }
+@media (max-width: 1100px) and (min-width: 761px) {
+  .fh-footer-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.fh-footer-base { grid-column: 1 / -1; display: grid; gap: var(--sp-1); padding-top: var(--sp-4); border-top: 1px solid var(--border); color: var(--muted); font-size: var(--fs-12); }
+
+/* While a page's code loads: the outline of a page (header, three cards, one chart). */
+.fh-page-loading { display: grid; gap: var(--sp-10); }
+.fh-page-loading-head { display: grid; gap: var(--sp-3); padding-top: var(--sp-3); }
+.fh-page-loading-grid { display: grid; gap: var(--sp-4); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.fh-page-error { max-width: 760px; margin-top: var(--sp-3); padding: var(--sp-5) var(--sp-6); border-radius: var(--radius-lg); }
+.fh-page-error-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.fh-error .fh-page-error-actions .fh-btn { justify-self: auto; text-decoration: none; }
+
+@media (max-width: 760px) {
+  .fh-main { padding: var(--sp-4) var(--sp-4) var(--sp-12); }
+  .fh-footer-inner { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); padding: var(--sp-8) var(--sp-4) var(--sp-6); }
+  .fh-page-loading-grid { grid-template-columns: minmax(0, 1fr); }
+}
+/* touch: the footer links become rows of 44 px */
+@media (pointer: coarse), (max-width: 760px) {
+  .fh-footer-links { gap: 0; }
+  .fh-footer-links li { grid-template-columns: auto; }
+  .fh-footer-links a { display: inline-flex; align-items: center; min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+  /* the data badge stays a slim pill; a transparent ring makes it 44 px tall to a finger */
+  .fh-header .fh-data-badge { position: relative; }
+  .fh-header .fh-data-badge::after { content: ""; position: absolute; inset: -7px 0; }
+  .fh-footer-links span { margin-top: calc(-1 * var(--sp-2)); padding-bottom: var(--sp-2); }
+  .fh-footer-brand .fh-brand { min-height: var(--ctl-touch); }
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.fh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--ctl);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-14);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.fh-btn:hover { background: var(--surface-3); border-color: var(--text-3); }
+.fh-btn[aria-pressed="true"], .fh-btn[aria-expanded="true"] { background: var(--text); border-color: var(--text); color: var(--surface); }
+.fh-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fh-btn:disabled:hover { background: var(--surface-2); }
+.fh-btn svg { width: 16px; height: 16px; flex: none; }
+.fh-btn-quiet { border-color: transparent; background: transparent; }
+
+.fh-input {
+  min-height: var(--ctl);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-15);
+}
+.fh-input::placeholder { color: var(--text-2); }
+.fh-input[aria-invalid="true"] { border-color: var(--critical); border-width: 2px; }
+
+/* ---------------------------------------------------------------- status */
+
+.fh-error {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--sp-1) var(--sp-3);
+  align-items: start;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--critical);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+}
+.fh-error-icon { width: 20px; height: 20px; margin-top: 1px; color: var(--critical); }
+.fh-error-body { display: grid; gap: var(--sp-2); min-width: 0; }
+.fh-error-body p { margin: 0; }
+.fh-error-title { font-weight: 700; }
+.fh-error details { color: var(--text-2); font-size: var(--fs-13); }
+.fh-error summary { cursor: pointer; }
+.fh-error code { overflow-wrap: anywhere; }
+.fh-error .fh-btn { justify-self: start; }
+
+/* ---------------------------------------------------------------- area picker
+   (the Explorer refines these in explorer.css) */
+
+.fh-picker { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); min-width: 0; flex: 1 1 520px; }
+.fh-picker-tools { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+.fh-search { position: relative; flex: 1 1 260px; max-width: 380px; min-width: 200px; }
+.fh-search .fh-input { width: 100%; padding-left: var(--sp-8); }
+.fh-search-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--sp-3);
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  color: var(--text-2);
+  pointer-events: none;
+}
+.fh-listbox {
+  position: absolute;
+  top: calc(100% + var(--sp-1));
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  max-height: min(340px, 50vh);
+  margin: 0;
+  padding: var(--sp-1);
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--elev-2);
+}
+.fh-option {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.fh-option:hover { background: var(--surface-3); }
+.fh-option[aria-selected="true"] { background: var(--accent-soft); }
+.fh-option-kind { flex: none; color: var(--text-2); font-size: var(--fs-12); }
+.fh-option[aria-selected="true"] .fh-option-kind { color: inherit; }
+.fh-search-note {
+  position: absolute;
+  top: calc(100% + var(--sp-1));
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--fs-14);
+}
+
+.fh-circle-form {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.fh-circle-form .fh-form-help { flex-basis: 100%; margin: 0; color: var(--text-2); font-size: var(--fs-13); }
+.fh-field { display: grid; gap: var(--sp-1); }
+.fh-field label { color: var(--text-2); font-size: var(--fs-13); font-weight: 600; }
+.fh-field .fh-input { width: 9.5em; }
+.fh-form-errors { flex-basis: 100%; display: grid; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; font-size: var(--fs-13); }
+.fh-form-errors li { display: flex; align-items: center; gap: var(--sp-2); }
+.fh-form-errors svg { width: 16px; height: 16px; flex: none; color: var(--critical); }
+
+code { font-family: var(--font-mono); font-size: 0.875em; }
+
+/* ---------------------------------------------------------------- small screens */
+
+@media (max-width: 640px) {
+  .fh-search { max-width: none; flex-basis: 100%; }
+}
+@media (pointer: coarse), (max-width: 760px) {
+  .fh-btn, .fh-input, html .fh-picker .fh-search-input { min-height: var(--ctl-touch); }
+}
+/* touch screens: the "Read more" text button of the fire brief is 44 px tall to a finger, with no change to the
+   layout (the extra height is taken back by negative margins of exactly the difference) */
+@media (pointer: coarse) {
+  @supports (margin: 1lh) {
+    html .fh-ex-more { display: inline-flex; align-items: center; min-height: var(--ctl-touch); margin-block: calc((1lh - var(--ctl-touch)) / 2); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+@media (forced-colors: active) {
+  .fh-btn[aria-pressed="true"], .fh-option[aria-selected="true"], .fh-nav a[aria-current="page"], .fh-menu-list a[aria-current="page"] { outline: 2px solid; }
+}
+
+/* ---------------------------------------------------------------- the Explorer's outline while its code loads
+   (App.tsx ExplorerLoading): the same frame as explorer.css draws, so the map does not jump in, and no footer */
+.fh-main:has(> div:not([hidden]) > .fh-ex-boot) { max-width: none; padding: 0; }
+.fh-app:has(> .fh-main > div:not([hidden]) > .fh-ex-boot) > .fh-footer { display: none; }
+.fh-ex-boot { --gap: 16px; --panel-w: 384px; position: relative; height: calc(100dvh - var(--fh-header-h)); min-height: 600px; overflow: hidden; background: var(--bg); }
+.fh-ex-boot-panel { position: absolute; top: var(--gap); left: var(--gap); bottom: var(--gap); width: var(--panel-w); display: grid; align-content: start;
+  gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+.fh-ex-boot-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-2); }
+.fh-ex-boot-chips { display: flex; gap: var(--sp-2); }
+.fh-ex-boot-chips > * { flex: 1; }
+.fh-ex-boot-line { height: 1px; margin: 0 calc(-1 * var(--sp-4)); background: var(--border); }
+.fh-ex-boot-dock { position: absolute; left: calc(var(--panel-w) + var(--gap) * 2); right: var(--gap); bottom: var(--gap); display: grid;
+  grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--sp-3); height: 92px; padding: 0 var(--sp-4);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+@media (max-width: 1100px) { .fh-ex-boot { --panel-w: 340px; } }
+@media (max-width: 768px) {
+  .fh-ex-boot { --gap: 10px; min-height: 0; }
+  .fh-ex-boot-dock { display: none; }
+  /* the bottom sheet at its half height, with its grip */
+  .fh-ex-boot-panel { inset: auto 0 0 0; width: auto; height: 50%; padding-top: var(--sp-5); border-bottom: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .fh-ex-boot-panel::before { content: ""; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: var(--radius-pill);
+    background: var(--border-strong); }
+}
+
+/* touch screens (tablets too): the header's controls are 44 px tall (the header itself is 56 px) */
+@media (pointer: coarse) {
+  .fh-nav a { height: var(--ctl-touch); }
+  .fh-search-trigger { min-height: var(--ctl-touch); }
+  .fh-header .fh-data-badge { min-height: var(--ctl-touch); }
+  .fh-header .fh-data-badge::after { content: none; }
+}

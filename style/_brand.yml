@@ -1,0 +1,37 @@
+# Quarto brand file: one identity for the PDF report (Typst), HTML methods site and slides.
+meta:
+  name: Fire Harmony
+  link: https://github.com/   # replace with the repo URL
+color:
+  palette:
+    ember: "#c8331a"
+    ink: "#0b0b0b"
+    ink-2: "#52514e"
+    muted: "#898781"
+    surface: "#fcfcfb"
+    modis: "#2a78d6"
+    viirs: "#eb6834"
+  background: surface
+  foreground: ink
+  primary: ember
+  secondary: ink-2
+typography:
+  fonts:
+    - family: Inter
+      source: file
+      files:
+        - fonts/Inter-Regular.ttf
+        - fonts/Inter-Medium.ttf
+        - fonts/Inter-Bold.ttf
+  base:
+    family: Inter
+    size: 10pt
+    line-height: 1.45
+  headings:
+    family: Inter
+    weight: 700
+    color: ink
+  monospace:
+    family: JetBrains Mono, Menlo, monospace
+  link:
+    color: ember

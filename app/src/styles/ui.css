@@ -1,0 +1,203 @@
+/* Shared building blocks (src/components/ui.tsx). Colours from theme.css, sizes from the scale in tokens.css.
+   See DESIGN.md. */
+
+body { background: var(--page); color: var(--ink); font-family: var(--font-sans); font-size: var(--fs-15); line-height: var(--lh-15); }
+
+/* ---------------------------------------------------------------- page */
+.ui-page { display: grid; gap: var(--sp-10); width: 100%; max-width: 1280px; margin: 0 auto; padding: var(--sp-2) 0 var(--sp-6); }
+.ui-page-header { display: grid; gap: var(--sp-3); padding-top: var(--sp-3); }
+.ui-page-header-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-3) var(--sp-6); }
+.ui-page-header-text { display: grid; gap: var(--sp-3); flex: 1 1 30rem; min-width: 0; }
+.ui-eyebrow { margin: 0; color: var(--accent); font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+:root[data-theme="light"] .ui-eyebrow { color: var(--accent-strong); }   /* small text: the brighter ember is only 3.4:1 on light */
+.ui-page-title { margin: 0; font-size: var(--fs-30); font-weight: 700; line-height: var(--lh-30); letter-spacing: -0.015em; text-wrap: balance; }
+.ui-lead { margin: 0; max-width: 38em; color: var(--ink-2); font-size: var(--fs-16); line-height: 1.6; text-wrap: pretty; }
+.ui-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+
+/* ---------------------------------------------------------------- section */
+.ui-section { display: grid; gap: var(--sp-4); scroll-margin-top: calc(var(--fh-header-h) + var(--sp-6)); }
+.ui-section-head { display: grid; gap: var(--sp-1); }
+.ui-section-title { margin: 0; font-size: var(--fs-20); font-weight: 650; line-height: var(--lh-20); letter-spacing: -0.01em; text-wrap: balance; }
+.ui-section-subtitle { margin: 0; max-width: 42em; color: var(--ink-2); font-size: var(--fs-15); text-wrap: pretty; }
+
+/* ---------------------------------------------------------------- layout */
+.ui-grid { display: grid; gap: var(--sp-4); align-items: stretch; }
+.ui-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ui-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ui-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ui-grid-wide { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.ui-stack { display: grid; align-content: start; }
+@media (max-width: 1080px) { .ui-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ui-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .ui-grid-2, .ui-grid-3, .ui-grid-4, .ui-grid-wide { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------------------------------------------------------------- card
+   Flat fills (a faint gradient showed as loose rectangles in full page captures). On a pointer device a card answers
+   the pointer: it lifts 1 px, casts the first shadow and takes a hairline of the accent. Cards inside a floating
+   panel (.ui-glass) stay still. */
+.ui-card {
+  display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0;
+  padding: var(--sp-5); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.ui-card-accent { border-left: 3px solid var(--accent); }
+.ui-card-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--sp-2) var(--sp-3); }
+.ui-card-titles { display: grid; gap: 2px; min-width: 0; }
+.ui-card-title { margin: 0; font-size: var(--fs-15); font-weight: 600; line-height: 1.35; }
+.ui-card-subtitle { margin: 0; color: var(--ink-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.ui-card-body { display: grid; gap: var(--sp-3); min-width: 0; }
+.ui-card-footer { margin-top: auto; padding-top: var(--sp-1); color: var(--ink-2); font-size: var(--fs-13); }
+
+@media (hover: hover) and (pointer: fine) {
+  .ui-card, .ui-stat { transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-med) var(--ease-out), translate var(--t-med) var(--ease-out); }
+  :is(.ui-card, .ui-stat):not(.ui-glass *):hover { translate: 0 -1px; border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); box-shadow: var(--elev-1); }
+}
+
+/* ---------------------------------------------------------------- stat tiles */
+.ui-stat-grid { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.ui-stat {
+  display: grid; gap: var(--sp-2); align-content: start; min-width: 0;
+  padding: var(--sp-4) var(--sp-5); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.ui-stat-label { margin: 0; color: var(--ink-2); font-size: var(--fs-13); font-weight: 500; line-height: var(--lh-13); }
+.ui-stat-value { margin: 0; font-size: var(--fs-stat-m); font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.ui-stat-unit { margin-left: var(--sp-1); color: var(--ink-2); font-family: var(--font-sans); font-size: var(--fs-15); font-weight: 500; letter-spacing: 0; white-space: nowrap; }
+.ui-stat-context { margin: 0; color: var(--ink-2); font-size: var(--fs-13); line-height: 1.45; }
+.ui-delta { display: inline-flex; align-items: center; gap: var(--sp-1); width: fit-content; padding: 2px var(--sp-2); border-radius: var(--radius-pill);
+  font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12); }
+.ui-delta svg { width: 10px; height: 10px; }
+.ui-delta-up { background: color-mix(in srgb, var(--serious) 16%, transparent); color: color-mix(in srgb, var(--serious) 55%, var(--ink)); }
+.ui-delta-down { background: color-mix(in srgb, var(--anom-b3) 14%, transparent); color: color-mix(in srgb, var(--anom-b4) 75%, var(--ink)); }
+.ui-delta-flat { background: color-mix(in srgb, var(--muted) 16%, transparent); color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- table */
+.ui-table-wrap { overflow-x: auto; }
+.ui-table { width: 100%; border-collapse: collapse; font-size: var(--fs-14); }
+.ui-table caption { padding-bottom: var(--sp-2); color: var(--ink-2); font-size: var(--fs-13); text-align: left; }
+.ui-table th, .ui-table td { padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+/* column names in sentence case: long names such as "October 2026 against normal" stay on one line far more often
+   than in capitals, and read faster */
+.ui-table thead th { color: var(--text-3); font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12);
+  border-bottom-color: var(--baseline); white-space: nowrap; }
+.ui-table td.ui-num, .ui-table th.ui-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ui-table tbody tr:last-child td, .ui-table tbody tr:last-child th { border-bottom: none; }
+.ui-table tbody tr { transition: background-color var(--t-fast) var(--ease-out); }
+.ui-table tbody tr:hover { background: var(--row-hover); }
+@media (max-width: 760px) { .ui-table th, .ui-table td { padding-inline: var(--sp-2); } }
+
+/* ---------------------------------------------------------------- controls
+   Segmented: the raised thumb slides to the chosen option (CSS anchor positioning; elsewhere it moves at once). */
+.ui-segmented { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); }
+.ui-segmented-label { color: var(--ink-2); font-size: var(--fs-13); font-weight: 600; }
+.ui-segmented-options { position: relative; isolation: isolate; display: inline-flex; padding: 2px; border: 1px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface-2); }
+.ui-segmented-option {
+  min-height: var(--ctl-sm); padding: var(--sp-1) var(--sp-3); border: none; border-radius: var(--radius-sm); background: transparent;
+  color: var(--ink-2); font: inherit; font-size: var(--fs-13); font-weight: 500; cursor: pointer; white-space: nowrap;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.ui-segmented-option:hover { color: var(--ink); }
+.ui-segmented-option[aria-checked="true"] { background: var(--surface-3); color: var(--ink); font-weight: 600; box-shadow: var(--ring-hairline); }
+@supports (anchor-name: --a) {
+  .ui-segmented-options { anchor-scope: --ui-seg; }
+  .ui-segmented .ui-segmented-options > .ui-segmented-option[aria-checked="true"] { anchor-name: --ui-seg; background: transparent; box-shadow: none; }
+  .ui-segmented-options::before { content: ""; position: absolute; position-anchor: --ui-seg; z-index: -1;
+    top: anchor(top); right: anchor(right); bottom: anchor(bottom); left: anchor(left); border-radius: var(--radius-sm);
+    background: var(--surface-3); box-shadow: var(--ring-hairline), var(--elev-1); pointer-events: none;
+    transition: left var(--t-med) var(--ease-out), right var(--t-med) var(--ease-out); }
+}
+
+.ui-badge { display: inline-flex; align-items: center; gap: var(--sp-1); padding: 2px var(--sp-2); border-radius: var(--radius-pill);
+  font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12); white-space: nowrap; }
+.ui-badge-neutral { background: color-mix(in srgb, var(--muted) 15%, transparent); color: var(--ink-2); }
+.ui-badge-ember { background: var(--accent-soft); color: var(--accent-strong); }
+.ui-badge-good { background: color-mix(in srgb, var(--good) 14%, transparent); color: color-mix(in srgb, var(--good) 60%, var(--ink)); }
+.ui-badge-warning { background: color-mix(in srgb, var(--warning) 20%, transparent); color: color-mix(in srgb, var(--warning) 40%, var(--ink)); }
+.ui-badge-serious { background: color-mix(in srgb, var(--serious) 18%, transparent); color: color-mix(in srgb, var(--serious) 50%, var(--ink)); }
+.ui-badge-critical { background: color-mix(in srgb, var(--critical) 14%, transparent); color: color-mix(in srgb, var(--critical) 65%, var(--ink)); }
+
+.ui-note { margin: 0; color: var(--ink-2); font-size: var(--fs-13); line-height: 1.5; }
+
+.ui-callout { display: grid; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-md); background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); }
+.ui-callout-title { margin: 0; color: var(--accent-strong); font-size: var(--fs-13); font-weight: 700; }
+:root[data-theme="light"] .ui-callout-title { color: var(--ember-800); }
+.ui-callout-body { margin: 0; font-size: var(--fs-15); }
+
+/* ---------------------------------------------------------------- figure (charts) */
+/* (one column as wide as the card: nothing inside, an open table least of all, can make the figure or its chart wider) */
+.ui-figure { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); margin: 0; min-width: 0; }
+.ui-figure-head { display: grid; gap: 2px; }
+.ui-figure-title { margin: 0; font-size: var(--fs-15); font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.ui-figure-subtitle { margin: 0; color: var(--ink-2); font-size: var(--fs-13); line-height: var(--lh-13); }
+.ui-figure-plot { width: 100%; min-height: 120px; }
+.ui-figure-plot svg { display: block; overflow: visible; }
+.ui-figure-plot figure { margin: 0; }
+.ui-figure-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-1) var(--sp-4); }
+.ui-figure-source { margin: 0; color: var(--muted); font-size: var(--fs-12); line-height: var(--lh-12); }
+/* "Show the numbers": a quiet button with a chevron that turns when the table is open */
+.ui-figure-table summary { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: var(--ctl-sm); margin-right: calc(-1 * var(--sp-2));
+  padding: 0 var(--sp-2); border-radius: var(--radius-sm); color: var(--ink-2); font-size: var(--fs-12); font-weight: 600; cursor: pointer; list-style: none;
+  transition: background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.ui-figure-table summary::-webkit-details-marker { display: none; }
+.ui-figure-table summary::before { content: ""; width: 6px; height: 6px; border: solid currentColor; border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-1px) rotate(-45deg); transition: transform var(--t-fast) var(--ease-out); }
+.ui-figure-table[open] summary::before { transform: translateY(-2px) rotate(45deg); }
+.ui-figure-table summary:hover { background: var(--surface-3); color: var(--ink); }
+.ui-figure-table summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ui-figure-table[open] summary { margin-bottom: var(--sp-2); }
+.ui-figure-table .ui-table { font-size: var(--fs-13); }
+/* closed, the button sits at the right end of the source line; open, the table takes a row of its own under the source
+   (the button stays at the right, on top of it), as wide as the card and never wider */
+.ui-figure-foot > .ui-figure-table { min-width: 0; max-width: 100%; margin-left: auto; }
+.ui-figure-foot > .ui-figure-table[open] { flex: 1 0 100%; order: 2; }
+.ui-figure-table[open] > summary { display: flex; width: fit-content; margin-left: auto; }
+/* the table view scrolls inside the card (TableScroll in ui.tsx): at most 320 px tall, sideways when wide, the column
+   names stuck on top. Its width comes from the card, never from the table (inline size containment). The bottom and
+   right edges fade while there is more to see there, as the rows that scroll sideways do (ScrollFade). */
+.ui-table-scroll { contain: inline-size; max-height: 320px; overflow: auto; overscroll-behavior-x: contain; scrollbar-width: thin;
+  --fade-down: 0px; --fade-side: 0px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--fade-down)), transparent), linear-gradient(to right, #000 calc(100% - var(--fade-side)), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--fade-down)), transparent), linear-gradient(to right, #000 calc(100% - var(--fade-side)), transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.ui-table-scroll[data-more~="down"] { --fade-down: 28px; }
+.ui-table-scroll[data-more~="side"] { --fade-side: 32px; }
+/* (the mask would hide a ring on the scroller itself: the open table view wears it) */
+.ui-table-scroll:focus-visible { outline: none; }
+details:has(> .ui-table-scroll:focus-visible) { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+.ui-table-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+/* Observable Plot legends inside a figure */
+.ui-figure-plot [class*="plot-"][class$="-swatches"] { font-size: var(--fs-13); color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- skeleton */
+.ui-skeleton { border-radius: var(--radius-md); background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+  background-size: 200% 100%; animation: ui-shimmer 1.4s ease-in-out infinite; }
+@keyframes ui-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .ui-skeleton { animation: none; } }
+
+/* ---------------------------------------------------------------- phones and other touch screens
+   Every control is at least 44 x 44 px to a finger
+   (html raises these above the base rules of theme.css, which loads later; page rules can still set their own.) */
+@media (pointer: coarse), (max-width: 760px) {
+  html :is(.ui-btn, .ui-chip, .ui-segmented-option, .ui-tab) { min-height: var(--ctl-touch); }
+  html .ui-btn-icon { min-width: var(--ctl-touch); }
+  html .ui-figure-table summary { min-height: var(--ctl-touch); }
+  html select { min-height: var(--ctl-touch); }
+  /* a link or button alone in a table cell fills the row's height, so the whole row is the target */
+  .ui-table :is(td, th) > :is(a, button):only-child { display: inline-flex; align-items: center; min-height: var(--ctl-touch); margin-block: calc(-1 * var(--sp-2)); }
+}
+
+/* the info icon with a tooltip (components/dashboard/parts.tsx Hint), on every page that uses it */
+.db-hint { display: inline-flex; align-items: center; margin-left: var(--sp-1); color: var(--text-2); vertical-align: -2px; cursor: help; border-radius: 50%; }
+.db-hint:hover { color: var(--text); }
+.db-hint:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* the lead of a page: two lines on a phone, "More" for the rest (PageHeader in ui.tsx) */
+.ui-lead-box { display: grid; justify-items: start; gap: 2px; }
+.ui-lead-more { display: none; }
+@media (max-width: 767px) {
+  .ui-lead:not([data-open]) { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+  .ui-lead-more { display: inline-flex; align-items: center; min-height: var(--ctl-touch); margin: -6px 0 -8px; padding: 0; border: 0; background: none;
+    color: var(--accent-strong, var(--accent)); font: inherit; font-size: var(--fs-14); font-weight: 600; cursor: pointer; }
+  .ui-lead-more:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+}

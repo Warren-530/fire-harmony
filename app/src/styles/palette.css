@@ -1,0 +1,94 @@
+/* The command palette's search box and rows, and the Explorer's place search (theme.css has the palette's shell, shared
+   with the shortcuts dialog). In the manner of Raycast and Linear: groups under sticky titles, 40 px rows (48 px on
+   touch), each icon in a small tile, the matched letters in bold, the hint in grey after the name (under it on a phone),
+   and the key on the right. Touch screens get a close button and no key hints. */
+
+/* ------------------------------------------------------------------ the palette */
+.ui-palette-search { display: flex; align-items: center; gap: var(--sp-2); min-height: 56px; padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid var(--border); color: var(--text-2); }
+.ui-palette-search > svg { flex: none; color: var(--accent); }
+.ui-palette-search input { flex: 1; min-width: 0; height: 40px; padding: 0; border: none; outline: none; background: transparent; color: var(--text);
+  font: inherit; font-size: var(--fs-16); caret-color: var(--accent); }
+.ui-palette-search input::placeholder { color: var(--text-3); opacity: 1; }
+.ui-palette-clear { min-width: 32px; min-height: 32px; color: var(--text-3); }
+.ui-palette-esc { flex: none; }
+.ui-palette-close { display: none; }
+
+.ui-palette-list { flex: 1; min-height: 0; margin: 0; padding: 0 var(--sp-2) var(--sp-2); overflow-y: auto; overscroll-behavior: contain;
+  scroll-padding-block: 34px var(--sp-2); }
+.ui-palette-group-title { position: sticky; top: 0; z-index: 1; margin: 0 calc(-1 * var(--sp-2)); padding: var(--sp-3) var(--sp-4) var(--sp-1);
+  background: var(--surface); color: var(--text-3); font-size: var(--fs-12); font-weight: 600; line-height: var(--lh-12);
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.ui-palette-group-title { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); }
+.ui-palette-group-note { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; letter-spacing: 0;
+  text-transform: none; }
+.ui-palette-item { display: flex; align-items: center; gap: var(--sp-3); min-height: 40px; padding: var(--sp-1) var(--sp-2); border-radius: 10px;
+  color: var(--text); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--t-fast) var(--ease-out); }
+.ui-palette-item.is-active { background: var(--accent-soft); box-shadow: var(--ring-accent); }
+.ui-palette-item:active { transform: scale(0.99); }
+.ui-palette-icon { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--text-2); transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out); }
+.ui-palette-icon svg { width: 16px; height: 16px; }
+.ui-palette-item.is-active .ui-palette-icon { border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+.ui-palette-text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: var(--sp-2); }
+.ui-palette-label { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-14); }
+.ui-palette-label mark, .fh-option-name mark { background: none; color: inherit; font-weight: 600; }
+.ui-palette-hint { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-3); font-size: var(--fs-13); }
+.ui-palette-item.is-active .ui-palette-hint { color: var(--text-2); }
+.ui-palette-keys { flex: none; display: inline-flex; gap: var(--sp-1); }
+.ui-palette-keys .ui-kbd + .ui-kbd { margin-left: 0; }
+
+.ui-palette-empty { padding: var(--sp-6) var(--sp-4) var(--sp-4); color: var(--text-2); font-size: var(--fs-14); text-align: center; }
+.ui-palette-empty p { max-width: 46ch; margin: 0 auto; }
+.ui-palette-empty .ui-palette-empty-title { margin-bottom: var(--sp-1); color: var(--text); font-weight: 600; }
+.ui-palette-spin { display: inline-block; width: 12px; height: 12px; margin-right: var(--sp-2); vertical-align: -1px; border: 2px solid var(--border-strong);
+  border-top-color: var(--accent); border-radius: 50%; animation: ui-palette-spin 0.8s linear infinite; }
+@keyframes ui-palette-spin { to { transform: rotate(360deg); } }
+
+.ui-palette-foot { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); padding: var(--sp-2) var(--sp-4); border-top: 1px solid var(--border);
+  color: var(--text-3); font-size: var(--fs-12); }
+.ui-palette-foot > span { display: inline-flex; align-items: center; gap: var(--sp-1); }
+.ui-palette-foot .ui-kbd + .ui-kbd { margin-left: 0; }
+.ui-palette-foot-end { margin-left: auto; }
+
+/* a phone: the hint goes under the name */
+@media (max-width: 560px) {
+  .ui-palette-text { flex-direction: column; align-items: stretch; gap: 0; }
+  .ui-palette-label, .ui-palette-hint { flex: none; white-space: normal; overflow-wrap: anywhere; }
+  .ui-palette-item { padding-block: 6px; }
+  .ui-palette-foot-end { margin-left: 0; }
+}
+/* touch screens: taller rows, a close button, no key hints */
+@media (hover: none) and (pointer: coarse) {
+  .ui-palette-item { min-height: 48px; }
+  .ui-palette-close { display: inline-flex; min-width: 44px; min-height: 44px; margin-right: calc(-1 * var(--sp-1)); color: var(--text-2); }
+  .ui-palette-clear, .ui-palette-foot, .ui-palette-esc, .ui-palette-keys { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-palette-spin { animation-duration: 2.4s; }
+  .ui-palette-item:active { transform: none; }
+}
+
+/* ------------------------------------------------------------------ the Explorer's place search (AreaPicker) */
+/* an opaque list (the panel's numbers never show through it), under sticky group titles of the same surface */
+.fh-picker .fh-listbox { background: var(--surface); }
+.fh-picker .fh-listbox.fh-listbox-groups { padding-top: 0; scroll-padding-block: 30px 6px; }
+.fh-picker .fh-listbox .fh-group-title { position: sticky; top: 0; z-index: 1; margin: 0 -6px; padding: 10px 14px 4px; background: var(--surface);
+  color: var(--text-3); font-size: var(--fs-11); font-weight: 600; line-height: var(--lh-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-picker .fh-listbox .fh-option { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 40px; padding: 5px 8px; }
+.fh-picker .fh-listbox .fh-option[aria-selected="true"] { box-shadow: var(--ring-accent); }
+.fh-picker .fh-option-icon { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 7px;
+  background: var(--surface-2); color: var(--text-2); }
+.fh-picker .fh-option-icon svg { width: 15px; height: 15px; }
+.fh-picker .fh-option[aria-selected="true"] .fh-option-icon { border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+.fh-picker .fh-option-text { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.fh-picker .fh-option-name { font-size: var(--fs-14); line-height: var(--lh-14); }
+.fh-picker .fh-listbox .fh-option-kind { color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); letter-spacing: 0; text-transform: none; }
+.fh-picker .fh-option-kind::first-letter { text-transform: uppercase; }
+.fh-picker .fh-picker-row { position: relative; }
+/* a very narrow window with a keyboard: the key legend would take two lines */
+@media (max-width: 420px) { .ui-palette-foot { display: none; } }
+.ui-palette-loading { padding: var(--sp-3) var(--sp-2) 0; color: var(--text-2); font-size: var(--fs-13); }
+/* the list's foot fades while more rows follow below (AreaPicker cuts its height to whole rows) */
+.fh-picker .fh-listbox[data-more] { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 14px), transparent); }

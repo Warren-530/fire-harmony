@@ -1,0 +1,26 @@
+# The research report: Quarto to PDF through Typst, in the project's look (_brand.yml, fonts/, the partials below).
+# Render: ~/nasa_work/tools/quarto-1.11.9/bin/quarto render report.qmd   (QR codes first: ../.venv/bin/python make_qr.py)
+project:
+  type: default
+format:
+  typst:
+    papersize: a4
+    fontsize: 10pt
+    section-numbering: "1.1"
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    citeproc: true            # Pandoc citeproc with the APA 7 CSL: correct year suffixes, initials and data set labels
+    keep-typ: true
+    font-paths: [fonts]
+    fig-format: png
+    template-partials:
+      - typst-template.typ
+      - page.typ
+      - typst-show.typ
+      - biblio.typ
+brand: _brand.yml
+lang: en-GB
+bibliography: references.bib
+csl: apa.csl
+link-citations: true

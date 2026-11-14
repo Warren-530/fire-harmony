@@ -1,0 +1,675 @@
+/* Styles of the Haze, Methods and Data pages (imported by those pages), in the "Mission Control" look of DESIGN.md.
+   Every colour comes from the theme variables (theme.css), so both themes work. The shared building blocks (ui.tsx,
+   ui.css) carry the page layout; these rules add what the three pages need.
+   Prefixes: fh-pg- shared, fh-doc- documentation layout, fh-fig- and fh-lightbox- figures, fh-code- code, fh-src- the
+   record's months, fh-hz- Haze, fh-dt- Data. */
+
+/* ---------------------------------------------------------------- page tokens */
+:root, :root[data-theme="dark"] {
+  /* --fh-sumatra, --fh-borneo and --fh-naive: theme.css (one colour per meaning on every page) */
+  --fh-accent-text: var(--accent);         /* the accent as text or a small mark (4.5:1 on the page) */
+  --fh-prose: color-mix(in srgb, var(--text) 84%, var(--text-2));
+  --fh-code-bg: var(--bg);
+  --fh-paper: #fcfcfb;                     /* the page colour of the report figures: their pictures sit on it */
+}
+:root[data-theme="light"] {
+  --fh-accent-text: var(--ember-600);
+  --fh-code-bg: var(--surface-3);
+}
+
+/* The three pages share one wrapper, so a few shared rules reach the text contrast of DESIGN.md (4.5:1) in both
+   themes: labels of tables and source lines use the secondary text colour, the eyebrow a darker ember on light. */
+.fh-pg { display: grid; gap: var(--sp-10); min-width: 0; }
+.fh-pg .ui-table thead th, .fh-pg .ui-figure-source { color: var(--text-2); }
+.fh-pg .ui-eyebrow { color: var(--fh-accent-text); }
+.fh-pg .ui-card-head .ui-btn { flex: none; }
+/* Long lines are hard to follow: notes stop at about 90 characters, even in wide cards, and avoid a last word alone. */
+.fh-pg .ui-note { max-width: 44em; text-wrap: pretty; }
+.fh-pg .ui-stat-context { text-wrap: pretty; }   /* no last word alone under a stat */
+
+/* ---------------------------------------------------------------- shared */
+.fh-pg-link { color: var(--text); font-weight: 500; text-decoration: underline; text-decoration-color: var(--border-strong);
+  text-decoration-thickness: 1px; text-underline-offset: 3px; transition: text-decoration-color var(--t-fast) var(--ease-out); }
+.fh-pg-link:hover { text-decoration-color: var(--accent); }
+.fh-pg-card-prose { display: grid; gap: 10px; }
+.fh-pg-card-prose p { margin: 0; line-height: 1.6; }
+.fh-pg-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.fh-pg-list li { position: relative; padding-left: 18px; line-height: 1.6; }
+.fh-pg-list li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.fh-pg-divider { height: 1px; margin: var(--sp-1) 0; background: var(--border); }
+.fh-pg-sub { display: grid; gap: var(--sp-3); }
+.fh-pg-sub-title { margin: 0; font-size: var(--fs-14); font-weight: 600; }
+
+/* Six stat tiles in two even rows (the default grid would leave one alone on a row). */
+.fh-pg-stats-3 > .ui-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fh-pg-stats-4 > .ui-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1080px) { .fh-pg-stats-3 > .ui-stat-grid, .fh-pg-stats-4 > .ui-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .fh-pg-stats-3 > .ui-stat-grid, .fh-pg-stats-4 > .ui-stat-grid { grid-template-columns: minmax(0, 1fr); } }
+.fh-pg-stat-skeletons { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* Chart legends (above a chart, inside the figure subtitle). Text stays in the text colours; the swatch carries the colour. */
+.fh-pg-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--sp-4); margin-top: var(--sp-2); color: var(--text-2); font-size: var(--fs-13); }
+.fh-pg-key { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+/* a long key (a guideline with its value) may wrap on a narrow phone, its swatch kept on the first line */
+@media (max-width: 420px) { .fh-pg-key { min-width: 0; max-width: 100%; white-space: normal; } .fh-pg-key > .fh-pg-swatch { flex: none; } }
+.fh-pg-swatch { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; }
+.fh-pg-swatch-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface); }
+.fh-pg-swatch-line { width: 18px; height: 2px; border-radius: 1px; }
+.fh-pg-swatch-rule { width: 18px; height: 1px; }
+.fh-pg-swatch-band { width: 18px; height: 10px; border-radius: 2px; background: var(--band); }
+
+/* A control row above a block (a select and a short hint). */
+.fh-pg-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); }
+.fh-pg-field { display: inline-flex; align-items: center; gap: 10px; }
+.fh-pg-field-label { color: var(--text-2); font-size: var(--fs-13); font-weight: 600; }
+.fh-pg-select-wrap { position: relative; display: inline-flex; }
+.fh-pg-select-wrap::after {
+  content: ""; position: absolute; top: 50%; right: 13px; width: 6px; height: 6px; margin-top: calc(-1 * var(--sp-1));
+  border: solid var(--text-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); pointer-events: none;
+}
+.fh-pg-select {
+  appearance: none; min-height: 36px; padding: 6px 36px 6px var(--sp-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+  background: var(--surface-2); color: var(--text); font: inherit; font-size: var(--fs-14); font-weight: 500; cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.fh-pg-select:hover { border-color: var(--text-3); background: var(--surface-3); }
+.fh-pg-select:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.fh-pg-select option { background: var(--surface-2); color: var(--text); }
+
+/* Small links to places in the Explorer. */
+.fh-pg-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fh-pg-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: var(--sp-1) var(--sp-3); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); background: transparent; color: var(--text-2); font-size: var(--fs-13); font-weight: 500; text-decoration: none;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.fh-pg-chip:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); color: var(--text); }
+.fh-pg-chip:active { transform: scale(0.97); }
+.fh-pg-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.fh-pg-chip-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; }
+
+/* A soft error inside a page (the data could not be loaded). */
+.fh-pg-problem { display: grid; gap: 10px; justify-items: start; }
+.fh-pg-problem p { margin: 0; }
+
+/* Copy buttons: "Copied" for a moment, with a green check (a word and an icon, never colour alone). */
+.fh-copy { white-space: nowrap; }
+.fh-copy[data-copied] { border-color: color-mix(in srgb, var(--good) 55%, var(--border-strong)); }
+.fh-copy[data-copied] svg { color: var(--good); }
+/* the two faces ("Copy", "Copied") share one cell, so the button keeps its width while they crossfade */
+.fh-copy-faces { display: inline-grid; }
+.fh-copy-face { display: inline-flex; grid-area: 1 / 1; align-items: center; justify-content: center; gap: var(--sp-2); opacity: 0; visibility: hidden;
+  transition: opacity var(--t-fast) var(--ease-out), visibility var(--t-fast); }
+.fh-copy-face[data-on] { opacity: 1; visibility: visible; }
+
+/* A list of facts: label left, value right in the number font. */
+.fh-facts { display: grid; margin: 0; }
+.fh-facts > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px var(--sp-3); padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--border); }
+.fh-facts > div:first-child { padding-top: 2px; }
+.fh-facts > div:last-child { border-bottom: none; }
+.fh-facts dt { color: var(--text-2); font-size: var(--fs-13); }
+.fh-facts dd { margin: 0; font-family: var(--font-mono); font-size: var(--fs-14); font-weight: 600; font-feature-settings: "zero" 1;
+  font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ---------------------------------------------------------------- documentation layout (Methods, Data) */
+.fh-doc { display: grid; grid-template-columns: 228px minmax(0, 1fr); gap: var(--sp-12); align-items: start; }
+.fh-doc-body { display: grid; gap: 56px; min-width: 0; counter-reset: fh-doc; }
+.fh-doc-body > .ui-section { scroll-margin-top: calc(var(--fh-sticky-top, 61px) + 16px); }
+
+/* Section numbers, as in the table of contents (hidden from screen readers: the heading reads as it is). */
+.fh-doc-body > .ui-section > .ui-section-head > .ui-section-title::before {
+  counter-increment: fh-doc; content: counter(fh-doc, decimal-leading-zero) / "";
+  display: inline-block; min-width: 2.3em; margin-right: 6px; color: var(--fh-accent-text);
+  font-family: var(--font-mono); font-size: 0.78em; font-weight: 600; letter-spacing: 0; vertical-align: 0.1em;
+}
+.fh-doc-body h2:focus { outline: none; }
+.fh-doc-body h2:focus-visible { outline: 2px solid var(--focus); outline-offset: 6px; border-radius: 4px; }
+
+/* The table of contents: sticky beside the content, with the reading progress and the current section lit. */
+.fh-doc-toc {
+  position: sticky; top: calc(var(--fh-sticky-top, 61px) + 24px); z-index: 2; display: grid; gap: var(--sp-3); align-content: start;
+  max-height: calc(100vh - var(--fh-sticky-top, 61px) - 48px); overflow-y: auto; overscroll-behavior: contain; padding: 2px var(--sp-1) var(--sp-2) 2px;
+}
+.fh-doc-toc-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); padding: 0 10px; }
+.fh-doc-toc-title { margin: 0; color: var(--text-2); font-size: var(--fs-12); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.fh-doc-toc-count { color: var(--text-2); font-size: var(--fs-12); }
+.fh-doc-progress { position: relative; display: block; height: 2px; margin: 0 10px; overflow: hidden; border-radius: 2px; background: var(--border); }
+.fh-doc-progress > span { position: absolute; inset: 0; transform: scaleX(0); transform-origin: left center; background: var(--accent);
+  box-shadow: 0 0 10px var(--accent); transition: transform var(--t-track) linear; }
+.fh-doc-toc-list { position: relative; display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.fh-doc-toc-list a {
+  position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: baseline; gap: 6px;
+  padding: var(--sp-2) 10px; border-radius: var(--radius-md); color: var(--text-2); font-size: var(--fs-14); line-height: 1.35; text-decoration: none;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.fh-doc-toc-list a::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 2px; border-radius: 2px;
+  background: transparent; transition: background var(--t-fast) var(--ease-out); }
+.fh-doc-toc-list a:hover { background: var(--surface-2); color: var(--text); }
+.fh-doc-toc-list a[aria-current="true"] { background: var(--accent-soft); color: var(--text); font-weight: 600; }
+.fh-doc-toc-list a[aria-current="true"]::before { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.fh-doc-toc-list a:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.fh-doc-toc-n { color: var(--text-2); font-size: var(--fs-12); font-weight: 500; }
+.fh-doc-toc-list a[aria-current="true"] .fh-doc-toc-n { color: var(--fh-accent-text); }
+.fh-doc-toc-list a[data-read] .fh-doc-toc-label { color: var(--text-2); }
+.fh-doc-toc-tools { display: grid; gap: 2px; padding-top: 10px; border-top: 1px solid var(--border); }
+.fh-doc-toc-tools .ui-btn { justify-content: flex-start; min-height: 34px; padding: var(--sp-1) 10px; font-size: var(--fs-13); }
+
+/* Prose: about 72 characters a line. An average character of Inter is about half an em wide (1ch, the width of "0",
+   is wider), so the measure is set in rem. Numbers in a sentence use the number font. */
+.fh-doc-prose { display: grid; gap: 14px; max-width: 35rem; }
+.fh-doc-prose p { margin: 0; color: var(--fh-prose); font-size: var(--fs-16); line-height: 1.7; text-wrap: pretty; }
+.fh-doc-n { color: var(--text); font-family: var(--font-mono); font-size: 0.9em; font-weight: 600; font-feature-settings: "zero" 1;
+  white-space: nowrap; }
+/* Limits: one column at the prose measure; two columns when the card is wide, so no line runs long. */
+.fh-doc-limits-box { container-type: inline-size; }
+.fh-doc-limits { gap: var(--sp-3); max-width: 35em; }
+.fh-doc-limits li { color: var(--fh-prose); text-wrap: pretty; }
+@container (min-width: 860px) { .fh-doc-limits { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--sp-10); max-width: none; } }
+.fh-better { color: var(--text); font-weight: 650; }
+
+/* The opening text of a section with its margin note (Lede): on a wide content area the note sits in a right column
+   and sticks while the text scrolls past, so a wide screen has no empty band beside the text; on a narrow one it
+   follows the text as a small card. Queried on the content area, not the window, since the contents column takes
+   228 px of it. (The query box is a wrapper: a container scopes counters, and the section numbers count across
+   the whole body.) */
+.fh-doc-lede-box { container: fh-doc / inline-size; min-width: 0; }
+.fh-doc-lede { display: grid; gap: var(--sp-4); }
+.fh-doc-margin { min-width: 0; max-width: 35rem; }
+@container fh-doc (min-width: 860px) {
+  .fh-doc-lede[data-aside] { grid-template-columns: minmax(0, 37rem) minmax(15rem, 19rem); justify-content: space-between; column-gap: var(--sp-10);
+    align-items: start; }
+  .fh-doc-lede[data-aside] > .fh-doc-prose { max-width: 37rem; }
+  .fh-doc-margin { position: sticky; top: calc(var(--fh-sticky-top, 61px) + var(--sp-6)); }
+}
+.fh-doc-note { display: grid; gap: var(--sp-1); padding: var(--sp-4) var(--sp-4) var(--sp-4) calc(var(--sp-4) + 2px); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); background:
+    linear-gradient(var(--accent), var(--accent)) left var(--sp-4) / 2px calc(100% - 2 * var(--sp-4)) no-repeat, var(--surface); }
+.fh-doc-note-label { margin: 0; color: var(--text-2); font-size: var(--fs-13); font-weight: 500; line-height: var(--lh-13); }
+.fh-doc-note-value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); margin: 0; }
+.fh-doc-note-value .ui-mono { font-size: var(--fs-stat-m); font-weight: 600; line-height: 1.15; letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fh-doc-note-unit { color: var(--text-2); font-size: var(--fs-13); font-weight: 500; white-space: nowrap; }
+.fh-doc-note-text { margin: 0; color: var(--fh-prose); font-size: var(--fs-13); line-height: 1.5; text-wrap: pretty; }
+.fh-doc-note-text .fh-doc-n { font-size: 0.95em; }
+.fh-doc-note-foot { padding-top: var(--sp-2); }
+/* A titled part of a section: a quiet heading with a hairline, then its text and charts. */
+.fh-doc-sub { display: grid; gap: var(--sp-4); min-width: 0; margin-top: var(--sp-4); }
+.fh-doc-sub-title { margin: 0; padding-top: var(--sp-4); border-top: 1px solid var(--border); font-size: var(--fs-16); font-weight: 650; line-height: var(--lh-16);
+  letter-spacing: -0.005em; }
+
+/* Small screens: the contents become a bar of chips under the header, which scrolls sideways. */
+@media (max-width: 1023px) {
+  .fh-doc { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .fh-doc-toc {
+    top: var(--fh-sticky-top, 0px); z-index: 30; gap: 0; max-height: none; overflow: visible; margin: 0 calc(-1 * var(--sp-6)); padding: var(--sp-2) var(--sp-6) 0;
+    border-bottom: 1px solid var(--border); background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+  }
+  .fh-doc-toc-head, .fh-doc-toc-tools { display: none; }
+  .fh-doc-toc-list { display: flex; gap: 6px; overflow-x: auto; padding: 0 0 var(--sp-2); scrollbar-width: none; }
+  .fh-doc-toc-list::-webkit-scrollbar { display: none; }
+  .fh-doc-toc-list li { flex: none; }
+  .fh-doc-toc-list a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px var(--sp-3); border: 1px solid var(--border);
+    border-radius: var(--radius-pill); white-space: nowrap; font-size: var(--fs-13); }
+  .fh-doc-toc-list a::before { display: none; }
+  .fh-doc-toc-list a[aria-current="true"] { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .fh-doc-progress { order: 3; margin: 0 calc(-1 * var(--sp-6)); border-radius: 0; }
+  .fh-doc-body { gap: 44px; }
+  .fh-doc-body > .ui-section { scroll-margin-top: calc(var(--fh-sticky-top, 100px) + 70px); }
+}
+@media (max-width: 760px) {
+  .fh-doc-toc { margin: 0 calc(-1 * var(--sp-4)); padding: var(--sp-2) var(--sp-4) 0; }
+  .fh-doc-progress { margin: 0 calc(-1 * var(--sp-4)); }
+  .fh-doc-prose p { font-size: var(--fs-16); line-height: 1.65; }
+}
+
+/* ---------------------------------------------------------------- key numbers (Methods) */
+.fh-keys > .ui-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fh-keys > .ui-stat-grid > .ui-stat { animation: ui-rise var(--t-slow) var(--ease-out) both; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(2) { animation-delay: 40ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(3) { animation-delay: 80ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(4) { animation-delay: 120ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(5) { animation-delay: 160ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(6) { animation-delay: 200ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:nth-child(7) { animation-delay: 240ms; }
+.fh-keys > .ui-stat-grid > .ui-stat:first-child {
+  grid-column: span 2; border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+  background: radial-gradient(120% 140% at 0% 0%, var(--accent-soft), transparent 58%), var(--surface);
+}
+@media (prefers-reduced-motion: reduce) { .fh-keys > .ui-stat-grid > .ui-stat { animation: none; } }
+@media (max-width: 1180px) { .fh-keys > .ui-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .fh-keys > .ui-stat-grid { grid-template-columns: minmax(0, 1fr); }
+  .fh-keys > .ui-stat-grid > .ui-stat:first-child { grid-column: auto; }
+}
+.fh-keys-skeleton { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+/* The jump of 2012 at a glance, inside the first key number. */
+.fh-jump { display: grid; gap: 6px; margin-top: var(--sp-3); }
+.fh-jump svg { display: block; width: 100%; height: 44px; overflow: visible; }
+.fh-jump-naive { fill: none; stroke: var(--fh-naive); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fh-jump-harm { fill: none; stroke: var(--harmonized); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.fh-jump-keys { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-4); color: var(--text-2); font-size: var(--fs-12); }
+.fh-jump-keys > span { display: inline-flex; align-items: center; }
+.fh-jump-key { display: inline-block; width: 14px; height: 2px; margin-right: 6px; border-radius: 1px; }
+.fh-jump-key-naive { background: var(--fh-naive); }
+.fh-jump-key-harm { height: 3px; background: var(--harmonized); }
+
+/* ---------------------------------------------------------------- figures and the lightbox */
+.fh-fig { display: grid; gap: var(--sp-3); margin: 0; }
+/* Next to a taller chart the picture card fills its cell like the chart cards do: the paper mat keeps the picture's
+   own shape and sits in the middle of the room left, and the caption keeps to the bottom, so the two cards end alike
+   and no bright mat grows around the picture. */
+.ui-card-body:has(> .fh-fig) { flex: 1 1 auto; }
+.fh-fig { height: 100%; grid-template-rows: minmax(0, 1fr) auto; }
+.fh-fig-plate { display: grid; place-items: center; align-self: center; justify-self: stretch; }
+.fh-fig-plate { position: relative; overflow: hidden; padding: var(--sp-2); border-radius: var(--radius-md); background: var(--fh-paper);
+  box-shadow: 0 0 0 1px var(--border); cursor: zoom-in; box-sizing: content-box; }
+.fh-fig-plate img { display: block; width: 100%; height: 100%; object-fit: contain;
+  transition: transform var(--t-slow) var(--ease-out), filter var(--t-med) var(--ease-out); }
+.fh-fig-plate:hover img { transform: scale(1.012); filter: none; }
+.fh-fig-zoom { position: absolute; right: 10px; bottom: 10px; display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--glass-strong); color: var(--text);
+  opacity: 0; transform: translateY(4px); transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+.fh-fig-plate:hover .fh-fig-zoom { opacity: 1; transform: none; }
+.fh-fig-caption { margin: 0; max-width: 44em; color: var(--text-2); font-size: var(--fs-13); line-height: 1.55; text-wrap: pretty; }
+.fh-fig-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.fh-fig-n { color: var(--text-2); font-size: var(--fs-12); letter-spacing: 0.02em; }
+.fh-fig-open { min-height: 34px; padding: var(--sp-1) 10px; font-size: var(--fs-13); }
+
+.fh-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
+.fh-lightbox {
+  width: 100vw; max-width: 100vw; height: 100vh; height: 100dvh; max-height: 100dvh; margin: 0; padding: var(--sp-6); border: none;
+  background: transparent; color: var(--text); overflow: auto; overscroll-behavior: contain;
+}
+.fh-lightbox[open] { display: grid; place-items: center; }
+.fh-lightbox::backdrop { background: color-mix(in srgb, var(--bg) 84%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.fh-lightbox[open]::backdrop { animation: ui-fade var(--t-med) var(--ease-out); }
+.fh-lightbox-panel {
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 14px; width: min(1360px, 100%); max-height: 100%;
+  padding: var(--sp-4) 18px 18px; border: 1px solid var(--border-strong); border-radius: 16px; background: var(--glass-strong);
+  box-shadow: var(--elev-2); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); animation: ui-rise var(--t-med) var(--ease-out);
+}
+.fh-lightbox-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3) var(--sp-5); }
+.fh-lightbox-titles { display: grid; gap: 2px; min-width: 0; }
+.fh-lightbox-count { margin: 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-lightbox-title { margin: 0; font-size: var(--fs-16); font-weight: 650; line-height: 1.35; }
+.fh-lightbox-tools { display: flex; flex: none; align-items: center; gap: 6px; }
+.fh-lightbox-stage { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--sp-3);
+  min-height: 0; touch-action: pan-y; }
+.fh-lightbox-stage:not(:has(.fh-lightbox-nav)) { grid-template-columns: minmax(0, 1fr); }   /* one picture, no arrows */
+.fh-lightbox-plate { justify-self: center; max-width: 100%; overflow: hidden; border-radius: var(--radius-md); background: var(--fh-paper);
+  animation: ui-fade var(--t-med) var(--ease-out); }
+.fh-lightbox-plate img { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 250px); }
+.fh-lightbox-nav { width: 44px; height: 44px; border-radius: var(--radius-pill); }
+.fh-lightbox-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-2) var(--sp-6); }
+.fh-lightbox-caption { margin: 0; max-width: 92ch; color: var(--text-2); font-size: var(--fs-14); line-height: 1.55; }
+.fh-lightbox-keys { display: flex; flex: none; gap: var(--sp-4); margin: 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-lightbox-keys .ui-kbd { margin-right: var(--sp-1); }
+@media (max-width: 760px) {
+  .fh-lightbox { padding: var(--sp-2); }
+  .fh-lightbox-panel { padding: var(--sp-3); gap: 10px; }
+  .fh-lightbox-tools .ui-btn:not(.ui-btn-icon) { display: none; }
+  .fh-lightbox-stage { grid-template-columns: minmax(0, 1fr); }
+  .fh-lightbox-nav { position: absolute; top: 50%; z-index: 1; transform: translateY(-50%); background: var(--glass-strong); }
+  .fh-lightbox-prev { left: 6px; }
+  .fh-lightbox-next { right: 6px; }
+  .fh-lightbox-plate img { max-height: calc(100dvh - 260px); }
+  .fh-lightbox-keys { display: none; }
+}
+
+/* ---------------------------------------------------------------- code and citation boxes */
+.fh-code-box, .fh-cite { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--fh-code-bg); }
+.fh-code-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; min-height: calc(var(--ctl-sm) + var(--sp-3));
+  padding: 0 6px 0 var(--sp-1);
+  border-bottom: 1px solid var(--border); }
+.fh-code-tabs { border-bottom: none; }
+/* The bar never wraps, so the copy button keeps its corner on a narrow phone: the tabs give way first (tighter, then
+   scrolling sideways), the button never moves. */
+.fh-code-bar { flex-wrap: nowrap; min-width: 0; }
+.fh-code-bar .fh-code-tabs { flex: 0 1 auto; min-width: 0; padding-bottom: 1px; overflow-x: auto; scrollbar-width: none; }
+.fh-code-bar .fh-code-tabs::-webkit-scrollbar { display: none; }
+.fh-code-bar .fh-code-tabs .ui-tab { flex: none; white-space: nowrap; }
+.fh-code-bar .fh-code-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fh-code-bar .fh-copy { flex: none; }
+@media (max-width: 400px) {
+  .fh-code-bar .fh-code-tabs .ui-tab { padding-inline: 10px; }
+  /* the copy button keeps its icon only (its aria-label and tooltip name it), so the tabs keep their room */
+  .fh-code-bar .fh-copy { justify-content: center; min-width: var(--ctl-touch); padding-inline: 0; }
+  .fh-code-bar .fh-copy .fh-copy-text { display: none; }
+}
+.fh-code-label { margin: 0; padding: var(--sp-2) 10px; color: var(--text-2); font-size: var(--fs-13); font-weight: 600; }
+/* Every copy button of a block sits at the top right of its bar, the same distance from the corner. */
+.fh-code-copy { min-height: var(--ctl-sm); margin-left: auto; padding: var(--sp-1) 10px; font-size: var(--fs-13); }
+.fh-code {
+  margin: 0; padding: 14px var(--sp-4) var(--sp-4); overflow-x: auto; color: var(--text); font-family: var(--font-mono); font-size: var(--fs-13);
+  font-feature-settings: "zero" 1; font-variant-ligatures: none; line-height: 1.7; tab-size: 2; white-space: pre;   /* "=>" and ">=" read as typed */
+}
+.fh-code:focus-visible, .fh-cite-text:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.fh-code-key { color: var(--ember-700); font-weight: 600; }
+.fh-code-string { color: color-mix(in srgb, var(--sensor-noaa20) 62%, var(--text)); }
+.fh-code-number { color: color-mix(in srgb, var(--sensor-modis) 62%, var(--text)); }
+.fh-code-fn { color: color-mix(in srgb, var(--sensor-noaa21) 56%, var(--text)); }
+.fh-code-comment { color: var(--text-2); font-style: italic; }
+.fh-cite-text p { margin: 0; padding: 14px var(--sp-4) var(--sp-4); font-size: var(--fs-15); line-height: 1.6; }
+.fh-cite-bib { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- sortable tables */
+.fh-sort { display: inline-flex; align-items: center; gap: var(--sp-1); margin: -2px 0; padding: 2px 0; border: none; border-radius: 4px; background: none;
+  color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.fh-sort:hover { color: var(--text); }
+.fh-sort-icon { display: inline-flex; opacity: 0.5; transition: opacity var(--t-fast) var(--ease-out); }
+.fh-sort:hover .fh-sort-icon { opacity: 0.9; }
+.fh-sort-icon[data-dir="ascending"], .fh-sort-icon[data-dir="descending"] { color: var(--fh-accent-text); opacity: 1; }
+.fh-pg .fh-sort-table thead th[aria-sort] { color: var(--text); }
+
+/* ---------------------------------------------------------------- the record's months, by source */
+.fh-src { display: grid; gap: var(--sp-4); }
+.fh-src-track { display: grid; gap: 6px; }
+.fh-src-bar { display: flex; gap: 2px; height: 28px; }
+.fh-src-seg { min-width: 4px; border-radius: 4px; cursor: default; }
+/* Terra alone: a tint of the MODIS colour, with a MODIS edge so the shape keeps 3:1 against the card */
+.fh-src-seg[data-k="terra"], .fh-src-swatch[data-k="terra"] {
+  background: color-mix(in srgb, var(--sensor-modis) 45%, var(--surface)); box-shadow: inset 0 0 0 1px var(--sensor-modis); }
+.fh-src-seg[data-k="terra_aqua"], .fh-src-swatch[data-k="terra_aqua"] { background: var(--sensor-modis); }
+.fh-src-seg[data-k="viirs"], .fh-src-swatch[data-k="viirs"] { background: var(--sensor-noaa20); }
+.fh-src-seg[data-k="pending"], .fh-src-swatch[data-k="pending"] {
+  background: repeating-linear-gradient(135deg, var(--border-strong) 0 2px, transparent 2px 6px); box-shadow: inset 0 0 0 1px var(--border-strong); }
+.fh-src-axis { position: relative; height: 16px; }
+.fh-src-axis span { position: absolute; top: 0; transform: translateX(-50%); color: var(--text-2); font-size: var(--fs-11); }
+.fh-src-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-3) var(--sp-5); margin: 0; padding: 0; list-style: none; }
+.fh-src-legend li { display: grid; grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; row-gap: 1px; align-content: start; }
+.fh-src-swatch { grid-row: span 3; width: 12px; height: 12px; margin-top: var(--sp-1); border-radius: 3px; }
+.fh-src-name { font-size: var(--fs-13); font-weight: 600; line-height: 1.4; }
+.fh-src-when { color: var(--text-2); font-size: var(--fs-13); line-height: 1.4; }
+.fh-src-months { color: var(--text-2); font-size: var(--fs-12); }
+
+/* ---------------------------------------------------------------- data */
+.fh-dt-sources .ui-table th[scope="row"] { min-width: 12em; font-weight: 400; }
+.fh-dt-sources .ui-table td { min-width: 10em; color: var(--fh-prose); }
+.fh-dt-source { display: grid; gap: 2px; }
+.fh-dt-source-name { display: inline-flex; align-items: center; gap: var(--sp-1); width: fit-content; color: var(--text); font-weight: 600;
+  text-decoration: underline; text-decoration-color: var(--border-strong); text-decoration-thickness: 1px; text-underline-offset: 3px;
+  transition: text-decoration-color var(--t-fast) var(--ease-out); }
+.fh-dt-source-name:hover { text-decoration-color: var(--accent); }
+.fh-dt-source-name svg { flex: none; color: var(--text-2); }
+.fh-dt-source-detail { color: var(--text-2); font-size: var(--fs-12); }
+.fh-pg-label { display: none; }
+/* On a phone, tables marked fh-pg-stack become one card per row: the first cell, then the others, each with its label.
+   The column headers stay for screen readers. */
+@media (max-width: 760px) {
+  .fh-pg-stack .ui-table, .fh-pg-stack .ui-table tbody, .fh-pg-stack .ui-table tr,
+  .fh-pg-stack .ui-table th[scope="row"], .fh-pg-stack .ui-table td { display: block; min-width: 0; }
+  .fh-pg-stack .ui-table caption { display: block; max-width: none; }
+  .fh-pg-stack .ui-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .fh-pg-stack .ui-table tr { display: grid; gap: var(--sp-2); padding: 14px 0; border-bottom: 1px solid var(--grid); }
+  .fh-pg-stack .ui-table tbody tr:last-child { border-bottom: none; }
+  .fh-pg-stack .ui-table tbody tr:hover { background: none; }
+  .fh-pg .fh-pg-stack .ui-table th[scope="row"], .fh-pg .fh-pg-stack .ui-table td { padding: 0; border: none; }
+  /* a label wraps inside its own half of the card (a number cell would keep it on one line and run it into the next) */
+  .fh-pg-label { display: block; margin-bottom: 2px; color: var(--text-2); font-family: var(--font-sans); font-size: var(--fs-12); font-weight: 600;
+    line-height: var(--lh-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; white-space: normal; overflow-wrap: break-word; }
+  .fh-pg-stack .fh-dt-in code { white-space: normal; }
+  /* Numbers in a stacked card: two label and value pairs a line, under the row's name. */
+  .fh-pg-stack-pairs .ui-table tr { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3) var(--sp-4); }
+  .fh-pg-stack-pairs .ui-table th[scope="row"] { grid-column: 1 / -1; }
+  .fh-pg .fh-pg-stack .ui-table td.ui-num { text-align: left; white-space: normal; }
+  .fh-pg-stack .fh-pg-two { justify-items: start; }
+
+  /* The sortable files table: the header becomes a row of sort buttons, then one card per file. */
+  .fh-sort-table[data-stack], .fh-sort-table[data-stack] thead, .fh-sort-table[data-stack] tbody { display: block; }
+  .fh-sort-table[data-stack] caption { display: block; max-width: none; }
+  .fh-sort-table[data-stack] thead tr { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-bottom: 10px; border-bottom: 1px solid var(--baseline); }
+  .fh-pg .fh-sort-table[data-stack] thead th { display: block; padding: 0; border: none; }
+  .fh-sort-table[data-stack] thead th:not(:has(.fh-sort)) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  /* the name and what it holds take full lines; the rows and the size follow side by side, and wrap if they must */
+  .fh-sort-table[data-stack] tbody tr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px var(--sp-4); padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--grid); }
+  .fh-sort-table[data-stack] tbody tr:last-child { border-bottom: none; }
+  .fh-sort-table[data-stack] tbody tr:hover { background: none; }
+  .fh-pg .fh-sort-table[data-stack] tbody th, .fh-pg .fh-sort-table[data-stack] tbody td { display: block; min-width: 0; padding: 0; border: none;
+    text-align: left; }
+  .fh-sort-table[data-stack] tbody th, .fh-sort-table[data-stack] tbody td:nth-child(2) { flex: 1 0 100%; }
+  .fh-sort-table[data-stack] tbody td.ui-num { flex: none; white-space: nowrap; }
+  .fh-sort-table[data-stack] tbody td.ui-num::before { content: attr(data-label); margin-right: 6px; color: var(--text-2);
+    font-family: var(--font-sans); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+}
+.fh-dt-quote { margin: 0; padding: 14px var(--sp-4); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-md) var(--radius-md) 0; background: var(--fh-code-bg);
+  font-size: var(--fs-15); line-height: 1.6; }
+.fh-dt-file { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--text); font-family: var(--font-mono); font-size: var(--fs-13);
+  font-weight: 600; text-decoration: none; white-space: nowrap; }
+a.fh-dt-file svg { flex: none; color: var(--fh-accent-text); }
+a.fh-dt-file span { text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+a.fh-dt-file:hover span { text-decoration-color: var(--accent); }
+.fh-dt-file-folder { padding-left: 22px; }
+/* Inline code, in sentences and in tables alike: a quiet chip that keeps the line height (no border, line height 1,
+   padding in em), so a line with code is as tall as one without. Code blocks (pre, .fh-code) are left alone. */
+.fh-pg :not(pre, .fh-code) > code { padding: 0.1em 0.35em; border-radius: var(--radius-sm); background: var(--surface-3); color: var(--text);
+  font-family: var(--font-mono); font-size: 0.875em; font-feature-settings: "zero" 1; line-height: 1; white-space: nowrap;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.fh-dt-col { font-weight: 600; }
+.fh-dt-inline { white-space: nowrap; }   /* "NOAA-20" never breaks at its hyphen */
+
+/* ---------------------------------------------------------------- the app's files (Data) */
+.fh-wf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-4); margin: 0; padding: 0; list-style: none; }
+.fh-wf-card { display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; padding: var(--sp-5); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); background: var(--surface); }
+.fh-wf-title { margin: 0; font-size: var(--fs-15); font-weight: 600; line-height: 1.35; }
+.fh-wf-files { display: grid; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; }
+.fh-wf-files li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px var(--sp-3); }
+.fh-wf-file { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: var(--ctl-sm); color: var(--text); text-decoration: none; }
+.fh-wf-file svg { flex: none; color: var(--fh-accent-text); }
+.fh-pg .fh-wf-file code { font-size: var(--fs-13); font-weight: 600; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.fh-wf-file:hover code { text-decoration-color: var(--accent); }
+.fh-wf-size { color: var(--text-2); font-size: var(--fs-12); white-space: nowrap; }
+.fh-wf-what { margin: 0; color: var(--fh-prose); font-size: var(--fs-14); line-height: 1.55; text-wrap: pretty; }
+.fh-wf-fields { display: grid; gap: var(--sp-2); margin: 0; padding-top: var(--sp-3); border-top: 1px solid var(--border); }
+.fh-wf-fields > div { display: grid; gap: 2px; }
+.fh-wf-fields dt { margin: 0; }
+.fh-wf-fields dd { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: 1.5; }
+.fh-wf-count { margin: auto 0 0; padding-top: var(--sp-2); color: var(--text-2); font-size: var(--fs-12); }
+@media (pointer: coarse), (max-width: 760px) { .fh-wf-file { min-height: var(--ctl-touch); } }
+
+/* ---------------------------------------------------------------- haze */
+/* The city picker (Haze.tsx CityPicker): a search box, then the cities grouped by country. A country with many cities
+   takes a row of its own; the small ones (Singapore, Brunei) share one. Each city is a compact button with the split
+   of its smoke under its name. On a phone each country is one row that scrolls sideways (edge fades show there is
+   more), so all of them fit on the first screen. */
+.fh-hz-picker { display: grid; gap: var(--sp-3); min-width: 0; padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface); }
+.fh-hz-picker-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2) var(--sp-4); }
+.fh-hz-find { position: relative; display: flex; align-items: center; flex: 0 1 320px; min-width: 0; color: var(--text-2); }
+.fh-hz-find > svg { position: absolute; left: 10px; pointer-events: none; }
+.fh-hz-find-input { width: 100%; min-height: var(--ctl); padding: 0 var(--sp-3) 0 34px; border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+  background: var(--surface-2); color: var(--text); font: inherit; font-size: var(--fs-14); }
+.fh-hz-find-input::placeholder { color: var(--text-3); }
+.fh-hz-find-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.fh-hz-picker-count { margin: 0; color: var(--text-2); font-size: var(--fs-13); }
+.fh-hz-cities { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-6); min-width: 0; }
+.fh-hz-group { display: grid; gap: 6px; min-width: 0; flex: 0 1 auto; }
+.fh-hz-group[data-size="many"] { flex: 1 1 100%; }
+.fh-hz-group-name { display: flex; align-items: baseline; gap: var(--sp-2); margin: 0; color: var(--text-2); font-size: var(--fs-12); font-weight: 600;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-hz-group-name > span { color: var(--text-3); font-size: var(--fs-11); letter-spacing: 0; }
+.fh-hz-group-list { display: flex; flex-wrap: wrap; gap: var(--sp-2); min-width: 0; }
+/* (relative: its words for screen readers stay inside it, never out past the end of a row that scrolls sideways) */
+.fh-hz-city {
+  position: relative; display: grid; gap: 5px; align-content: center; min-width: 0; min-height: var(--ctl); padding: 6px var(--sp-3) 7px; border: 1px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); font: inherit; text-align: left; cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out);
+}
+.fh-hz-city:hover { border-color: var(--border-strong); background: var(--surface-3); }
+.fh-hz-city:active { transform: scale(0.97); }
+.fh-hz-city[aria-checked="true"] { border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: var(--accent-soft); box-shadow: var(--accent-glow); }
+.fh-hz-city:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fh-hz-city-name { overflow: hidden; font-size: var(--fs-14); font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.fh-hz-city-country { color: var(--text-2); font-size: var(--fs-12); }
+.fh-hz-city-bar { display: flex; gap: 2px; height: 3px; overflow: hidden; border-radius: 2px; }
+.fh-hz-city-bar > span { min-width: 3px; }
+.fh-hz-city-share { color: var(--text-2); font-family: var(--font-mono); font-size: var(--fs-11); line-height: 1.35; overflow-wrap: anywhere; }
+.fh-hz-none { margin: 0; color: var(--text-2); font-size: var(--fs-14); }
+.fh-hz-none a, .fh-hz-scope-link { color: var(--accent-strong, var(--accent)); font-weight: 600; text-underline-offset: 3px; }
+:root[data-theme="light"] :is(.fh-hz-none a, .fh-hz-scope-link) { color: var(--ember-800); }
+/* why the haze link covers this region only (two sentences), with the way to anywhere else */
+.fh-hz-scope { max-width: 62em; margin: calc(-1 * var(--sp-4)) 0 0; color: var(--text-2); font-size: var(--fs-13); line-height: 1.55; }
+.fh-hz-scope-link { display: inline-flex; align-items: center; min-height: var(--ctl-sm); }
+.fh-hz-weak .ui-table-wrap { max-width: 720px; }
+@media (max-width: 760px) {
+  .fh-hz-picker { padding: var(--sp-3); }
+  .fh-hz-find { flex-basis: 100%; }
+  .fh-hz-cities { gap: var(--sp-3) var(--sp-4); }
+  /* one row per country, scrolling sideways (Singapore and Brunei share a line) */
+  .fh-hz-group-list { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; margin: 0 calc(-1 * var(--sp-3)); padding: 2px var(--sp-3) 4px;
+    scroll-padding-inline: var(--sp-3); }
+  .fh-hz-city { flex: none; max-width: 70vw; }
+  .fh-hz-scope { margin-top: calc(-1 * var(--sp-2)); }
+}
+@media (pointer: coarse), (max-width: 760px) {
+  .fh-hz-city, .fh-hz-find-input, .fh-hz-scope-link { min-height: var(--ctl-touch); }
+}
+.fh-hz-picker-note { margin-top: -6px; }
+
+/* The season card is as tall as the chart beside it: its facts share the height in equal rows of at least 44 px, so
+   the footnote follows the last fact with no hole above it. */
+.fh-hz-season { display: flex; min-width: 0; }
+.fh-hz-season > .ui-card { flex: 1; }
+.fh-hz-season .ui-card-body { flex: 1; display: flex; flex-direction: column; }
+.fh-hz-season .ui-card-footer { margin-top: 0; padding-top: var(--sp-2); border-top: 1px solid var(--border); }
+.fh-hz-facts { display: grid; flex: 1; grid-auto-rows: minmax(var(--ctl-touch), 1fr); gap: 0; margin: 0; }
+.fh-hz-facts > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px var(--sp-3); padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); }
+.fh-hz-facts > div:first-child { padding-top: 2px; }
+.fh-hz-facts > div:last-child { border-bottom: none; }
+.fh-hz-facts dt { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--text-2); font-size: var(--fs-13); }
+.fh-hz-facts dd { margin: 0; font-family: var(--font-mono); font-size: var(--fs-14); font-weight: 600; font-feature-settings: "zero" 1; text-align: right; }
+.fh-hz-facts dd small { color: var(--text-2); font-family: var(--font-sans); font-size: var(--fs-12); font-weight: 500; }
+
+.fh-hz-cell { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
+.fh-hz-cell-bar { display: inline-block; width: 44px; height: 6px; overflow: hidden; border-radius: 3px; background: var(--border); }
+.fh-hz-cell-bar > span { display: block; height: 100%; border-radius: 3px; background: var(--fh-sumatra); }
+.fh-hz-cell-estimate .fh-hz-cell-bar > span { opacity: 0.5; }   /* an estimate: the faded bar, as in the season chart */
+.fh-hz-city-btn {
+  padding: 0; border: none; background: none; color: var(--text); font: inherit; font-weight: 600; text-align: left; white-space: nowrap;
+  text-decoration: underline; text-decoration-color: var(--border-strong); text-decoration-thickness: 1px; text-underline-offset: 3px; cursor: pointer;
+}
+.fh-hz-city-btn:hover { text-decoration-color: var(--accent); }
+.fh-hz-city-cell { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-2); }
+/* The card title and subtitle already name each city table, so its caption is for screen readers only. */
+.fh-pg .fh-hz-tables .ui-table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 520px) { .fh-hz-cell-bar { display: none; } }
+.fh-hz-sources { display: grid; gap: 14px; }
+/* the fire around the city: a bar under its numbers, with the two ways to open it */
+.fh-hz-around { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3) var(--sp-6);
+  padding: var(--sp-4) var(--sp-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+.fh-hz-around-text { display: grid; gap: 2px; min-width: 0; flex: 1 1 22rem; }
+.fh-hz-around-title { margin: 0; font-size: var(--fs-15); font-weight: 600; }
+.fh-hz-around-sub { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: 1.5; }
+.fh-hz-around-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+@media (max-width: 560px) { .fh-hz-around-actions, .fh-hz-around-actions .ui-btn { width: 100%; } }
+.fh-hz-source-title { display: flex; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-2); font-size: var(--fs-13); font-weight: 600; }
+
+/* ---------------------------------------------------------------- guards for the shared blocks on these pages */
+/* Links that look like buttons. */
+.fh-pg a.ui-btn { text-decoration: none; }
+/* The "Show the numbers" table of a chart: closed, it takes no room; open, it uses the full width of the figure. */
+.fh-pg .ui-figure-foot > .ui-figure-table { min-width: 0; max-width: 100%; }
+.fh-pg .ui-figure-table:not([open]) > .ui-table-wrap { display: none; }
+.fh-pg .ui-figure-table[open] { flex-basis: 100%; order: 2; }
+.fh-src-seg.ui-tip[data-align="start"]::after { left: 0; transform: translateY(4px); }
+.fh-src-seg.ui-tip[data-align="end"]::after { left: auto; right: 0; transform: translateY(4px); }
+.fh-src-seg.ui-tip[data-align]:hover::after { transform: none; }
+/* A grid with a table in it gives every card the full width once the page is too narrow for the table beside another
+   card (charts' own "Show the numbers" tables do not count). */
+@media (max-width: 1279px) {
+  .fh-doc .ui-grid:has(.ui-table-wrap:not(.ui-figure-table .ui-table-wrap)) { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 1023px) {
+  .fh-pg .ui-grid:has(.ui-table-wrap:not(.ui-figure-table .ui-table-wrap)) { grid-template-columns: minmax(0, 1fr); }
+}
+/* Tables. When a wide table scrolls sideways on a phone, its caption stays inside the visible width. */
+.fh-pg .ui-table-wrap { container-type: inline-size; }
+.fh-pg .ui-table caption { position: sticky; left: 0; max-width: 100cqi; }
+.fh-pg .ui-table thead th { white-space: normal; }   /* long column names wrap before a table has to scroll */
+@media (min-width: 761px) {
+  .fh-pg .fh-pg-keep-names .ui-table tbody th { white-space: nowrap; }   /* short row names read best on one line */
+}
+@media (max-width: 760px) {
+  .fh-pg .ui-table th, .fh-pg .ui-table td { padding-inline: 6px; }
+  .fh-pg .ui-table tbody th { min-width: 8.5em; }
+  .fh-pg .fh-pg-wrap-names .ui-table tbody th { min-width: 0; }   /* short names that may wrap, so the numbers fit */
+}
+@media (max-width: 380px) {
+  .fh-pg .ui-table th, .fh-pg .ui-table td { padding-inline: var(--sp-1); }
+}
+/* A number with a short note under it, in a table cell. */
+.fh-pg-two { display: inline-grid; justify-items: end; gap: 2px; }
+.fh-pg-two-note { color: var(--text-2); font-family: var(--font-sans); font-size: var(--fs-12); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- touch screens and phones
+   Every control and every link that stands alone is at least 44 px to a finger (DESIGN.md). Links inside a sentence
+   keep the line height of the text. */
+@media (pointer: coarse), (max-width: 760px) {
+  .fh-pg-select { min-height: var(--ctl-touch); }
+  .fh-pg-chip { min-height: var(--ctl-touch); padding-inline: var(--sp-4); }
+  .fh-hz-city-btn, .fh-dt-source-name, a.fh-dt-file { display: inline-flex; align-items: center; min-height: var(--ctl-touch); }
+  .fh-dt-file-folder { display: inline-flex; align-items: center; min-height: var(--ctl-touch); }
+  .fh-sort { min-width: var(--ctl-touch); min-height: var(--ctl-touch); margin: calc(-1 * var(--sp-2)) 0; }
+  .fh-pg .ui-table a.fh-pg-link { display: inline-flex; align-items: center; min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+  .fh-doc-toc-list a { min-height: var(--ctl-touch); }
+  .fh-doc-toc-tools .ui-btn, .fh-fig-open, .fh-code-copy { min-height: var(--ctl-touch); }
+  .fh-code-bar { min-height: calc(var(--ctl-touch) + var(--sp-2)); }
+  .fh-lightbox-tools .ui-btn { min-height: var(--ctl-touch); }
+}
+/* Phones held sideways: the pinned contents bar stays within 52 px (36 px chips; app.css trims its padding), so the
+   short screen is left to the page. */
+@media (max-width: 880px) and (max-height: 500px) {
+  .fh-doc-toc-list a { min-height: var(--ctl); padding-block: var(--sp-1); }
+}
+
+/* Haze: the season card leads with the days above the WHO 24 hour guideline; a second line under a stat */
+.fh-hz-days { display: grid; gap: 2px; margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface-2); }
+.fh-hz-days p { margin: 0; }
+.fh-hz-days-value { display: flex; align-items: baseline; gap: var(--sp-2); color: var(--text); }
+.fh-hz-days-value b { font-size: var(--fs-stat-m, 1.75rem); font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fh-hz-days-value span, .fh-hz-days-label, .fh-hz-days-none { color: var(--text-2); font-size: var(--fs-13); }
+.fh-hz-second { display: block; margin-top: var(--sp-1); }
+
+/* Haze: next months, the fire outlook upwind */
+.fh-hz-next { display: grid; gap: var(--sp-4); }
+.fh-hz-next-plain { margin: 0; max-width: 60ch; color: var(--text-2); font-size: var(--fs-14); line-height: 1.5; }
+.fh-hz-next-none { margin: 0; color: var(--text-2); }
+.fh-hz-next-months { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--sp-3); margin: 0; padding: 0; list-style: none; }
+.fh-hz-next-month { display: grid; align-content: start; gap: var(--sp-2); min-width: 0; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface-2); }
+.fh-hz-next-when { margin: 0; font-size: var(--fs-15); font-weight: 600; }
+.fh-hz-next-regions, .fh-hz-next-places { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+.fh-hz-next-region { display: grid; gap: 4px; }
+.fh-hz-next-name { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--text-2); font-size: var(--fs-12); font-weight: 600;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.fh-hz-next-out { color: var(--text-2); font-size: var(--fs-13); }
+.fh-hz-next-place { display: grid; gap: 1px; min-height: var(--ctl-touch); padding: 6px var(--sp-2); margin: 0 calc(-1 * var(--sp-2)); border-radius: var(--radius-sm);
+  color: var(--text); text-decoration: none; transition: background-color var(--t-fast) var(--ease-out); }
+.fh-hz-next-place:hover { background: var(--surface-3); }
+.fh-hz-next-place:hover .fh-hz-next-place-name { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.fh-hz-next-place-name { font-size: var(--fs-14); font-weight: 600; }
+.fh-hz-next-p { color: var(--text-2); font-size: var(--fs-13); }
+.fh-hz-next-p b { color: var(--text); font-size: var(--fs-15); font-weight: 650; }
+.fh-hz-next-skill { color: var(--text-2); font-size: var(--fs-12); }
+.fh-hz-next-head { margin: 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-hz-next-place { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--sp-3); }
+.fh-hz-next-normal { margin-left: 6px; color: var(--text-2); font-size: var(--fs-12); }
+.fh-hz-next-more summary { display: inline-flex; align-items: center; min-height: var(--ctl-touch); color: var(--text-2); font-size: var(--fs-13); cursor: pointer; }
+.fh-hz-next-more summary:hover { color: var(--text); }
+
+/* the contents on a phone: one select (the chips need a long sideways scroll there) */
+.fh-doc-toc-select { display: none; }
+@media (max-width: 767px) {
+  .fh-doc-toc-list { display: none !important; }
+  .fh-doc-toc-select { position: relative; display: flex; align-items: center; gap: var(--sp-2); padding: 0 0 var(--sp-2); }
+  .fh-doc-toc-select-n { flex: none; color: var(--fh-accent-text); font-size: var(--fs-12); }
+  .fh-doc-toc-select select { flex: 1; min-width: 0; min-height: var(--ctl-touch); padding: 0 36px 0 var(--sp-3); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md); background: var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a9b1bd' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+    color: var(--text); font: inherit; font-size: var(--fs-14); font-weight: 600; appearance: none; -webkit-appearance: none; }
+  .fh-doc-toc-select select:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+}

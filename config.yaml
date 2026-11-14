@@ -1,0 +1,33 @@
+# Fire Harmony pipeline configuration (all paths outside the repo)
+paths:
+  raw: ~/nasa_work/data/raw
+  work: ~/nasa_work/data/work          # silver / gold layers (large, local only)
+  products: ~/nasa_work/data/products  # files published to the app
+  duckdb_temp: ~/nasa_work/data/tmp_duckdb
+
+duckdb:
+  memory_limit: 2GB                     # machine has 7 GB with ~3 GB used by other apps; DuckDB spills to disk beyond this
+  threads: 4
+  max_temp_size: 5GB                    # spill files are capped, so one query can never fill the disk
+
+disk:                                   # WSL's virtual disk lives on Windows C:, so every GB written here uses C:
+  watch: /mnt/c
+  min_free_gb: 10                       # pipeline commands refuse to start below this
+
+years: [2000, 2026]
+
+h3_levels: [3, 4, 5, 6, 7, 8]           # 8 (~0.74 km2) is only used for the static-source mask
+analysis_level: 5                       # ~253 km2 hexagons
+
+confidence:
+  modis_low_below: 30                   # MODIS percent < 30 -> low
+  modis_high_from: 80                   # MODIS percent >= 80 -> high
+  main_policy: drop_low                 # main record drops low-confidence detections
+
+static_mask:
+  h3_level: 8
+  min_type2_detections: 3               # a cell needs this many type-2 (static) detections in science-quality data
+  type_ring: 0                          # rings of neighbours added around FIRMS static cells (notebook 02 tests 0 vs 1)
+  gihs_ring: 1                          # every cell touching a GIHS industrial site polygon, plus 1 ring of neighbours
+
+reference_scale: VIIRS_NOAA20           # main harmonized record; MODIS-equivalent offered as a toggle

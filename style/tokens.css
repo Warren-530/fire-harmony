@@ -1,0 +1,32 @@
+/* Fire Harmony design tokens: same values as fireharmony_style.py (web app + HTML report) */
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; }
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Bold.ttf") format("truetype"); font-weight: 700; }
+
+.viz-root, :root {
+  color-scheme: light;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --surface-1: #fcfcfb; --page: #f9f9f7;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781; --grid: #e1e0d9; --baseline: #c3c2b7;
+  /* sensors: fixed order, colour follows the entity */
+  --sensor-modis: #2a78d6; --sensor-snpp: #eb6834; --sensor-noaa20: #1baf7a; --sensor-noaa21: #eda100;
+  --harmonized: #0b0b0b;  /* emphasis line, not a hue */
+  /* sequential: ember (fire amount) */
+  --ember-100:#fff3e4; --ember-200:#fed6af; --ember-300:#feb079; --ember-400:#fc7f41; --ember-500:#e75623;
+  --ember-600:#c8331a; --ember-700:#a21b18; --ember-800:#790d14; --ember-900:#520d13;
+  /* diverging: anomaly below <- normal -> above */
+  --anom-b4:#0b4c92; --anom-b3:#3a75bf; --anom-b2:#78a1d6; --anom-b1:#b7cde8; --anom-0:#f0efec;
+  --anom-r1:#e7c0bc; --anom-r2:#d6857f; --anom-r3:#bc4a41; --anom-r4:#862723;
+  /* status: reserved, always with icon + label */
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark; --surface-1:#1a1a19; --page:#0d0d0d; --ink:#f0efec; --ink-2:#c3c2b7; --grid:#2c2c2a; --baseline:#383835;
+    --sensor-modis:#3987e5; --sensor-snpp:#d95926; --sensor-noaa20:#199e70; --sensor-noaa21:#c98500; --harmonized:#f0efec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark; --surface-1:#1a1a19; --page:#0d0d0d; --ink:#f0efec; --ink-2:#c3c2b7; --grid:#2c2c2a; --baseline:#383835;
+  --sensor-modis:#3987e5; --sensor-snpp:#d95926; --sensor-noaa20:#199e70; --sensor-noaa21:#c98500; --harmonized:#f0efec;
+}

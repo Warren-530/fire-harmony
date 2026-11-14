@@ -1,0 +1,2427 @@
+{
+ "seam_by_band": {
+  "years_before": [
+   2003,
+   2011
+  ],
+  "years_after": [
+   2013,
+   2021
+  ],
+  "band_by": "observed VIIRS mean, hotspots a year, 2013 to 2021",
+  "ratio": "mean 2003 to 2011 / mean 2013 to 2021",
+  "places": {
+   "states": {
+    "bands": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 786,
+      "median_ratio": 3.242,
+      "share_down_more_than_2x_pct": 69.8,
+      "share_up_more_than_2x_pct": 3.1,
+      "pooled_ratio": 3.592,
+      "share_of_after_fire_pct": 0.014
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 1119,
+      "median_ratio": 1.379,
+      "share_down_more_than_2x_pct": 26.0,
+      "share_up_more_than_2x_pct": 5.9,
+      "pooled_ratio": 1.528,
+      "share_of_after_fire_pct": 0.278
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 1115,
+      "median_ratio": 1.144,
+      "share_down_more_than_2x_pct": 12.0,
+      "share_up_more_than_2x_pct": 4.7,
+      "pooled_ratio": 1.27,
+      "share_of_after_fire_pct": 2.457
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 1033,
+      "median_ratio": 1.066,
+      "share_down_more_than_2x_pct": 7.0,
+      "share_up_more_than_2x_pct": 3.6,
+      "pooled_ratio": 1.069,
+      "share_of_after_fire_pct": 97.25
+     }
+    ],
+    "bands_by_record_mean": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 645,
+      "median_ratio": 2.916,
+      "share_down_more_than_2x_pct": 63.6,
+      "share_up_more_than_2x_pct": 5.9,
+      "pooled_ratio": 1.914,
+      "share_of_after_fire_pct": 0.01
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 1184,
+      "median_ratio": 1.438,
+      "share_down_more_than_2x_pct": 30.7,
+      "share_up_more_than_2x_pct": 5.0,
+      "pooled_ratio": 1.344,
+      "share_of_after_fire_pct": 0.259
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 1159,
+      "median_ratio": 1.176,
+      "share_down_more_than_2x_pct": 14.8,
+      "share_up_more_than_2x_pct": 4.6,
+      "pooled_ratio": 1.163,
+      "share_of_after_fire_pct": 2.388
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 1065,
+      "median_ratio": 1.099,
+      "share_down_more_than_2x_pct": 9.4,
+      "share_up_more_than_2x_pct": 2.7,
+      "pooled_ratio": 1.073,
+      "share_of_after_fire_pct": 97.343
+     }
+    ],
+    "modelled_before_none_after": 36
+   },
+   "countries": {
+    "bands": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 45,
+      "median_ratio": 2.632,
+      "share_down_more_than_2x_pct": 60.0,
+      "share_up_more_than_2x_pct": 0.0,
+      "pooled_ratio": 2.329,
+      "share_of_after_fire_pct": 0.001
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 25,
+      "median_ratio": 0.945,
+      "share_down_more_than_2x_pct": 12.0,
+      "share_up_more_than_2x_pct": 16.0,
+      "pooled_ratio": 1.552,
+      "share_of_after_fire_pct": 0.006
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 34,
+      "median_ratio": 1.134,
+      "share_down_more_than_2x_pct": 20.6,
+      "share_up_more_than_2x_pct": 2.9,
+      "pooled_ratio": 1.338,
+      "share_of_after_fire_pct": 0.089
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 138,
+      "median_ratio": 1.074,
+      "share_down_more_than_2x_pct": 2.9,
+      "share_up_more_than_2x_pct": 0.0,
+      "pooled_ratio": 1.075,
+      "share_of_after_fire_pct": 99.905
+     }
+    ],
+    "bands_by_record_mean": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 42,
+      "median_ratio": 2.567,
+      "share_down_more_than_2x_pct": 57.1,
+      "share_up_more_than_2x_pct": 2.4,
+      "pooled_ratio": 1.64,
+      "share_of_after_fire_pct": 0.001
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 26,
+      "median_ratio": 1.168,
+      "share_down_more_than_2x_pct": 19.2,
+      "share_up_more_than_2x_pct": 11.5,
+      "pooled_ratio": 1.248,
+      "share_of_after_fire_pct": 0.005
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 37,
+      "median_ratio": 1.113,
+      "share_down_more_than_2x_pct": 21.6,
+      "share_up_more_than_2x_pct": 2.7,
+      "pooled_ratio": 1.268,
+      "share_of_after_fire_pct": 0.098
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 137,
+      "median_ratio": 1.094,
+      "share_down_more_than_2x_pct": 2.9,
+      "share_up_more_than_2x_pct": 0.0,
+      "pooled_ratio": 1.075,
+      "share_of_after_fire_pct": 99.896
+     }
+    ],
+    "modelled_before_none_after": 3
+   },
+   "both": {
+    "bands": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 831,
+      "median_ratio": 3.191,
+      "share_down_more_than_2x_pct": 69.3,
+      "share_up_more_than_2x_pct": 2.9,
+      "pooled_ratio": 3.523,
+      "share_of_after_fire_pct": 0.007
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 1144,
+      "median_ratio": 1.371,
+      "share_down_more_than_2x_pct": 25.7,
+      "share_up_more_than_2x_pct": 6.1,
+      "pooled_ratio": 1.529,
+      "share_of_after_fire_pct": 0.142
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 1149,
+      "median_ratio": 1.144,
+      "share_down_more_than_2x_pct": 12.3,
+      "share_up_more_than_2x_pct": 4.6,
+      "pooled_ratio": 1.272,
+      "share_of_after_fire_pct": 1.273
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 1171,
+      "median_ratio": 1.068,
+      "share_down_more_than_2x_pct": 6.5,
+      "share_up_more_than_2x_pct": 3.2,
+      "pooled_ratio": 1.072,
+      "share_of_after_fire_pct": 98.578
+     }
+    ],
+    "bands_by_record_mean": [
+     {
+      "band": "under 10",
+      "min_per_year": 0,
+      "max_per_year": 10,
+      "units": 687,
+      "median_ratio": 2.856,
+      "share_down_more_than_2x_pct": 63.2,
+      "share_up_more_than_2x_pct": 5.7,
+      "pooled_ratio": 1.896,
+      "share_of_after_fire_pct": 0.005
+     },
+     {
+      "band": "10 to 100",
+      "min_per_year": 10,
+      "max_per_year": 100,
+      "units": 1210,
+      "median_ratio": 1.434,
+      "share_down_more_than_2x_pct": 30.5,
+      "share_up_more_than_2x_pct": 5.1,
+      "pooled_ratio": 1.342,
+      "share_of_after_fire_pct": 0.132
+     },
+     {
+      "band": "100 to 1,000",
+      "min_per_year": 100,
+      "max_per_year": 1000,
+      "units": 1196,
+      "median_ratio": 1.174,
+      "share_down_more_than_2x_pct": 15.1,
+      "share_up_more_than_2x_pct": 4.5,
+      "pooled_ratio": 1.167,
+      "share_of_after_fire_pct": 1.243
+     },
+     {
+      "band": "1,000 and more",
+      "min_per_year": 1000,
+      "max_per_year": null,
+      "units": 1202,
+      "median_ratio": 1.098,
+      "share_down_more_than_2x_pct": 8.7,
+      "share_up_more_than_2x_pct": 2.4,
+      "pooled_ratio": 1.074,
+      "share_of_after_fire_pct": 98.62
+     }
+    ],
+    "modelled_before_none_after": 39
+   }
+  },
+  "hexagons_l3": {
+   "bands": [
+    {
+     "band": "under 10",
+     "min_per_year": 0,
+     "max_per_year": 10,
+     "units": 3490,
+     "median_ratio": 3.187,
+     "share_down_more_than_2x_pct": 60.9,
+     "share_up_more_than_2x_pct": 20.9,
+     "pooled_ratio": 6.721,
+     "share_of_after_fire_pct": 0.035
+    },
+    {
+     "band": "10 to 100",
+     "min_per_year": 10,
+     "max_per_year": 100,
+     "units": 2407,
+     "median_ratio": 1.265,
+     "share_down_more_than_2x_pct": 28.3,
+     "share_up_more_than_2x_pct": 13.1,
+     "pooled_ratio": 2.167,
+     "share_of_after_fire_pct": 0.645
+    },
+    {
+     "band": "100 to 1,000",
+     "min_per_year": 100,
+     "max_per_year": 1000,
+     "units": 3957,
+     "median_ratio": 1.053,
+     "share_down_more_than_2x_pct": 18.7,
+     "share_up_more_than_2x_pct": 15.1,
+     "pooled_ratio": 1.372,
+     "share_of_after_fire_pct": 9.99
+    },
+    {
+     "band": "1,000 and more",
+     "min_per_year": 1000,
+     "max_per_year": null,
+     "units": 3155,
+     "median_ratio": 1.021,
+     "share_down_more_than_2x_pct": 7.5,
+     "share_up_more_than_2x_pct": 12.6,
+     "pooled_ratio": 1.032,
+     "share_of_after_fire_pct": 89.33
+    }
+   ],
+   "bands_by_record_mean": [
+    {
+     "band": "under 10",
+     "min_per_year": 0,
+     "max_per_year": 10,
+     "units": 3081,
+     "median_ratio": 2.631,
+     "share_down_more_than_2x_pct": 55.5,
+     "share_up_more_than_2x_pct": 25.2,
+     "pooled_ratio": 2.193,
+     "share_of_after_fire_pct": 0.025
+    },
+    {
+     "band": "10 to 100",
+     "min_per_year": 10,
+     "max_per_year": 100,
+     "units": 2479,
+     "median_ratio": 1.244,
+     "share_down_more_than_2x_pct": 29.8,
+     "share_up_more_than_2x_pct": 14.4,
+     "pooled_ratio": 1.155,
+     "share_of_after_fire_pct": 0.595
+    },
+    {
+     "band": "100 to 1,000",
+     "min_per_year": 100,
+     "max_per_year": 1000,
+     "units": 4071,
+     "median_ratio": 1.056,
+     "share_down_more_than_2x_pct": 20.0,
+     "share_up_more_than_2x_pct": 15.0,
+     "pooled_ratio": 1.09,
+     "share_of_after_fire_pct": 9.783
+    },
+    {
+     "band": "1,000 and more",
+     "min_per_year": 1000,
+     "max_per_year": null,
+     "units": 3378,
+     "median_ratio": 1.09,
+     "share_down_more_than_2x_pct": 14.9,
+     "share_up_more_than_2x_pct": 9.1,
+     "pooled_ratio": 1.073,
+     "share_of_after_fire_pct": 89.597
+    }
+   ],
+   "modelled_before_none_after": 383,
+   "hexagons": 13009
+  },
+  "modis_zero_state_months": {
+   "what": "harmonized hotspots in state months where neither MODIS satellite saw a fire, before 2012",
+   "years": [
+    2003,
+    2011
+   ],
+   "hotspots": 1129698.0,
+   "pct_of_those_years": 0.71,
+   "pct_of_record": 0.255,
+   "from_nov_2000": {
+    "hotspots": 1716007.0,
+    "pct_of_those_years": 0.87
+   }
+  }
+ },
+ "hex_fdr_2003": {
+  "2001_2025": {
+   "tested": 7449,
+   "rising": 810,
+   "falling": 1950,
+   "flat": 0,
+   "fall_per_rise": 2.41,
+   "with_five_fire_years": 12200
+  },
+  "2003_2025": {
+   "tested": 7432,
+   "rising": 728,
+   "falling": 1755,
+   "flat": 0,
+   "fall_per_rise": 2.41,
+   "with_five_fire_years": 12186
+  },
+  "2003_2025_on_the_2001_map_hexagons": {
+   "tested": 7449,
+   "rising": 726,
+   "falling": 1776,
+   "flat": 0,
+   "fall_per_rise": 2.45
+  },
+  "floor_per_year": 100,
+  "rule": "BH 5% among the tested level 3 hexagons; Hamed and Rao Mann Kendall; sign from Sen's slope of log(1 + yearly total)"
+ },
+ "trends_2003_2018": {
+  "years": [
+   2003,
+   2018
+  ],
+  "burned_area": "ESA Fire_cci MRBA60H (MODIS 250 m), sum of km2 per year",
+  "rows": [
+   {
+    "kind": "world",
+    "id": "WORLD",
+    "name": "World",
+    "record": {
+     "pct_per_decade": -9.9,
+     "p": 0.0006
+    },
+    "modis_only": {
+     "pct_per_decade": -11.7,
+     "p": 0.0002
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -9.2,
+     "p": 0.0103
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "Africa",
+    "name": "Africa",
+    "record": {
+     "pct_per_decade": -2.2,
+     "p": 0.3444
+    },
+    "modis_only": {
+     "pct_per_decade": -3.9,
+     "p": 0.1373
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -8.7,
+     "p": 0.0026
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "Asia",
+    "name": "Asia",
+    "record": {
+     "pct_per_decade": -8.8,
+     "p": 0.3004
+    },
+    "modis_only": {
+     "pct_per_decade": -17.0,
+     "p": 0.0649
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -11.8,
+     "p": 0.0002
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "Europe",
+    "name": "Europe",
+    "record": {
+     "pct_per_decade": -34.0,
+     "p": 0.0274
+    },
+    "modis_only": {
+     "pct_per_decade": -34.6,
+     "p": 0.0274
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -38.0,
+     "p": 0.0529
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "North America",
+    "name": "North America",
+    "record": {
+     "pct_per_decade": -1.7,
+     "p": 0.9574
+    },
+    "modis_only": {
+     "pct_per_decade": -7.0,
+     "p": 0.6853
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -7.9,
+     "p": 0.0045
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "Oceania",
+    "name": "Oceania",
+    "record": {
+     "pct_per_decade": 4.7,
+     "p": 0.4429
+    },
+    "modis_only": {
+     "pct_per_decade": 4.7,
+     "p": 0.6051
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": 6.0,
+     "p": 0.8926
+    }
+   },
+   {
+    "kind": "continent",
+    "id": "South America",
+    "name": "South America",
+    "record": {
+     "pct_per_decade": -34.7,
+     "p": 0.0103
+    },
+    "modis_only": {
+     "pct_per_decade": -33.9,
+     "p": 0.0103
+    },
+    "firecci_burned_area": {
+     "pct_per_decade": -23.0,
+     "p": 0.0004
+    }
+   }
+  ]
+ },
+ "malaysia_means": {
+  "id": "MYS",
+  "mean_2001_2005": 31789.0,
+  "mean_2021_2025": 6146.0,
+  "ratio": 0.193,
+  "pettitt": {
+   "last_high_year": 2016,
+   "first_low_year": 2017,
+   "p": 0.00144,
+   "mean_before": 25666.0,
+   "mean_after": 8252.0
+  },
+  "yearly": {
+   "2001": 31911.0,
+   "2002": 44163.0,
+   "2003": 20965.0,
+   "2004": 27725.0,
+   "2005": 34181.0,
+   "2006": 21359.0,
+   "2007": 20781.0,
+   "2008": 18252.0,
+   "2009": 32277.0,
+   "2010": 23543.0,
+   "2011": 17324.0,
+   "2012": 19125.0,
+   "2013": 16006.0,
+   "2014": 36459.0,
+   "2015": 22509.0,
+   "2016": 24079.0,
+   "2017": 6312.0,
+   "2018": 11619.0,
+   "2019": 17584.0,
+   "2020": 8025.0,
+   "2021": 6811.0,
+   "2022": 4238.0,
+   "2023": 5993.0,
+   "2024": 8846.0,
+   "2025": 4842.0
+  }
+ },
+ "argentina_case": {
+  "corrientes": {
+   "id": "ARG-1308",
+   "year_2022": {
+    "total": 43259.0,
+    "rank": 1,
+    "years": 25,
+    "median_year": 18965.0
+   },
+   "february_2022": {
+    "h": 22083.0,
+    "median": 1071.0,
+    "ratio": 20.62,
+    "rank": 1,
+    "years": 26
+   },
+   "critical_months": [
+    8,
+    9
+   ],
+   "naive_vs_harmonized_2010_2013": {
+    "naive": {
+     "2010": 2413.0,
+     "2011": 3605.0,
+     "2012": 22680.0,
+     "2013": 13851.0
+    },
+    "harmonized": {
+     "2010": 15031.0,
+     "2011": 21902.0,
+     "2012": 22680.0,
+     "2013": 13851.0
+    },
+    "naive_jump_2011_2012": 6.29,
+    "harmonized_change_2011_2012": 1.04
+   }
+  },
+  "argentina": {
+   "id": "ARG",
+   "february_2022": {
+    "h": 35001.0,
+    "median": 8944.0,
+    "ratio": 3.91,
+    "rank": 1,
+    "years": 26
+   },
+   "year_2022": {
+    "total": 274594.0,
+    "rank": 5,
+    "years": 25,
+    "median_year": 206304.0
+   }
+  },
+  "entre_rios": {
+   "id": "ARG-1309",
+   "year_2008": {
+    "total": 52637.0,
+    "rank": 1,
+    "years": 25,
+    "median_year": 5866.0
+   }
+  },
+  "cordoba": {
+   "id": "ARG-1299",
+   "year_2020": {
+    "total": 16385.0,
+    "rank": 1,
+    "years": 25,
+    "median_year": 6355.0
+   }
+  }
+ },
+ "sen_ci": {
+  "method": "Sen's slope of log(1 + yearly total), interval by Gilbert (1987) from the Mann Kendall variance",
+  "rows": [
+   {
+    "table": "tbl-continents",
+    "kind": "world",
+    "id": "WORLD",
+    "name": "World",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -6.3,
+    "p": 0.00013,
+    "ci95": [
+     -9.9,
+     -2.0
+    ],
+    "ci95_hamed_rao": [
+     -8.8,
+     -3.4
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "Africa",
+    "name": "Africa",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -2.2,
+    "p": 0.05257,
+    "ci95": [
+     -4.7,
+     0.1
+    ],
+    "ci95_hamed_rao": [
+     -4.7,
+     0.1
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "Asia",
+    "name": "Asia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -7.9,
+    "p": 0.07984,
+    "ci95": [
+     -18.7,
+     1.4
+    ],
+    "ci95_hamed_rao": [
+     -18.7,
+     1.4
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "Europe",
+    "name": "Europe",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -40.1,
+    "p": 0.0,
+    "ci95": [
+     -47.2,
+     -30.2
+    ],
+    "ci95_hamed_rao": [
+     -47.2,
+     -30.2
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "North America",
+    "name": "North America",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 15.2,
+    "p": 0.00468,
+    "ci95": [
+     2.6,
+     32.1
+    ],
+    "ci95_hamed_rao": [
+     4.9,
+     28.4
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "Oceania",
+    "name": "Oceania",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -7.2,
+    "p": 0.46906,
+    "ci95": [
+     -25.8,
+     12.9
+    ],
+    "ci95_hamed_rao": [
+     -25.8,
+     12.9
+    ]
+   },
+   {
+    "table": "tbl-continents",
+    "kind": "continent",
+    "id": "South America",
+    "name": "South America",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -15.9,
+    "p": 0.07212,
+    "ci95": [
+     -28.1,
+     0.8
+    ],
+    "ci95_hamed_rao": [
+     -28.1,
+     0.8
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "CAN",
+    "name": "Canada",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 109.4,
+    "p": 4e-05,
+    "ci95": [
+     30.9,
+     183.4
+    ],
+    "ci95_hamed_rao": [
+     52.6,
+     166.0
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "MKD",
+    "name": "North Macedonia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 31.2,
+    "p": 0.00097,
+    "ci95": [
+     -8.7,
+     94.1
+    ],
+    "ci95_hamed_rao": [
+     12.2,
+     59.3
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "NER",
+    "name": "Niger",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 24.8,
+    "p": 0.0005,
+    "ci95": [
+     11.7,
+     47.8
+    ],
+    "ci95_hamed_rao": [
+     11.7,
+     47.8
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "IND",
+    "name": "India",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 21.5,
+    "p": 0.0001,
+    "ci95": [
+     13.0,
+     32.0
+    ],
+    "ci95_hamed_rao": [
+     13.0,
+     32.0
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "PAK",
+    "name": "Pakistan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 20.6,
+    "p": 0.0,
+    "ci95": [
+     12.6,
+     27.7
+    ],
+    "ci95_hamed_rao": [
+     15.6,
+     24.8
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "IRN",
+    "name": "Iran",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 18.7,
+    "p": 0.00831,
+    "ci95": [
+     5.9,
+     31.5
+    ],
+    "ci95_hamed_rao": [
+     5.9,
+     31.5
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "PER",
+    "name": "Peru",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 18.6,
+    "p": 8e-05,
+    "ci95": [
+     1.5,
+     30.3
+    ],
+    "ci95_hamed_rao": [
+     8.6,
+     23.3
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "COD",
+    "name": "DR Congo",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 7.5,
+    "p": 0.0,
+    "ci95": [
+     4.5,
+     11.5
+    ],
+    "ci95_hamed_rao": [
+     6.0,
+     9.0
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "PRK",
+    "name": "North Korea",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -68.0,
+    "p": 4e-05,
+    "ci95": [
+     -77.1,
+     -51.7
+    ],
+    "ci95_hamed_rao": [
+     -77.1,
+     -51.7
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "HUN",
+    "name": "Hungary",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -60.1,
+    "p": 0.0,
+    "ci95": [
+     -67.8,
+     -48.2
+    ],
+    "ci95_hamed_rao": [
+     -66.9,
+     -50.3
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "BLR",
+    "name": "Belarus",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -54.9,
+    "p": 0.0002,
+    "ci95": [
+     -67.6,
+     -38.4
+    ],
+    "ci95_hamed_rao": [
+     -67.6,
+     -38.4
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "KAZ",
+    "name": "Kazakhstan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -53.9,
+    "p": 0.00066,
+    "ci95": [
+     -61.2,
+     -42.7
+    ],
+    "ci95_hamed_rao": [
+     -65.7,
+     -34.4
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "MYS",
+    "name": "Malaysia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -53.9,
+    "p": 3e-05,
+    "ci95": [
+     -62.6,
+     -37.8
+    ],
+    "ci95_hamed_rao": [
+     -62.6,
+     -37.8
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "KGZ",
+    "name": "Kyrgyzstan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -52.7,
+    "p": 0.0,
+    "ci95": [
+     -58.8,
+     -41.0
+    ],
+    "ci95_hamed_rao": [
+     -58.3,
+     -43.2
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "MNG",
+    "name": "Mongolia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -52.2,
+    "p": 0.01091,
+    "ci95": [
+     -69.7,
+     -14.3
+    ],
+    "ci95_hamed_rao": [
+     -69.7,
+     -14.3
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "IDN",
+    "name": "Indonesia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -51.9,
+    "p": 0.00351,
+    "ci95": [
+     -64.3,
+     -20.7
+    ],
+    "ci95_hamed_rao": [
+     -64.3,
+     -20.7
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "BGR",
+    "name": "Bulgaria",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -51.2,
+    "p": 7e-05,
+    "ci95": [
+     -62.4,
+     -36.5
+    ],
+    "ci95_hamed_rao": [
+     -62.4,
+     -36.5
+    ]
+   },
+   {
+    "table": "tbl-places-countries",
+    "kind": "country",
+    "id": "AFG",
+    "name": "Afghanistan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -49.6,
+    "p": 2e-05,
+    "ci95": [
+     -58.0,
+     -33.5
+    ],
+    "ci95_hamed_rao": [
+     -58.0,
+     -33.5
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "CAN-635",
+    "name": "Northwest Territories, Canada",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 303.2,
+    "p": 0.00086,
+    "ci95": [
+     40.0,
+     835.7
+    ],
+    "ci95_hamed_rao": [
+     82.9,
+     641.0
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "CHN-1828",
+    "name": "Jilin, China",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 180.5,
+    "p": 0.0,
+    "ci95": [
+     132.6,
+     248.6
+    ],
+    "ci95_hamed_rao": [
+     132.6,
+     248.6
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IRQ-3050",
+    "name": "Arbil, Iraq",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 123.4,
+    "p": 0.0019,
+    "ci95": [
+     54.9,
+     211.3
+    ],
+    "ci95_hamed_rao": [
+     43.4,
+     244.0
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IRN-3209",
+    "name": "Kohgiluyeh and Buyer Ahmad, Iran",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 116.9,
+    "p": 0.0117,
+    "ci95": [
+     60.8,
+     207.4
+    ],
+    "ci95_hamed_rao": [
+     24.3,
+     274.1
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "NGA-2872",
+    "name": "Zamfara, Nigeria",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 100.1,
+    "p": 0.00192,
+    "ci95": [
+     70.9,
+     144.6
+    ],
+    "ci95_hamed_rao": [
+     55.9,
+     163.1
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "NPL-1133",
+    "name": "Sagarmatha, Nepal",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 97.3,
+    "p": 0.0,
+    "ci95": [
+     46.2,
+     214.2
+    ],
+    "ci95_hamed_rao": [
+     75.2,
+     142.8
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IND-3258",
+    "name": "Bihar, India",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 91.2,
+    "p": 0.0,
+    "ci95": [
+     70.1,
+     108.4
+    ],
+    "ci95_hamed_rao": [
+     70.1,
+     108.4
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "SDN-881",
+    "name": "North Darfur, Sudan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 81.1,
+    "p": 0.00035,
+    "ci95": [
+     37.3,
+     136.9
+    ],
+    "ci95_hamed_rao": [
+     37.3,
+     136.9
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IND-3250",
+    "name": "Rajasthan, India",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 79.3,
+    "p": 0.0,
+    "ci95": [
+     58.0,
+     97.6
+    ],
+    "ci95_hamed_rao": [
+     58.0,
+     97.6
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "CAN-632",
+    "name": "Alberta, Canada",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 77.9,
+    "p": 0.01491,
+    "ci95": [
+     1.1,
+     197.4
+    ],
+    "ci95_hamed_rao": [
+     12.9,
+     166.8
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "MNG-3315",
+    "name": "Hentiy, Mongolia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -82.7,
+    "p": 0.00351,
+    "ci95": [
+     -94.7,
+     -54.7
+    ],
+    "ci95_hamed_rao": [
+     -94.7,
+     -54.7
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "KAZ-3201",
+    "name": "West Kazakhstan, Kazakhstan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -78.4,
+    "p": 0.0,
+    "ci95": [
+     -85.2,
+     -65.4
+    ],
+    "ci95_hamed_rao": [
+     -85.2,
+     -65.4
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "PRK-3308",
+    "name": "Kangwon, North Korea",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -75.9,
+    "p": 2e-05,
+    "ci95": [
+     -83.1,
+     -60.3
+    ],
+    "ci95_hamed_rao": [
+     -83.1,
+     -60.3
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IDN-1931",
+    "name": "Central Kalimantan, Indonesia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -75.8,
+    "p": 0.00302,
+    "ci95": [
+     -87.0,
+     -39.1
+    ],
+    "ci95_hamed_rao": [
+     -87.0,
+     -39.1
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "IDN-492",
+    "name": "Riau, Indonesia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -74.3,
+    "p": 0.0006,
+    "ci95": [
+     -84.9,
+     -48.4
+    ],
+    "ci95_hamed_rao": [
+     -84.9,
+     -48.4
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "PRK-3311",
+    "name": "South Hamgyong, North Korea",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -74.1,
+    "p": 0.00025,
+    "ci95": [
+     -85.1,
+     -55.5
+    ],
+    "ci95_hamed_rao": [
+     -85.1,
+     -55.5
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "MNG-3321",
+    "name": "H\u00f6vsg\u00f6l, Mongolia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -71.2,
+    "p": 0.01091,
+    "ci95": [
+     -90.2,
+     -29.2
+    ],
+    "ci95_hamed_rao": [
+     -90.2,
+     -29.2
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "KAZ-3195",
+    "name": "Aqt\u00f6be, Kazakhstan",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -70.5,
+    "p": 0.00195,
+    "ci95": [
+     -79.2,
+     -54.7
+    ],
+    "ci95_hamed_rao": [
+     -83.6,
+     -46.4
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "RUS-2363",
+    "name": "Lipetsk, Russia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -67.1,
+    "p": 1e-05,
+    "ci95": [
+     -75.7,
+     -54.9
+    ],
+    "ci95_hamed_rao": [
+     -75.7,
+     -54.9
+    ]
+   },
+   {
+    "table": "tbl-places-states",
+    "kind": "state",
+    "id": "ROU-129",
+    "name": "Calarasi, Romania",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -66.1,
+    "p": 4e-05,
+    "ci95": [
+     -74.7,
+     -43.5
+    ],
+    "ci95_hamed_rao": [
+     -74.7,
+     -43.5
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "world",
+    "id": "WORLD",
+    "name": "World",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -6.3,
+    "p": 0.00013,
+    "ci95": [
+     -9.9,
+     -2.0
+    ],
+    "ci95_hamed_rao": [
+     -8.8,
+     -3.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "world",
+    "id": "WORLD",
+    "name": "World",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -6.3,
+    "p": 0.00143,
+    "ci95": [
+     -10.3,
+     -1.5
+    ],
+    "ci95_hamed_rao": [
+     -9.8,
+     -2.5
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Africa",
+    "name": "Africa",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -2.2,
+    "p": 0.05257,
+    "ci95": [
+     -4.7,
+     0.1
+    ],
+    "ci95_hamed_rao": [
+     -4.7,
+     0.1
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Africa",
+    "name": "Africa",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -2.6,
+    "p": 0.05066,
+    "ci95": [
+     -4.9,
+     0.1
+    ],
+    "ci95_hamed_rao": [
+     -4.9,
+     0.1
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Asia",
+    "name": "Asia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -7.9,
+    "p": 0.07984,
+    "ci95": [
+     -18.7,
+     1.4
+    ],
+    "ci95_hamed_rao": [
+     -18.7,
+     1.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Asia",
+    "name": "Asia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -9.6,
+    "p": 0.07251,
+    "ci95": [
+     -20.7,
+     0.8
+    ],
+    "ci95_hamed_rao": [
+     -20.7,
+     0.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "South America",
+    "name": "South America",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -15.9,
+    "p": 0.07212,
+    "ci95": [
+     -28.1,
+     0.8
+    ],
+    "ci95_hamed_rao": [
+     -28.1,
+     0.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "South America",
+    "name": "South America",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -14.9,
+    "p": 0.13914,
+    "ci95": [
+     -30.5,
+     5.0
+    ],
+    "ci95_hamed_rao": [
+     -30.5,
+     5.0
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "North America",
+    "name": "North America",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 15.2,
+    "p": 0.00468,
+    "ci95": [
+     2.6,
+     32.1
+    ],
+    "ci95_hamed_rao": [
+     4.9,
+     28.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "North America",
+    "name": "North America",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": 9.6,
+    "p": 0.08535,
+    "ci95": [
+     -5.2,
+     30.4
+    ],
+    "ci95_hamed_rao": [
+     -1.8,
+     24.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Europe",
+    "name": "Europe",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -40.1,
+    "p": 0.0,
+    "ci95": [
+     -47.2,
+     -30.2
+    ],
+    "ci95_hamed_rao": [
+     -47.2,
+     -30.2
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Europe",
+    "name": "Europe",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -40.4,
+    "p": 4e-05,
+    "ci95": [
+     -47.9,
+     -28.1
+    ],
+    "ci95_hamed_rao": [
+     -47.9,
+     -28.1
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Oceania",
+    "name": "Oceania",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -7.2,
+    "p": 0.46906,
+    "ci95": [
+     -25.8,
+     12.9
+    ],
+    "ci95_hamed_rao": [
+     -25.8,
+     12.9
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "continent",
+    "id": "Oceania",
+    "name": "Oceania",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": 2.0,
+    "p": 0.87409,
+    "ci95": [
+     -16.2,
+     27.9
+    ],
+    "ci95_hamed_rao": [
+     -16.2,
+     27.9
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "BRA",
+    "name": "Brazil",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -21.8,
+    "p": 0.02349,
+    "ci95": [
+     -34.5,
+     -4.8
+    ],
+    "ci95_hamed_rao": [
+     -34.5,
+     -4.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "BRA",
+    "name": "Brazil",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -21.6,
+    "p": 0.05723,
+    "ci95": [
+     -35.4,
+     0.6
+    ],
+    "ci95_hamed_rao": [
+     -35.4,
+     0.6
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "IND",
+    "name": "India",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 21.5,
+    "p": 0.0001,
+    "ci95": [
+     13.0,
+     32.0
+    ],
+    "ci95_hamed_rao": [
+     13.0,
+     32.0
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "IND",
+    "name": "India",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": 21.0,
+    "p": 0.0006,
+    "ci95": [
+     10.5,
+     31.8
+    ],
+    "ci95_hamed_rao": [
+     10.5,
+     31.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "IDN",
+    "name": "Indonesia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -51.9,
+    "p": 0.00351,
+    "ci95": [
+     -64.3,
+     -20.7
+    ],
+    "ci95_hamed_rao": [
+     -64.3,
+     -20.7
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "IDN",
+    "name": "Indonesia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -52.4,
+    "p": 0.00602,
+    "ci95": [
+     -66.7,
+     -16.4
+    ],
+    "ci95_hamed_rao": [
+     -66.7,
+     -16.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "CAN",
+    "name": "Canada",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 109.4,
+    "p": 4e-05,
+    "ci95": [
+     30.9,
+     183.4
+    ],
+    "ci95_hamed_rao": [
+     52.6,
+     166.0
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "CAN",
+    "name": "Canada",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": 71.6,
+    "p": 0.00361,
+    "ci95": [
+     7.9,
+     174.0
+    ],
+    "ci95_hamed_rao": [
+     23.8,
+     152.3
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "AUS",
+    "name": "Australia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -9.2,
+    "p": 0.41369,
+    "ci95": [
+     -27.0,
+     12.7
+    ],
+    "ci95_hamed_rao": [
+     -27.0,
+     12.7
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "AUS",
+    "name": "Australia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": 1.2,
+    "p": 0.95787,
+    "ci95": [
+     -18.5,
+     29.3
+    ],
+    "ci95_hamed_rao": [
+     -18.5,
+     29.3
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "USA",
+    "name": "United States",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": 4.4,
+    "p": 0.62381,
+    "ci95": [
+     -11.0,
+     22.4
+    ],
+    "ci95_hamed_rao": [
+     -11.0,
+     22.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "USA",
+    "name": "United States",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -2.3,
+    "p": 0.67261,
+    "ci95": [
+     -17.0,
+     14.4
+    ],
+    "ci95_hamed_rao": [
+     -17.0,
+     14.4
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "RUS",
+    "name": "Russia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -14.2,
+    "p": 0.29327,
+    "ci95": [
+     -31.7,
+     9.9
+    ],
+    "ci95_hamed_rao": [
+     -31.7,
+     9.9
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "RUS",
+    "name": "Russia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -11.3,
+    "p": 0.49229,
+    "ci95": [
+     -33.1,
+     19.9
+    ],
+    "ci95_hamed_rao": [
+     -33.1,
+     19.9
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "MYS",
+    "name": "Malaysia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -53.9,
+    "p": 3e-05,
+    "ci95": [
+     -62.6,
+     -37.8
+    ],
+    "ci95_hamed_rao": [
+     -62.6,
+     -37.8
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "country",
+    "id": "MYS",
+    "name": "Malaysia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -53.9,
+    "p": 0.00022,
+    "ci95": [
+     -64.8,
+     -35.7
+    ],
+    "ci95_hamed_rao": [
+     -64.8,
+     -35.7
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "state",
+    "id": "IDN-1931",
+    "name": "Central Kalimantan, Indonesia",
+    "years": [
+     2001,
+     2025
+    ],
+    "pct_per_decade": -75.8,
+    "p": 0.00302,
+    "ci95": [
+     -87.0,
+     -39.1
+    ],
+    "ci95_hamed_rao": [
+     -87.0,
+     -39.1
+    ]
+   },
+   {
+    "table": "tbl-sensitivity",
+    "kind": "state",
+    "id": "IDN-1931",
+    "name": "Central Kalimantan, Indonesia",
+    "years": [
+     2003,
+     2025
+    ],
+    "pct_per_decade": -76.7,
+    "p": 0.00827,
+    "ci95": [
+     -88.2,
+     -24.4
+    ],
+    "ci95_hamed_rao": [
+     -88.2,
+     -24.4
+    ]
+   }
+  ]
+ },
+ "hex_error_nonempty": {
+  "model": "gbm_ta",
+  "what": "held out hexagon month totals of cross validation (years held out), Terra and Aqua model",
+  "error": "|model - VIIRS| / max(VIIRS, 1)",
+  "rows": [
+   {
+    "scale": "cell x month",
+    "viirs_at_least": 0,
+    "units": 400000,
+    "median_abs_error_pct": 9.0,
+    "median_signed_error_pct": 5.0,
+    "coverage_90": 0.952
+   },
+   {
+    "scale": "cell x month",
+    "viirs_at_least": 10,
+    "units": 22575,
+    "median_abs_error_pct": 33.0,
+    "median_signed_error_pct": -12.0,
+    "coverage_90": 0.872
+   },
+   {
+    "scale": "cell x month",
+    "viirs_at_least": 100,
+    "units": 2939,
+    "median_abs_error_pct": 21.0,
+    "median_signed_error_pct": -11.8,
+    "coverage_90": 0.87
+   },
+   {
+    "scale": "region L4 x month",
+    "viirs_at_least": 0,
+    "units": 1457585,
+    "median_abs_error_pct": 26.0,
+    "median_signed_error_pct": 12.9,
+    "coverage_90": 0.943
+   },
+   {
+    "scale": "region L4 x month",
+    "viirs_at_least": 10,
+    "units": 205521,
+    "median_abs_error_pct": 30.9,
+    "median_signed_error_pct": -7.6,
+    "coverage_90": 0.864
+   },
+   {
+    "scale": "region L4 x month",
+    "viirs_at_least": 100,
+    "units": 58875,
+    "median_abs_error_pct": 18.8,
+    "median_signed_error_pct": -4.0,
+    "coverage_90": 0.893
+   },
+   {
+    "scale": "region L3 x month",
+    "viirs_at_least": 0,
+    "units": 255645,
+    "median_abs_error_pct": 37.7,
+    "median_signed_error_pct": 18.8,
+    "coverage_90": 0.926
+   },
+   {
+    "scale": "region L3 x month",
+    "viirs_at_least": 10,
+    "units": 78953,
+    "median_abs_error_pct": 29.5,
+    "median_signed_error_pct": -3.7,
+    "coverage_90": 0.855
+   },
+   {
+    "scale": "region L3 x month",
+    "viirs_at_least": 100,
+    "units": 30217,
+    "median_abs_error_pct": 18.9,
+    "median_signed_error_pct": -2.6,
+    "coverage_90": 0.862
+   }
+  ]
+ },
+ "boreal_sensitivity": {
+  "CAN": {
+   "name": "Canada",
+   "2001_2025": {
+    "pct_per_decade": 109.4,
+    "p": 4e-05,
+    "ci95": [
+     30.9,
+     183.4
+    ]
+   },
+   "2001_2022": {
+    "pct_per_decade": 50.8,
+    "p": 0.0316,
+    "ci95": [
+     -6.4,
+     133.9
+    ]
+   },
+   "2003_2022": {
+    "pct_per_decade": 21.9,
+    "p": 0.34203,
+    "ci95": [
+     -27.3,
+     101.0
+    ]
+   },
+   "top_years": [
+    2023,
+    2025,
+    2024
+   ],
+   "share_of_2001_2025_in_2023_2025_pct": 41.0
+  },
+  "CAN-635": {
+   "name": "Northwest Territories, Canada",
+   "2001_2025": {
+    "pct_per_decade": 303.2,
+    "p": 0.00086,
+    "ci95": [
+     40.0,
+     835.7
+    ]
+   },
+   "2001_2022": {
+    "pct_per_decade": 137.5,
+    "p": 0.1759,
+    "ci95": [
+     -29.6,
+     671.2
+    ]
+   },
+   "2003_2022": {
+    "pct_per_decade": 36.0,
+    "p": 0.58125,
+    "ci95": [
+     -63.3,
+     375.9
+    ]
+   },
+   "top_years": [
+    2023,
+    2014,
+    2024
+   ],
+   "share_of_2001_2025_in_2023_2025_pct": 51.2
+  }
+ },
+ "field_significance": {
+  "hexagons": 7449,
+  "years": 25,
+  "block_years": 3,
+  "permutations": 1000,
+  "q": 0.05,
+  "test": "plain Mann Kendall, BH among the hexagons, the same for the observed map and each permutation",
+  "observed": {
+   "discoveries": 2646,
+   "falling": 1870,
+   "rising": 776,
+   "fall_per_rise": 2.41
+  },
+  "null_discoveries": {
+   "median": 0.0,
+   "p95": 846.0,
+   "p99": 1736.06,
+   "max": 2418,
+   "mean": 92.9
+  },
+  "null_fall_per_rise": {
+   "median": 1.0,
+   "p2_5": 0.0,
+   "p97_5": 8.1,
+   "undefined_share": 0.801
+  },
+  "p_field_discoveries": 0.001,
+  "p_field_fall_per_rise": 0.043
+ },
+ "ratio_ci": {
+  "hexagons": 7449,
+  "draws": 1000,
+  "block_years": 3,
+  "q": 0.05,
+  "observed": {
+   "falling": 1870,
+   "rising": 776,
+   "fall_per_rise": 2.41
+  },
+  "fall_per_rise_ci95": [
+   1.67,
+   2.45
+  ],
+  "fall_per_rise_median": 2.13,
+  "share_of_draws_below_observed": 0.948,
+  "draws_with_more_falls_than_rises_pct": 100.0,
+  "falling_ci95": [
+   1127.85,
+   2311.1
+  ],
+  "rising_ci95": [
+   576.0,
+   1130.07
+  ],
+  "method": "moving block bootstrap of dated years (blocks of 3, the same years for all hexagons), plain Mann Kendall with tied dates, BH 5%; a residual bootstrap around Sen lines was tried first and dropped: its shorter memory made the test stronger in every draw, so its interval (1.87 to 2.33) missed the observed ratio"
+ },
+ "built": "2026-11-10T04:41:43Z"
+}

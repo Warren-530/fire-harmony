@@ -1,0 +1,218 @@
+{
+ "issued_from": "2026-10",
+ "areas": 1443,
+ "score": {
+  "lead 1": {
+   "n": 322344,
+   "brier": 0.2131,
+   "brier_clim": 0.2886,
+   "bss": 0.2618
+  },
+  "lead 2": {
+   "n": 322344,
+   "brier": 0.2339,
+   "brier_clim": 0.2886,
+   "bss": 0.1894
+  },
+  "lead 3": {
+   "n": 322344,
+   "brier": 0.241,
+   "brier_clim": 0.2886,
+   "bss": 0.165
+  },
+  "all": {
+   "n": 967032,
+   "brier": 0.2293,
+   "brier_clim": 0.2886,
+   "bss": 0.2054
+  },
+  "test 2022 to 2025": {
+   "n": 161172,
+   "brier": 0.214,
+   "brier_clim": 0.2828,
+   "bss": 0.2431
+  },
+  "all months, fire season or not": {
+   "n": 1491264,
+   "brier": 0.2379,
+   "brier_clim": 0.2903,
+   "bss": 0.1806
+  }
+ },
+ "feature_gain_pct": {
+  "y0": 41.6,
+  "target_share": 9.6,
+  "dmi": 8.9,
+  "oni": 8.7,
+  "y1": 6.2,
+  "abs_lat": 5.8,
+  "lead": 5.5,
+  "y2": 3.5,
+  "target_mo_sin": 2.6,
+  "t2m_z_prev": 2.1,
+  "target_mo_cos": 1.7,
+  "rain_z": 1.4,
+  "log_fire_per_year": 1.4,
+  "rain3_z": 1.0
+ },
+ "share_of_areas_with_skill": {
+  "lead 1": 0.997,
+  "lead 2": 0.992,
+  "lead 3": 0.994
+ },
+ "seconds": 138,
+ "score_fair": {
+  "lead 1": {
+   "n": 322344,
+   "brier": 0.2131,
+   "fixed_50": {
+    "brier_ref": 0.25,
+    "bss": 0.1478,
+    "ci95": [
+     0.1142,
+     0.1737
+    ]
+   },
+   "base_rate": {
+    "rate": 0.4722,
+    "brier_ref": 0.2492,
+    "bss": 0.1451
+   },
+   "old_reference_p_clim": {
+    "brier_ref": 0.2886,
+    "bss": 0.2618,
+    "ci95": [
+     0.2305,
+     0.2777
+    ],
+    "r_with_outcome": -0.466,
+    "note": "the share of the other years above normal; holding a year out moves it the wrong way, so it scores worse than a fixed 50% and inflates skill"
+   },
+   "areas": 1726,
+   "share_of_areas_with_skill": 0.921,
+   "median_area_bss": 0.1387,
+   "persistence": {
+    "what": "logistic fit of the outcome on this month's fire anomaly y0, per lead, on the other year blocks",
+    "rows_with_y0": 322344,
+    "brier": 0.2177,
+    "bss": 0.129,
+    "ci95": [
+     0.0994,
+     0.1524
+    ],
+    "model_bss_over_persistence": 0.0216,
+    "model_over_persistence_ci95": [
+     0.0156,
+     0.0257
+    ]
+   }
+  },
+  "lead 2": {
+   "n": 322344,
+   "brier": 0.2339,
+   "fixed_50": {
+    "brier_ref": 0.25,
+    "bss": 0.0643,
+    "ci95": [
+     0.0326,
+     0.0871
+    ]
+   },
+   "base_rate": {
+    "rate": 0.4722,
+    "brier_ref": 0.2492,
+    "bss": 0.0613
+   },
+   "old_reference_p_clim": {
+    "brier_ref": 0.2886,
+    "bss": 0.1894,
+    "ci95": [
+     0.1607,
+     0.202
+    ],
+    "r_with_outcome": -0.466,
+    "note": "the share of the other years above normal; holding a year out moves it the wrong way, so it scores worse than a fixed 50% and inflates skill"
+   },
+   "areas": 1726,
+   "share_of_areas_with_skill": 0.756,
+   "median_area_bss": 0.0489,
+   "persistence": {
+    "what": "logistic fit of the outcome on this month's fire anomaly y0, per lead, on the other year blocks",
+    "rows_with_y0": 322344,
+    "brier": 0.2381,
+    "bss": 0.0476,
+    "ci95": [
+     0.0251,
+     0.0648
+    ],
+    "model_bss_over_persistence": 0.0175,
+    "model_over_persistence_ci95": [
+     0.0066,
+     0.0237
+    ]
+   }
+  },
+  "lead 3": {
+   "n": 322344,
+   "brier": 0.241,
+   "fixed_50": {
+    "brier_ref": 0.25,
+    "bss": 0.0361,
+    "ci95": [
+     0.0092,
+     0.0557
+    ]
+   },
+   "base_rate": {
+    "rate": 0.4722,
+    "brier_ref": 0.2492,
+    "bss": 0.0331
+   },
+   "old_reference_p_clim": {
+    "brier_ref": 0.2886,
+    "bss": 0.165,
+    "ci95": [
+     0.1389,
+     0.1779
+    ],
+    "r_with_outcome": -0.466,
+    "note": "the share of the other years above normal; holding a year out moves it the wrong way, so it scores worse than a fixed 50% and inflates skill"
+   },
+   "areas": 1726,
+   "share_of_areas_with_skill": 0.636,
+   "median_area_bss": 0.0215,
+   "persistence": {
+    "what": "logistic fit of the outcome on this month's fire anomaly y0, per lead, on the other year blocks",
+    "rows_with_y0": 322344,
+    "brier": 0.2443,
+    "bss": 0.023,
+    "ci95": [
+     0.0057,
+     0.0372
+    ],
+    "model_bss_over_persistence": 0.0135,
+    "model_over_persistence_ci95": [
+     0.0018,
+     0.0193
+    ]
+   }
+  },
+  "method": {
+   "reference": "a fixed 50% chance (the event is above the median, so its long run rate is 50%)",
+   "interval": "95% moving block bootstrap of target years, blocks of 5 years, 500 draws",
+   "scored_rows": "held out year blocks, target months in the fire season",
+   "persistence": "logistic on y0 per lead"
+  }
+ },
+ "share_of_areas_with_skill_fair": {
+  "lead 1": 0.921,
+  "lead 2": 0.756,
+  "lead 3": 0.636
+ },
+ "dashboard_list_gate": {
+  "rule": "lead 1, country or state, bss >= 0.1",
+  "areas_issued": 1081,
+  "pass_old_reference": 1008,
+  "pass_fair": 702
+ }
+}

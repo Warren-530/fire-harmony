@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fire Harmony · NASA Space Apps Challenge 2026</title>
+  <meta name="description" content="Fire Harmony: one consistent worldwide fire record from MODIS and VIIRS, November 2000 to October 2026. The web app, report, poster, code and data in one place." />
+  <meta name="color-scheme" content="dark light" />
+  <!-- Link previews: absolute URLs of the published site (the picture is og-image.jpg, 1200 x 630). -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Fire Harmony" />
+  <meta property="og:title" content="Fire Harmony · NASA Space Apps Challenge 2026" />
+  <meta property="og:description" content="One consistent worldwide fire record from MODIS and VIIRS since 2000: the web app, the report, the poster, the code and the data in one place." />
+  <meta property="og:url" content="https://warren-530.github.io/fire-harmony/hub.html" />
+  <meta property="og:image" content="https://warren-530.github.io/fire-harmony/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Burning calendar of Central Kalimantan, 2001 to 2026, next to the title Fire Harmony" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fire Harmony · NASA Space Apps Challenge 2026" />
+  <meta name="twitter:description" content="One consistent worldwide fire record from MODIS and VIIRS since 2000, for any place on Earth." />
+  <meta name="twitter:image" content="https://warren-530.github.io/fire-harmony/og-image.jpg" />
+  <meta name="theme-color" content="#07090d" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f6f6f3" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23e75623' d='M16 1.5 28.6 8.75v14.5L16 30.5 3.4 23.25V8.75z'/%3E%3Cpath fill='%23fff3e4' d='M16 7c1.5 3.5 5.5 5.8 5.5 10.6a5.5 5.5 0 0 1-11 0c0-2.4 1.2-4 2.5-5.2.1 1.7.9 2.9 2.1 3.4C14.6 12.8 15 9.8 16 7z'/%3E%3C/svg%3E" />
+  <!-- The theme before the first paint: the visitor's choice in the app (fh_theme), else light, as the app. -->
+  <script>var t = null; try { t = localStorage.getItem('fh_theme'); } catch (e) {} document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');</script>
+  <!-- Without script the theme follows the system and the switch could do nothing, so it is not shown. -->
+  <noscript><style>.switch { display: none !important; }</style></noscript>
+  <!--
+    The single "Final Project" link of the submission: one place for every deliverable.
+    The two videos play from the Hugging Face dataset (media/, with their .srt subtitles beside them).
+    The app, report and poster links are relative: the PDFs sit next to this file. The headline numbers are filled in
+    from the published files (data/meta.json, data/dashboard.json) when the page loads; the numbers written below are
+    the same values, for a reader without scripts.
+  -->
+  <style>
+    @font-face { font-family: "Inter"; src: url("fonts/Inter-Regular.woff2") format("woff2"), url("fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+    @font-face { font-family: "Inter"; src: url("fonts/Inter-Medium.woff2") format("woff2"), url("fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+    @font-face { font-family: "Inter"; src: url("fonts/Inter-SemiBold.woff2") format("woff2"), url("fonts/Inter-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+    @font-face { font-family: "Inter"; src: url("fonts/Inter-Bold.woff2") format("woff2"), url("fonts/Inter-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+    @font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono-Variable.woff2") format("woff2"), url("fonts/JetBrainsMono-Variable.ttf") format("truetype"); font-weight: 100 800; font-display: swap; }
+
+    /* The app's tokens (src/styles/theme.css and tokens.css), dark first. */
+    :root {
+      color-scheme: dark;
+      --bg: #07090d; --surface: #0d1118; --surface-2: #121822; --surface-3: #19212d;
+      --border: rgba(255, 255, 255, 0.08); --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #e9ebee; --text-2: #a9b1bd; --text-3: #808896;
+      --accent: #ff7a3d; --accent-strong: #ff9a5c; --accent-soft: rgba(255, 122, 61, 0.14); --accent-text: #ff9a5c; --focus: #ffb27a;
+      --on-accent: #1a0a04;
+      --fh-naive: #e0619c;   /* the naive join, as in the app (theme.css) */
+      --glow: radial-gradient(1100px 540px at 8% -12%, rgba(231, 86, 35, 0.14), transparent 62%), radial-gradient(900px 480px at 100% -6%, rgba(57, 135, 229, 0.10), transparent 60%);
+      --elev-2: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 4px 8px -4px rgba(0, 0, 0, 0.5), 0 16px 32px -8px rgba(0, 0, 0, 0.55);
+      --card-wide: linear-gradient(135deg, rgba(255, 122, 61, 0.16), rgba(13, 17, 24, 0.92) 55%);
+      --btn-primary: linear-gradient(180deg, var(--accent-strong), var(--accent)); --btn-primary-hover: var(--accent-strong);
+      --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --fs-12: 0.75rem; --fs-13: 0.8125rem; --fs-14: 0.875rem; --fs-15: 0.9375rem; --fs-16: 1rem; --fs-20: 1.25rem;
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+      --radius-lg: 14px; --radius-md: 9px; --radius-sm: 6px; --radius-pill: 999px;
+      --ctl-touch: 44px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --t-press: 90ms; --t-fast: 140ms; --t-med: 220ms;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f6f6f3; --surface: #ffffff; --surface-2: #fbfbf9; --surface-3: #f1f1ed;
+      --border: #e3e2db; --border-strong: #c9c8bf;
+      --text: #0b0b0b; --text-2: #52514e; --text-3: #6b6a65;
+      --accent: #e75623; --accent-strong: #c8331a; --accent-soft: rgba(231, 86, 35, 0.1); --accent-text: #c8331a; --focus: #e75623;
+      --on-accent: #ffffff;
+      --fh-naive: #c4407e;
+      --glow: radial-gradient(1100px 540px at 8% -12%, rgba(231, 86, 35, 0.08), transparent 62%), radial-gradient(900px 480px at 100% -6%, rgba(57, 135, 229, 0.06), transparent 60%);
+      --elev-2: 0 1px 1px rgba(11, 11, 11, 0.03), 0 4px 8px -4px rgba(11, 11, 11, 0.08), 0 16px 24px -8px rgba(11, 11, 11, 0.12);
+      --card-wide: linear-gradient(135deg, rgba(231, 86, 35, 0.1), #ffffff 55%);
+      --btn-primary: linear-gradient(180deg, #c8331a, #a21b18); --btn-primary-hover: #a21b18;   /* ember 600 to 700: white text 5.3:1 or more */
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        color-scheme: light;
+        --bg: #f6f6f3; --surface: #ffffff; --surface-2: #fbfbf9; --surface-3: #f1f1ed;
+        --border: #e3e2db; --border-strong: #c9c8bf;
+        --text: #0b0b0b; --text-2: #52514e; --text-3: #6b6a65;
+        --accent: #e75623; --accent-strong: #c8331a; --accent-soft: rgba(231, 86, 35, 0.1); --accent-text: #c8331a; --focus: #e75623;
+        --on-accent: #ffffff;
+        --fh-naive: #c4407e;
+        --glow: radial-gradient(1100px 540px at 8% -12%, rgba(231, 86, 35, 0.08), transparent 62%), radial-gradient(900px 480px at 100% -6%, rgba(57, 135, 229, 0.06), transparent 60%);
+        --elev-2: 0 1px 1px rgba(11, 11, 11, 0.03), 0 4px 8px -4px rgba(11, 11, 11, 0.08), 0 16px 24px -8px rgba(11, 11, 11, 0.12);
+        --card-wide: linear-gradient(135deg, rgba(231, 86, 35, 0.1), #ffffff 55%);
+        --btn-primary: linear-gradient(180deg, #c8331a, #a21b18); --btn-primary-hover: #a21b18;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100vh; color: var(--text); font: 400 var(--fs-16)/1.55 var(--font-sans); background: var(--glow), var(--bg); background-attachment: fixed; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--radius-md); }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: var(--sp-6) var(--sp-6) var(--sp-10); }
+
+    /* top bar: the brand and the theme switch */
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
+    .brand { display: inline-flex; align-items: center; gap: var(--sp-3); min-height: var(--ctl-touch); font-weight: 600; text-decoration: none; }
+    .brand svg { width: 28px; height: 28px; flex: none; }
+    .switch { position: relative; display: grid; place-items: center; width: var(--ctl-touch); height: var(--ctl-touch); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); cursor: pointer;
+      transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out); }
+    .switch:hover { background: var(--surface-3); border-color: var(--text-3); }
+    .switch:active { transform: scale(0.97); }
+    .switch svg { width: 18px; height: 18px; }
+    .switch .moon { display: none; }
+    :root.is-light .switch .sun { display: none; }
+    :root.is-light .switch .moon { display: block; }
+    /* the switch's tooltip, in the app's look (.ui-tooltip): on hover after a moment, and at once on keyboard focus */
+    .switch::after { content: attr(data-tip); position: absolute; top: calc(100% + 8px); right: 0; z-index: 2; padding: 6px 10px; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); background: var(--surface-3); color: var(--text); font-size: var(--fs-13); white-space: nowrap; box-shadow: var(--elev-2);
+      opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+    .switch:hover::after { opacity: 1; transform: none; transition-delay: 400ms; }
+    .switch:focus-visible::after { opacity: 1; transform: none; transition-delay: 0ms; }
+    @media (hover: none) { .switch:hover::after { opacity: 0; } }
+
+    /* hero: the words left, the product right (stacked under the words on narrow screens) */
+    .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: var(--sp-10); }
+    .hero-text { min-width: 0; }
+    .shot { display: block; margin: var(--sp-5) 0 0; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden;
+      background: #07090d; box-shadow: var(--elev-2); text-decoration: none;
+      transition: border-color var(--t-fast) var(--ease-out), transform var(--t-med) var(--ease-out); }
+    .shot:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); transform: translateY(-2px); }
+    .shot img { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 750; }
+    .shot figcaption { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4);
+      border-top: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: var(--fs-13); }
+    .shot figcaption b { color: var(--text); font-weight: 600; }
+    .shot figcaption { flex-wrap: wrap; }
+    .shot figcaption > span:last-child { white-space: nowrap; color: var(--accent-text); font-weight: 600; }
+    .shot figure { margin: 0; }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 0; } .shot { margin-top: var(--sp-8); } }
+    /* hero */
+    .eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--sp-3); margin: var(--sp-12) 0 0; color: var(--text-2); font-size: var(--fs-13); font-weight: 500; }
+    .eyebrow span + span::before { content: ""; display: inline-block; width: 4px; height: 4px; margin-right: var(--sp-3); border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+    h1 { margin: var(--sp-5) 0 var(--sp-3); font-size: clamp(2.75rem, 8vw, 5.25rem); line-height: 1; letter-spacing: -0.035em; font-weight: 700; }
+    .lead { max-width: 46rem; margin: 0; color: var(--text-2); font-size: clamp(1.0625rem, 2.2vw, 1.3125rem); line-height: 1.5; text-wrap: pretty; }
+    .team { margin: var(--sp-4) 0 0; color: var(--text-2); font-size: var(--fs-14); }
+    .team strong { color: var(--text); font-weight: 600; }
+    .cta { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin: var(--sp-8) 0 0; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); font-weight: 600; text-decoration: none;
+      transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out); }
+    .btn:hover { background: var(--surface-3); border-color: var(--text-3); }
+    .btn:active { transform: scale(0.97); }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn-primary { border-color: transparent; background: var(--btn-primary); color: var(--on-accent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent); }
+    .btn-primary:hover { border-color: transparent; background: var(--btn-primary-hover); }
+
+    /* headline numbers: one accent (the jump that harmonizing removes); every unit stays with its value */
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); margin: var(--sp-10) 0 0; padding: 0; list-style: none; }
+    .stat { display: grid; align-content: start; gap: var(--sp-2); min-width: 0; padding: var(--sp-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+    .stat b { display: block; font-family: var(--font-mono); font-feature-settings: "zero" 1; font-variant-numeric: tabular-nums; font-size: clamp(1.375rem, 3.4vw, 1.875rem);
+      font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; white-space: nowrap; color: var(--text); }
+    .stat b small { margin-left: 0.3em; color: var(--text-2); font-family: var(--font-sans); font-size: 0.6em; font-weight: 500; letter-spacing: 0; }
+    .stat b small.tight { margin-left: 0.05em; }
+    /* the key number is the jump of the naive join: in the naive join's colour, as in the app's charts */
+    .stat.is-key { border-color: color-mix(in srgb, var(--fh-naive) 45%, var(--border)); background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--fh-naive) 14%, transparent), transparent 60%), var(--surface); }
+    .stat.is-key b { color: var(--fh-naive); }
+    .stat > span { color: var(--text-2); font-size: var(--fs-14); line-height: 1.45; }
+
+    h2 { margin: var(--sp-16) 0 var(--sp-4); font-size: var(--fs-20); font-weight: 650; letter-spacing: -0.01em; }
+    .sub { margin: calc(-1 * var(--sp-2)) 0 var(--sp-5); color: var(--text-2); font-size: var(--fs-15); }
+
+    /* what you can do: six first steps, each a link into the app */
+    .todo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); margin: 0; padding: 0; list-style: none; }
+    @media (max-width: 1100px) { .todo { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .todo a { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: start; gap: var(--sp-3); height: 100%; min-height: var(--ctl-touch);
+      padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); text-decoration: none;
+      transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out); }
+    .todo a:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); background: var(--surface-2); }
+    .todo a:active { transform: scale(0.98); }
+    .todo .i { display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--surface-3); color: var(--text); }
+    .todo .i svg { width: 18px; height: 18px; }
+    .todo strong { display: block; font-size: var(--fs-15); font-weight: 600; line-height: 1.35; }
+    .todo em { display: block; margin-top: 2px; color: var(--text-2); font-size: var(--fs-13); font-style: normal; line-height: 1.45; }
+
+    /* everything in one place */
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); margin: 0; padding: 0; list-style: none; }
+    .card { position: relative; display: flex; flex-direction: column; gap: var(--sp-2); height: 100%; min-height: 176px; padding: var(--sp-5);
+      border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); text-decoration: none;
+      transition: border-color var(--t-fast) var(--ease-out), transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+    a.card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); transform: translateY(-2px); box-shadow: var(--elev-2); }
+    .wide { grid-column: span 2; }
+    .wide .card { background: var(--card-wide), var(--surface); border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+    .card .icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--surface-3); color: var(--text); }
+    .wide .card .icon { background: var(--accent-soft); color: var(--accent-text); }
+    .card .icon svg { width: 22px; height: 22px; }
+    .card h3 { margin: var(--sp-2) 0 0; font-size: 1.125rem; font-weight: 600; }
+    .card p { margin: 0; color: var(--text-2); font-size: var(--fs-14); line-height: 1.5; }
+    .card .meta { margin-top: auto; padding-top: var(--sp-2); color: var(--text-2); font: 500 var(--fs-12)/1.4 var(--font-mono); }
+    .card .arrow { position: absolute; top: var(--sp-5); right: var(--sp-5); width: 18px; height: 18px; color: var(--text-3);
+      transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+    a.card:hover .arrow { color: var(--accent-text); transform: translate(2px, -2px); }
+    .card.soon { border-style: dashed; border-color: var(--border-strong); background: transparent; }
+    .card.soon .icon { background: transparent; box-shadow: inset 0 0 0 1px var(--border-strong); color: var(--text-2); }
+    .tag { position: absolute; top: var(--sp-5); right: var(--sp-5); padding: 2px var(--sp-2); border-radius: var(--radius-pill); background: var(--surface-3);
+      color: var(--text-2); font-size: var(--fs-12); font-weight: 600; }
+
+    .about { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--sp-3); }
+    .panel { padding: var(--sp-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+    .panel p { margin: 0 0 var(--sp-3); color: var(--text-2); font-size: var(--fs-15); line-height: 1.6; }
+    .panel p:last-child { margin: 0; }
+    .panel h3 { margin: 0 0 var(--sp-3); font-size: var(--fs-15); font-weight: 600; }
+    .panel ul { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; color: var(--text-2); font-size: var(--fs-15); }
+    .panel li { position: relative; padding-left: 18px; line-height: 1.5; }
+    .panel li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    footer { margin: var(--sp-16) 0 0; padding: var(--sp-5) 0 0; border-top: 1px solid var(--border); color: var(--text-2); font-size: var(--fs-13); line-height: 1.6; }
+    footer p { margin: 0 0 var(--sp-2); }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .todo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .about { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .wrap { padding: var(--sp-4) var(--sp-4) var(--sp-8); }
+      .eyebrow { flex-direction: column; align-items: flex-start; gap: 2px; margin-top: var(--sp-8); }
+      .eyebrow span + span::before { display: none; }
+      .grid, .todo { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .btn { width: 100%; }
+      .stat { padding: var(--sp-4); }
+      .stat b { font-size: clamp(1.25rem, 6.6vw, 1.875rem); }
+      .stat > span { font-size: var(--fs-13); }
+      h2 { margin-top: var(--sp-12); }
+    }
+    @media (max-width: 340px) { .stats { gap: var(--sp-2); } .stat { padding: var(--sp-3); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+      a.card:hover, .btn:active, .switch:active, .todo a:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="bar">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#e75623" d="M16 1.5 28.6 8.75v14.5L16 30.5 3.4 23.25V8.75z"/><path fill="#fff3e4" d="M16 7c1.5 3.5 5.5 5.8 5.5 10.6a5.5 5.5 0 0 1-11 0c0-2.4 1.2-4 2.5-5.2.1 1.7.9 2.9 2.1 3.4C14.6 12.8 15 9.8 16 7z"/></svg>
+        Fire Harmony
+      </a>
+      <button type="button" class="switch" id="theme" aria-label="Switch to light mode" data-tip="Switch to light mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+
+    <p class="eyebrow"><span>NASA Space Apps Challenge 2026</span><span>Kuala Lumpur</span><span>Harmonization of MODIS and VIIRS Hot Spots</span></p>
+    <div class="hero">
+    <div class="hero-text">
+    <h1>Fire Harmony</h1>
+    <p class="lead">One consistent worldwide fire record from MODIS and VIIRS, <span data-fill="span">November 2000 to October 2026</span>, with a burning calendar, anomalies, trends, drivers, an outlook and downloads for any place on Earth.</p>
+    <p class="team"><strong>Team Kopi and Cosmos</strong>: Saw Yong Quan and Yap Yong Son</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="./">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-5 2v14l5-2 6 2 5-2V4l-5 2z"/><path d="M9 4v14M15 6v14"/></svg>
+        Open the web app
+      </a>
+      <a class="btn" href="./Fire_Harmony_report.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>
+        Read the report
+      </a>
+    </div>
+    </div>
+    <a class="shot" href="./#/?area=state:IDN-1931&amp;tab=calendar&amp;cal=full">
+      <figure>
+        <img src="hub-calendar-light.webp" data-light="hub-calendar-light.webp" data-dark="hub-calendar.webp" width="1200" height="750" alt="Burning calendar of Central Kalimantan, 2001 to 2026" />
+        <script>(function (i) { if (document.documentElement.getAttribute('data-theme') === 'dark') i.src = i.getAttribute('data-dark'); })(document.currentScript.previousElementSibling);</script>
+        <figcaption><span><b>Burning calendar</b> of Central Kalimantan, Indonesia</span><span>Open it in the app</span></figcaption>
+      </figure>
+    </a>
+    </div>
+
+    <ul class="stats" aria-label="The project in four numbers">
+      <li class="stat"><b><span data-fill="hotspots">640.6</span><small>million</small></b><span>Detections read: every NASA FIRMS hotspot of five satellites. On the NOAA-20 scale they make <span data-fill="harmonized">443</span> million hotspots.</span></li>
+      <li class="stat is-key"><b><span data-fill="jump">8.4</span><small>times</small></b><span>the fake jump in 2012 when the two records are simply joined</span></li>
+      <li class="stat"><b><span data-fill="step">+0.55</span><small class="tight">%</small></b><span>the step left in Fire Harmony at that change, inside the normal spread</span></li>
+      <li class="stat"><b><span data-fill="years">26</span><small>years</small></b><span>of monthly fire on one scale, for any area you pick</span></li>
+    </ul>
+
+    <h2>What you can do in five minutes</h2>
+    <p class="sub">Each link opens the app at the right place.</p>
+    <ul class="todo">
+      <li><a href="./#/?search=1">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span>
+        <span><strong>Find the fire around your city</strong><em>Type a city, country or state: every month of fire since 2000, within 50 km.</em></span>
+      </a></li>
+      <li><a href="./#/methods?section=why">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg></span>
+        <span><strong>See the jump of 2012 disappear</strong><em>The record joined naively and harmonized, with every test of the seam.</em></span>
+      </a></li>
+      <li><a href="./#/rankings">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 18V10M12 18V6M19 18v-4"/></svg></span>
+        <span><strong>Rank every country by its trend</strong><em>Rising or falling only where the false discovery test holds.</em></span>
+      </a></li>
+      <li><a href="./#/?mode=trend">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span>
+        <span><strong>Map where fire rose and fell</strong><em>The trend of every large hexagon, 2001 to 2025.</em></span>
+      </a></li>
+      <li><a href="./#/haze?city=Kuala+Lumpur">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8"/></svg></span>
+        <span><strong>Trace the haze in Kuala Lumpur</strong><em>How much of the PM2.5 is smoke from Sumatra and Borneo, season by season.</em></span>
+      </a></li>
+      <li><a href="./#/data">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4v11M7 10.5 12 15l5-4.5M5 19.5h14"/></svg></span>
+        <span><strong>Download the record</strong><em>Open Parquet and JSON files, with code to query them in place.</em></span>
+      </a></li>
+      <li><a href="./#/?area=state:IDN-1931&amp;tab=calendar">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
+        <span><strong>See a burning calendar: Central Kalimantan</strong><em>Every month since 2001 in one grid, with the fire season outlined and the peat years standing out.</em></span>
+      </a></li>
+      <li><a href="./#/?area=state:ARG-1308&amp;month=202202&amp;tab=calendar">
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
+        <span><strong>See a burning calendar: Corrientes, Argentina</strong><em>Opens on February 2022, when the Iberá wetlands burned, against every month since 2001.</em></span>
+      </a></li>
+    </ul>
+
+    <h2>Everything in one place</h2>
+    <ul class="grid">
+      <li class="wide"><a class="card" href="./">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-5 2v14l5-2 6 2 5-2V4l-5 2z"/><path d="M9 4v14M15 6v14"/></svg></span>
+        <h3>Web app</h3>
+        <p>The Explorer with its map and burning calendar, the Dashboard, Rankings of every place, Haze, Methods and Data, and Ask for questions in plain words. Free, no login, on a laptop or a phone.</p>
+        <span class="meta">Explorer · Dashboard · Rankings · Haze · Methods · Data</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="./Fire_Harmony_report.pdf">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+        <h3>Research report</h3>
+        <p>The data, the method, every test of the seams, the trends and their limits, with references.</p>
+        <span class="meta">PDF</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="./Fire_Harmony_poster.pdf">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+        <h3>Poster</h3>
+        <p>The project on one page: the problem, the method, the proof and the app.</p>
+        <span class="meta">PDF · A1</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="https://github.com/Warren-530/fire-harmony">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span>
+        <h3>Code</h3>
+        <p>The data pipeline, the model, the tests and the app. Apache 2.0 licence.</p>
+        <span class="meta">GitHub</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="https://huggingface.co/datasets/warrensaw530/fire-harmony">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8"/></svg></span>
+        <h3>Data</h3>
+        <p>The harmonized record, the maps and all <span data-fill="hotspots-words">640.6 million</span> hotspots as open Parquet files.</p>
+        <span class="meta">Hugging Face dataset</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="https://huggingface.co/datasets/warrensaw530/fire-harmony/resolve/main/media/Fire_Harmony_final.mp4">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg></span>
+        <h3>Final video</h3>
+        <p>The problem, the data, how we harmonize, the app live, and what we found.</p>
+        <span class="meta">Video · 5 minutes · English subtitles</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+      <li><a class="card" href="https://huggingface.co/datasets/warrensaw530/fire-harmony/resolve/main/media/Fire_Harmony_demo_30s.mp4">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <h3>30 second demo</h3>
+        <p>The whole idea in half a minute.</p>
+        <span class="meta">Video · 30 seconds · English subtitles</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a></li>
+    </ul>
+
+    <h2>The project</h2>
+    <div class="about">
+      <div class="panel">
+        <p>Satellites have recorded fire hotspots since 2000, but the record is split between two kinds of sensor. MODIS flew alone until 2012. Its successor, VIIRS, sees much smaller fires. One VIIRS satellite counts about eight times as many hotspots as one MODIS satellite, so a simple join creates a fake jump in 2012 and hides the real trends.</p>
+        <p>Fire Harmony puts every satellite on the NOAA-20 VIIRS scale. A machine learning model, trained in the years when both sensors flew, converts every MODIS month, and every modelled value has a 90% range. At both sensor changes the record moves by less than 1%, inside the noise of ordinary years, and ESA burned area maps agree at the 2012 switch.</p>
+      </div>
+      <div class="panel">
+        <h3>In the app, for any place</h3>
+        <ul>
+          <li>Pick a place, draw a shape or type coordinates.</li>
+          <li>Pick any range of months.</li>
+          <li>See the burning calendar, the anomaly against normal and its rank, the trend and the critical period.</li>
+          <li>See why a month was unusual and the outlook for the next three months.</li>
+          <li>Download the monthly record, the charts, and every hotspot as CSV.</li>
+          <li>Ask questions in plain words: answers come from the data, each with a link to the place on the map.</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      <p>Data: NASA FIRMS, NASA LP DAAC, NASA GES DISC, NASA GISS, NASA SEDAC, ESA Fire_cci, PEATMAP, GIHS, Natural Earth and NOAA. We acknowledge the use of data from NASA's Fire Information for Resource Management System (FIRMS), part of NASA's Earth Science Data and Information System (ESDIS).</p>
+      <p>Code under the Apache 2.0 licence. Made for the NASA Space Apps Challenge 2026.</p>
+    </footer>
+  </main>
+  <script>
+    // The theme switch: the same choice as the app's (localStorage fh_theme), so both open in the theme last picked.
+    (function () {
+      var root = document.documentElement, btn = document.getElementById('theme');
+      var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+      function current() { var t = root.getAttribute('data-theme'); return t === 'light' || t === 'dark' ? t : (media && media.matches ? 'light' : 'dark'); }
+      var metas = document.querySelectorAll('meta[name="theme-color"]'), hero = document.querySelector('.shot img');
+      function label() {
+        var next = current() === 'dark' ? 'light' : 'dark', text = 'Switch to ' + next + ' mode';
+        btn.setAttribute('aria-label', text); btn.setAttribute('data-tip', text);
+        root.classList.toggle('is-light', current() === 'light');
+        // the browser bar follows the page's theme, also when the switch overrides the system's
+        for (var i = 0; i < metas.length; i++) metas[i].setAttribute('content', current() === 'light' ? '#f6f6f3' : '#07090d');
+        // the product picture is the app in the same theme as the page
+        var src = hero && hero.getAttribute(current() === 'light' ? 'data-light' : 'data-dark');
+        if (src && hero.getAttribute('src') !== src) hero.setAttribute('src', src);
+      }
+      btn.addEventListener('click', function () {
+        root.setAttribute('data-theme', current() === 'dark' ? 'light' : 'dark');
+        try { localStorage.setItem('fh_theme', root.getAttribute('data-theme')); } catch (e) {}
+        label();
+      });
+      if (media && media.addEventListener) media.addEventListener('change', label);
+      label();
+    })();
+    // The headline numbers, from the published files (the values written in the page are the same, for no script).
+    (function () {
+      var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      function set(key, text) { var els = document.querySelectorAll('[data-fill="' + key + '"]'); for (var i = 0; i < els.length; i++) els[i].textContent = text; }
+      function fixed(v, d) { var p = Math.pow(10, d); return (Math.sign(v) * Math.round(Math.abs(v) * p + 1e-7) / p).toFixed(d); }
+      function month(ym) { return MONTHS[(ym % 100) - 1] + ' ' + Math.floor(ym / 100); }
+      function get(path) { return fetch('data/' + path).then(function (r) { if (!r.ok) throw new Error(path); return r.json(); }); }
+      Promise.all([get('meta.json'), get('dashboard.json')]).then(function (x) {
+        var meta = x[0], d = x[1];
+        var rows = meta && meta.files && meta.files.hotspots && meta.files.hotspots.rows;
+        if (typeof rows === 'number') { set('hotspots', fixed(rows / 1e6, 1)); set('hotspots-words', fixed(rows / 1e6, 1) + ' million'); }
+        if (d && d.record && typeof d.record.hotspots_total === 'number') set('harmonized', String(Math.round(d.record.hotspots_total / 1e6)));
+        if (d && d.seam) {
+          set('jump', fixed(d.seam.naive_jump_2011_2012, 1));
+          var step = d.seam.steps['2012_harmonized_1y'];
+          set('step', (step > 0 ? '+' : '') + fixed(step, 2));
+        }
+        var r = d && d.record;
+        if (r && r.months) {
+          set('years', String(Math.floor(r.months / 12)));
+          var t = Math.floor(r.latest_full_month / 100) * 12 + (r.latest_full_month % 100) - 1 - (r.months - 1);
+          set('span', month(Math.floor(t / 12) * 100 + (t % 12) + 1) + ' to ' + month(r.latest_full_month));
+        }
+        document.documentElement.setAttribute('data-filled', '');
+      }).catch(function () { /* keep the values written in the page */ });
+    })();
+  </script>
+</body>
+</html>

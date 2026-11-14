@@ -1,0 +1,178 @@
+/* The Methods page: the live charts of the raw record and the trend tests (fh-mx-), and the checks read like a test
+   suite (fh-ck-). Colours from theme.css, sizes from tokens.css (DESIGN.md). The documentation layout, the margin
+   notes and the figures are in pages.css. */
+
+/* Terra and Aqua are both MODIS: Terra takes the lighter (dark theme) or deeper (light theme) blue of the scale. */
+:root, :root[data-theme="dark"] { --fh-terra: color-mix(in srgb, var(--sensor-modis) 42%, #ffffff); }
+:root[data-theme="light"] { --fh-terra: color-mix(in srgb, var(--sensor-modis) 55%, #0b0b0b); }
+
+/* ---------------------------------------------------------------- swatches and keys */
+.fh-mx-swatch[data-s="terra"] { background: var(--fh-terra); }
+.fh-mx-swatch[data-s="aqua"] { background: var(--sensor-modis); }
+.fh-mx-swatch[data-s="snpp"] { background: var(--sensor-snpp); }
+.fh-mx-swatch[data-s="noaa20"] { background: var(--sensor-noaa20); }
+.fh-mx-swatch[data-s="noaa21"] { background: var(--sensor-noaa21); }
+.fh-mx-key-naive { background: var(--fh-naive); }
+.fh-mx-key-harm { height: 3px; background: var(--harmonized); }
+.fh-mx-key-modis { background: var(--sensor-modis); }
+.fh-mx-lead { background: var(--accent); }
+.fh-mx-lead[data-i="1"] { opacity: 0.62; }
+.fh-mx-lead[data-i="2"] { opacity: 0.36; }
+
+/* The satellite cell of the sensors table: a dot in the sensor colour, the name, the years under it. */
+.fh-mx-sat { display: inline-grid; grid-template-columns: 10px auto; align-items: center; column-gap: var(--sp-2); }
+.fh-mx-sat .fh-mx-swatch { width: 10px; height: 10px; border-radius: 50%; }
+.fh-mx-sat-years { grid-column: 2; color: var(--text-2); font-size: var(--fs-12); font-weight: 400; }
+.fh-mx-sensors .ui-table tbody th { min-width: 11em; font-weight: 600; }
+.fh-mx-sensors .ui-table thead th { min-width: 5.5em; }
+
+/* the exchange rate formula, on its own line */
+.fh-doc-prose .fh-mx-formula { margin: var(--sp-1) 0; padding: var(--sp-3) var(--sp-4); border-left: 2px solid var(--border-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; background: var(--surface-2); color: var(--text); font-family: Georgia, "Times New Roman", serif;
+  font-size: var(--fs-16); }
+.fh-doc-prose sub { font-size: 0.72em; }
+
+/* a trend that passes p < 0.05 in the sensitivity table: the value in the text colour, others quieter */
+.fh-mx-sig { color: var(--text); font-weight: 650; }
+.fh-mx-sens .ui-table td.ui-num:not(:has(.fh-mx-sig)) { color: var(--text-2); }
+
+/* a column of a grid that holds a chart and a note under it */
+.fh-mx-col { display: grid; gap: var(--sp-4); align-content: start; min-width: 0; }
+
+/* links under a margin note */
+.fh-mx-links { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin: 0 calc(-1 * var(--sp-2)); }
+.fh-mx-links .ui-btn { min-height: var(--ctl-sm); padding: var(--sp-1) var(--sp-2); font-size: var(--fs-13); }
+@media (pointer: coarse), (max-width: 760px) { .fh-mx-links .ui-btn { min-height: var(--ctl-touch); } }
+.fh-mx-card-text { margin: 0; color: var(--fh-prose); font-size: var(--fs-14); line-height: 1.6; }
+/* "Show all 28 cities" under the haze table */
+.fh-mx-more { justify-self: start; }
+.fh-mx-tight .ui-table { font-size: var(--fs-13); }
+
+/* a chart a check can jump to: it lands under the header (and the contents bar on small screens) */
+.fh-mx-jump-target { min-width: 0; scroll-margin-top: calc(var(--fh-sticky-top, 61px) + var(--sp-4)); }
+.fh-mx-jump-target:focus { outline: none; }
+.fh-mx-jump-target:focus-visible > .ui-card { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 1023px) { .fh-mx-jump-target { scroll-margin-top: calc(var(--fh-sticky-top, 56px) + 64px); } }
+
+/* ---------------------------------------------------------------- the checks */
+.fh-ck { display: grid; gap: var(--sp-4); }
+.fh-ck-summary { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1px solid color-mix(in srgb, var(--good) 32%, var(--border));
+  border-radius: var(--radius-lg); background: color-mix(in srgb, var(--good) 6%, var(--surface)); }
+.fh-ck-summary-icon { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+.fh-ck-summary-text { margin: 0; color: var(--text-2); font-size: var(--fs-14); line-height: var(--lh-14); }
+.fh-ck-summary-text strong { color: var(--text); font-weight: 650; }
+.fh-ck-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: var(--sp-4); margin: 0; padding: 0; list-style: none; }
+.fh-ck-card { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; padding: var(--sp-5); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); background: var(--surface);
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+.fh-ck-card:hover { border-color: var(--border-strong); box-shadow: var(--elev-1); }
+.fh-ck-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-2); }
+.fh-ck-name { color: var(--text-2); font-size: var(--fs-12); font-weight: 600; }
+/* what the check scores: held out data, or the full record against a witness */
+.fh-ck-kind { margin-left: auto; padding: 1px var(--sp-2); border: 1px solid var(--border); border-radius: var(--radius-pill); color: var(--text-2);
+  font-size: var(--fs-12); line-height: 1.5; white-space: nowrap; }
+.fh-ck-kind[data-kind="held-out"] { border-color: color-mix(in srgb, var(--harmonized) 45%, var(--border)); }
+.fh-ck-question { margin: var(--sp-1) 0 0; font-size: var(--fs-16); font-weight: 650; line-height: 1.35; text-wrap: balance; }
+.fh-ck-method { margin: 0; color: var(--text-2); font-size: var(--fs-13); line-height: 1.5; text-wrap: pretty; }
+.fh-ck-result { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); margin: var(--sp-2) 0 0; }
+.fh-ck-value { font-size: var(--fs-stat-m); font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fh-ck-unit { color: var(--text-2); font-size: var(--fs-13); font-weight: 500; }
+.fh-ck-context { margin: 0; color: var(--fh-prose); font-size: var(--fs-13); line-height: 1.5; text-wrap: pretty; }
+.fh-ck-note { margin: 0; color: var(--text-2); font-size: var(--fs-12); line-height: var(--lh-12); }
+.fh-ck-foot { margin-top: auto; padding-top: var(--sp-2); border-top: 1px solid var(--border); }
+.fh-ck-link { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: var(--ctl-sm); color: var(--text); font-size: var(--fs-13); font-weight: 600;
+  text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px;
+  transition: text-decoration-color var(--t-fast) var(--ease-out); }
+.fh-ck-link:hover { text-decoration-color: var(--accent); }
+.fh-ck-link svg { flex: none; color: var(--text-2); }
+@media (pointer: coarse), (max-width: 760px) { .fh-ck-link { min-height: var(--ctl-touch); } }
+
+/* the gauge: one track per row, the normal range shaded, the result as a dot with its value above */
+.fh-ck-gauge { display: grid; gap: var(--sp-1); margin-top: var(--sp-2); }
+.fh-ck-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: end; gap: var(--sp-2); padding-top: var(--sp-4); }
+.fh-ck-row-label { color: var(--text-2); font-size: var(--fs-12); line-height: 1; transform: translateY(3px); }
+.fh-ck-track { position: relative; height: 6px; margin: 0 6px; border-radius: 3px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--border); }
+.fh-ck-band { position: absolute; top: -4px; bottom: -4px; border-radius: 4px; background: color-mix(in srgb, var(--good) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--good) 45%, transparent); }
+.fh-ck-band-fill { top: 0; bottom: 0; background: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: none; }
+.fh-ck-target { position: absolute; top: -3px; bottom: -3px; width: 1px; margin-left: -0.5px; background: var(--text-3); }
+.fh-ck-mark { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--text);
+  box-shadow: 0 0 0 2px var(--surface); }
+.fh-ck-mark-muted { background: var(--text-3); }
+/* the value sits on a patch of the card colour, so the target line never runs through it */
+.fh-ck-mark-label { position: absolute; bottom: 14px; left: 50%; padding: 1px 3px; border-radius: 3px; background: var(--surface); color: var(--text);
+  font-size: var(--fs-12); font-weight: 600; line-height: 1; white-space: nowrap; transform: translateX(-50%); }
+.fh-ck-mark-muted .fh-ck-mark-label { color: var(--text-2); font-weight: 500; }
+.fh-ck-mark[data-edge="end"] .fh-ck-mark-label { left: auto; right: -2px; transform: none; }
+.fh-ck-mark[data-edge="start"] .fh-ck-mark-label { left: -2px; transform: none; }
+.fh-ck-scale { position: relative; display: flex; justify-content: space-between; margin: 2px 6px 0 calc(5.5rem + var(--sp-2) + 6px); color: var(--text-2); font-size: var(--fs-12); }
+.fh-ck-scale-target { position: absolute; top: 0; transform: translateX(-50%); }
+.fh-ck-key { display: flex; align-items: center; gap: var(--sp-2); margin: 2px 0 0; color: var(--text-2); font-size: var(--fs-12); }
+.fh-ck-key-band { width: 16px; height: 10px; flex: none; border-radius: 3px; background: color-mix(in srgb, var(--good) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--good) 45%, transparent); }
+@media (max-width: 380px) {
+  .fh-ck-card { padding: var(--sp-4); }
+  .fh-ck-row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+  .fh-ck-scale { margin-left: calc(4.5rem + var(--sp-2) + 6px); }
+}
+
+/* ---------------------------------------------------------------- the live place figures (calendars, drivers) */
+.fh-mx-ramp { display: inline-flex; flex: none; gap: 1px; margin-right: var(--sp-2); }
+.fh-mx-ramp i { display: block; width: 8px; height: 10px; border-radius: 2px; }
+.fh-mx-cal-empty { border: 1px dashed var(--border-strong); background: none; }
+.fh-mx-diamond { display: inline-block; width: 8px; height: 8px; margin: 0 var(--sp-2) 0 2px; background: var(--sensor-modis); transform: rotate(45deg); }
+.fh-mx-dot-key { display: inline-block; width: 7px; height: 7px; margin-right: var(--sp-2); border-radius: 50%; background: var(--text); }
+.fh-mx-cal > .ui-card { height: 100%; }
+.fh-mx-cal-foot { display: flex; justify-content: flex-end; margin-top: auto; padding-top: var(--sp-2); border-top: 1px solid var(--border); }
+.fh-mx-cal-open { min-height: var(--ctl-sm); font-size: var(--fs-13); }
+@media (pointer: coarse), (max-width: 760px) { .fh-mx-cal-open { min-height: var(--ctl-touch); } }
+.fh-pg-key.fh-mx-key-wrap { white-space: normal; }
+
+/* Two charts side by side: a shorter chart's card fills its cell, the chart sits in the middle of the room left and
+   the source line keeps to the bottom, so the two cards end alike (no empty band under one of them). */
+.fh-pg .ui-grid > .ui-card > .ui-card-body:has(> .ui-figure) { flex: 1 1 auto; }
+.fh-pg .ui-grid > .ui-card > .ui-card-body > .ui-figure { height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; }
+.fh-pg .ui-grid > .ui-card > .ui-card-body > .ui-figure > .ui-figure-plot { align-self: center; }
+
+/* The model ladder and the picture of the model against VIIRS: side by side only from 860 px of content, where the
+   ladder keeps its names beside the bars and the picture stays readable; stacked below that. */
+.fh-mx-pair { container: fh-pair / inline-size; min-width: 0; }
+@container fh-pair (max-width: 859px) { .fh-mx-pair > .ui-grid-2 { grid-template-columns: minmax(0, 1fr); } }
+.fh-mx-pair > .ui-grid > .fh-mx-jump-target { display: flex; }
+.fh-mx-pair > .ui-grid > .fh-mx-jump-target > .ui-card { flex: 1; }
+
+/* ---------------------------------------------------------------- phones: each section folds (components/methods/Fold.tsx)
+   to its title, its lead text and its first card; "Show the detail" opens the rest. The fold of the Dashboard
+   (DbSection.tsx), with its rules here as the Methods page does not load dashboard.css. */
+.fh-doc .db-section-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); }
+.fh-doc .db-fold { display: none; }
+.fh-doc .db-fold-chev { transition: transform var(--t-med) var(--ease-out); }
+.fh-doc .db-fold[aria-expanded="true"] .db-fold-chev { transform: rotate(180deg); }
+@media (max-width: 767px) {
+  .fh-doc .db-fold { display: inline-flex; justify-self: stretch; justify-content: center; width: 100%; min-height: var(--ctl-touch); }
+  .fh-doc .db-section[data-folded] [data-fold] { display: none; }
+  /* a row whose other cards are folded: its grid cell goes too */
+  .fh-doc .db-section[data-folded] :is(.ui-grid, .fh-mx-pair, .fh-mx-jump-target) > :has(> [data-fold]:only-child) { display: none; }
+  .fh-doc .db-section[data-folded] :is(.fh-mx-jump-target, .fh-mx-pair):has(> [data-fold]:only-child, > .ui-grid:only-child > :has(> [data-fold]:only-child)) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .fh-doc .db-fold-chev { transition: none; } }
+
+/* numbers inside sentences: in the number font, but no heavier than the words around them (tiles and tables keep bold) */
+.fh-doc p .ui-mono, .fh-doc p .fh-doc-n { font-weight: 500; font-size: 0.92em; }
+
+/* the short version at the top of Methods: five claims, each with a link to its evidence */
+.fh-mx-short { display: grid; gap: var(--sp-3); padding: var(--sp-5) var(--sp-6); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border-radius: var(--radius-lg); background: linear-gradient(180deg, var(--accent-soft), transparent 220px), var(--surface); }
+.fh-mx-short-title { margin: 0; font-size: var(--fs-20); font-weight: 650; letter-spacing: -0.01em; }
+.fh-mx-short-list { display: grid; gap: var(--sp-3); margin: 0; padding: 0; list-style: none; }
+.fh-mx-short-list li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: var(--sp-3); align-items: start; }
+.fh-mx-short-list p { margin: 0; max-width: 76ch; color: var(--fh-prose, var(--text)); font-size: var(--fs-15); line-height: 1.55; }
+.fh-mx-short-n { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--border-strong); border-radius: 50%; color: var(--fh-accent-text);
+  font-size: var(--fs-13); font-weight: 600; }
+.fh-mx-short-link { display: inline-flex; align-items: center; gap: 2px; color: var(--fh-accent-text); font-size: var(--fs-14); font-weight: 600; text-decoration: none;
+  white-space: nowrap; }
+.fh-mx-short-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.fh-mx-short-link svg { vertical-align: -2px; }
+@media (max-width: 560px) { .fh-mx-short { padding: var(--sp-4); } .fh-mx-short-list p { font-size: var(--fs-14); } }
+@media (pointer: coarse) { .fh-mx-short-link { min-height: var(--ctl-touch); } }

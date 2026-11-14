@@ -1,0 +1,117 @@
+/* The period panel (components/period/PeriodPanel.tsx): presets, a From and a To month (each opening a year of twelve
+   months), four tiles, the same months in every year, raw detections by satellite and the downloads. Built for the
+   Explorer's side panel (about 340 px wide) and wider places; theme tokens only, so dark and light both work. */
+
+.pp { display: grid; gap: 14px; min-width: 0; }
+.pp-empty { color: var(--text-2); font-size: var(--fs-13); }
+
+.pp-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.pp-presets .ui-chip { font-size: var(--fs-13); }
+.pp-presets .ui-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* From and To */
+.pp-range { position: relative; display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.pp-range-to { color: var(--text-2); font-size: var(--fs-12); }
+.pp-when { display: inline-flex; flex: 1 1 0; align-items: center; gap: var(--sp-2); min-width: 0; min-height: var(--ctl); padding: 0 10px 0 var(--sp-3);
+  border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); font: inherit; text-align: left;
+  cursor: pointer; transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out); }
+.pp-when:hover { border-color: var(--border-strong); }
+.pp-when[aria-expanded="true"] { border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: var(--accent-soft); }
+.pp-when-label { color: var(--text-2); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.pp-when-value { flex: 1; font-family: var(--font-mono); font-size: var(--fs-14); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pp-when svg { width: 15px; height: 15px; flex: none; color: var(--text-2); }
+.pp-when[aria-expanded="true"] svg { color: var(--accent); }
+
+/* the year of twelve months, under the two buttons */
+.pp-pop { position: absolute; z-index: 5; top: calc(100% + 6px); left: 0; right: 0; display: grid; gap: var(--sp-2); padding: 10px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--material-thick); box-shadow: var(--elev-3);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); animation: ui-rise var(--t-med) var(--ease-out); }
+.pp-pop-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.pp-pop .pp-pop-step { min-width: var(--ctl-sm); min-height: var(--ctl-sm); color: var(--text-2); }
+.pp-pop .pp-pop-step:hover:not(:disabled) { color: var(--text); }
+.pp-pop-year { font-family: var(--font-mono); font-size: var(--fs-16); font-weight: 700; font-variant-numeric: tabular-nums; }
+.pp-pop-hint { margin: 0; color: var(--text-2); font-size: var(--fs-12); text-align: center; }
+/* every year of the record in one list (about a year and a half in view), so a range in any year is three taps; the
+   edge with more to see fades */
+.pp-years { position: relative; display: grid; gap: var(--sp-2); max-height: min(264px, 46vh); margin: 0 calc(var(--sp-1) * -1); padding: 0 var(--sp-1);
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+@supports (animation-timeline: scroll()) {
+  .pp-years { animation: ui-scroll-fade-y auto linear both; animation-timeline: scroll(self block); }
+}
+.pp-year { display: grid; gap: var(--sp-1); }
+.pp-year-label { margin: 0; padding: var(--sp-1) var(--sp-1) 0; color: var(--text-2); font-family: var(--font-mono); font-size: var(--fs-12);
+  font-weight: 700; letter-spacing: var(--tracking-caps); font-variant-numeric: tabular-nums; }
+.pp-months { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-1); }
+.pp-month { min-height: var(--ctl-touch); border: 1px solid transparent; border-radius: var(--radius-md); background: transparent; color: var(--text);
+  font-family: var(--font-mono); font-size: var(--fs-13); font-weight: 600; cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out); }
+.pp-month:hover:not(:disabled) { border-color: var(--border-strong); background: var(--surface-3); }
+.pp-month[data-state="in"] { background: var(--accent-soft); }
+.pp-month[data-state="end"] { background: var(--accent); color: var(--bg); }
+:root[data-theme="light"] .pp-month[data-state="end"] { background: var(--accent-strong); color: var(--surface); }
+.pp-month[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent); }
+.pp-month:disabled { color: var(--text-3); opacity: 0.5; cursor: not-allowed; }
+.pp-month:focus-visible { outline-offset: 1px; }
+
+.pp-caption { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0; font-size: var(--fs-13); color: var(--text-2); }
+.pp-caption svg { width: 15px; height: 15px; color: var(--accent); }
+.pp-caption strong { color: var(--text); font-weight: 600; }
+
+.pp-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); }
+.pp-tile { padding: 10px var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); min-width: 0; }
+.pp-tile-main { border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: linear-gradient(180deg, var(--accent-soft), transparent 140%), var(--surface-2); }
+.pp-tile-label { margin: 0 0 var(--sp-1); font-size: var(--fs-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--text-2); }
+/* a number never breaks inside (no "hots / pots"): it is one word in JetBrains Mono */
+.pp-tile-value { margin: 0; font-family: var(--font-mono); font-size: var(--fs-stat-s); font-weight: 600; color: var(--text);
+  font-variant-numeric: tabular-nums; line-height: 1.15; overflow-wrap: normal; }
+.pp-tile-value-sm { font-size: var(--fs-16); }
+.pp-hot { color: var(--accent); }
+.pp-cool { color: var(--anom-b4); }
+.pp-tile-context { margin: var(--sp-1) 0 0; font-size: var(--fs-12); color: var(--text-2); line-height: 1.35; }
+
+.pp-chart { margin: 0; display: grid; gap: 6px; }
+.pp-chart figcaption { display: grid; gap: 2px; }
+.pp-chart-title { font-size: var(--fs-13); font-weight: 600; color: var(--text); }
+.pp-chart-sub { font-size: var(--fs-12); color: var(--text-2); }
+.pp-chart-plot { min-height: 150px; }
+.pp-chart-plot svg { display: block; }
+.pp-numbers summary { display: flex; align-items: center; min-height: var(--ctl-sm); cursor: pointer; font-size: var(--fs-12); color: var(--text-2); }
+.pp-numbers summary:hover { color: var(--text); }
+.pp-numbers .ui-table { margin-top: 6px; font-size: var(--fs-12); }
+.pp-numbers tr[aria-current="true"] th, .pp-numbers tr[aria-current="true"] td { color: var(--accent-strong); font-weight: 600; }
+
+.pp-sats-title { margin: 0 0 6px; font-size: var(--fs-13); font-weight: 600; color: var(--text); }
+.pp-sats-title span { font-weight: 400; color: var(--text-2); }
+.pp-sats ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.pp-sats li { display: grid; grid-template-columns: 92px 1fr auto; align-items: center; gap: var(--sp-2); font-size: var(--fs-12); }
+.pp-sat-name { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); white-space: nowrap; }
+.pp-sat-name i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.pp-sat-bar { height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.pp-sat-bar b { display: block; height: 100%; border-radius: 3px; opacity: 0.85; }
+.pp-sat-n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text); }
+
+.pp-downloads { display: grid; gap: var(--sp-2); padding-top: var(--sp-3); border-top: 1px solid var(--border); }
+.pp-downloads-title { margin: 0; font-size: var(--fs-12); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--text-2); }
+.pp-download-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--sp-2); }
+.pp-download-row .ui-btn { justify-content: flex-start; flex-wrap: wrap; min-height: var(--ctl-touch); text-align: left; }
+.pp-download-row .ui-btn svg { width: 16px; height: 16px; flex: none; }
+.pp-btn-meta { flex-basis: 100%; font-family: var(--font-mono); font-size: var(--fs-12); opacity: 0.85; font-weight: 400; }
+.pp-check { display: flex; align-items: flex-start; gap: var(--sp-2); font-size: var(--fs-12); color: var(--text-2); cursor: pointer; line-height: 1.35; }
+.pp-check input { margin-top: 2px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.pp-note { margin: 0; font-size: var(--fs-12); color: var(--text-2); line-height: 1.45; }
+.pp-note-warn { color: var(--text); }
+
+/* touch screens: every control of the period at least 44 px */
+@media (pointer: coarse), (max-width: 768px) {
+  .pp-when { min-height: var(--ctl-touch); }
+  .pp-pop .pp-pop-step { min-width: var(--ctl-touch); min-height: var(--ctl-touch); }
+  .pp-check { align-items: center; min-height: var(--ctl-touch); }
+  .pp-check input { margin-top: 0; width: 20px; height: 20px; }
+  .pp-numbers summary { min-height: var(--ctl-touch); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-when, .pp-month { transition: none; }
+  .pp-pop { animation: none; }
+}

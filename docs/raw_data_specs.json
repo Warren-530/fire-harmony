@@ -1,0 +1,950 @@
+{
+ "about": "Reading specs for the raw climate and validation datasets, written by inspecting every file (2026-11-08).",
+ "specs": [
+  {
+   "dataset": "GPM IMERG Final Precipitation L3, 1 month, 0.1 x 0.1 deg, V07 (GES DISC short name GPM_3IMERGM.07; file ProductVersion V07B; AlgorithmVersion 3IMERGM_7.0; DOI 10.5067/GPM/IMERG/3B-MONTH/07). Source URL pattern from manifest: https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGM.07/YYYY/<file>. Acquisition Log item C5.",
+   "folder": "/home/sawy3/nasa_work/data/raw/gpm_imerg_monthly",
+   "format": "HDF5 files with the .HDF5 extension (FormatPackage HDF5-1.10.9, DataFormatVersion 7e). They are netCDF-4 compatible, using HDF5 dimension scales. All variables sit in the group /Grid. The root group has no variables, only the FileHeader and FileInfo attributes (PVL metadata strings). One month per file, chunked with gzip level 6. Each file is 17.5 to 19.6 MB; the total is 5,796,959,560 bytes (5.80 GB, 5.4 GiB). Opens with h5py, or with xarray using group='Grid' (both engine='h5netcdf' and engine='netcdf4' work). All 309 file sizes match manifest.csv.",
+   "file_count": 309,
+   "file_pattern": "3B-MO.MS.MRG.3IMERG.YYYYMM01-S000000-E235959.MM.V07B.HDF5, e.g. 3B-MO.MS.MRG.3IMERG.20250901-S000000-E235959.09.V07B.HDF5. Regex: ^3B-MO\\.MS\\.MRG\\.3IMERG\\.(\\d{4})(\\d{2})01-S000000-E235959\\.(\\d{2})\\.V07B\\.HDF5$ (group 1 = year, group 2 = month, group 3 repeats the month). All 309 names match, and all are V07B.",
+   "time_coverage": "Jan 2000 to Sep 2025, monthly, one time step per file. 309 contiguous months, with no gaps or duplicates (25 x 12 + 9 = 309). The first file starts 2000-01-01 00:00. The last file covers 2025-09-01 00:00 to 2025-09-30 23:59:59.999 (FileHeader Start/StopGranuleDateTime). Grid/time is the month START, stored as int32 seconds since 1980-01-06 00:00:00 UTC (the GPS epoch, no leap seconds): 630720000 = 2000-01-01, 1035763200 = 2012-11-01, 1440720000 = 2025-09-01. time_bnds = [month start, next month start]. The local Late daily folder (gpm_imerg_late_daily) starts on 2025-10-01, so the two folders do not overlap. I did not check whether GES DISC has Final months newer than Sep 2025.",
+   "variables": [
+    {
+     "name": "precipitation",
+     "long_name": "Merged microwave-infrared-gauge precipitation estimate",
+     "units": "mm/hr (monthly MEAN rate; GridHeader BinMethod=ARITHMETIC_MEAN). mm/month = value x 24 x days in month",
+     "dims": "(time=1, lon=3600, lat=1800) in the file; transpose to (lat, lon). float32",
+     "fill_value": "-9999.9 (float32 _FillValue attribute; CodeMissingValue '-9999.9')",
+     "scale_offset": "none"
+    },
+    {
+     "name": "randomError",
+     "long_name": "Root-mean-square error estimate for merged microwave-infrared-gauge precipitation",
+     "units": "mm/hr",
+     "dims": "(time=1, lon=3600, lat=1800), float32",
+     "fill_value": "-9999.9",
+     "scale_offset": "none"
+    },
+    {
+     "name": "gaugeRelativeWeighting",
+     "long_name": "Relative weight of gauge observation in the merged microwave-infrared-gauge precipitation estimate",
+     "units": "percent",
+     "dims": "(time=1, lon=3600, lat=1800), int16",
+     "fill_value": "-9999 (int16)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "probabilityLiquidPrecipitation",
+     "long_name": "Probability of liquid precipitation; estimated with a diagnostic parameterization using ancillary data",
+     "units": "percent",
+     "dims": "(time=1, lon=3600, lat=1800), int16",
+     "fill_value": "-9999 (int16); no fill cells in any of the 3 samples",
+     "scale_offset": "none"
+    },
+    {
+     "name": "precipitationQualityIndex",
+     "long_name": "none in file (no LongName attribute)",
+     "units": "none given in file (no Units attribute)",
+     "dims": "(time=1, lon=3600, lat=1800), float32",
+     "fill_value": "-9999.9",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat",
+     "long_name": "Latitude at the center of 0.10 degree grid intervals of latitude from -90 to 90.",
+     "units": "degrees_north",
+     "dims": "(lat=1800), float32, dimension scale, bounds=lat_bnds",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "Longitude at the center of 0.10 degree grid intervals of longitude from -180 to 180.",
+     "units": "degrees_east",
+     "dims": "(lon=3600), float32, dimension scale, bounds=lon_bnds",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time",
+     "long_name": "Representative time of data in seconds since 1980-01-06 00:00:00 UTC (no leap seconds)",
+     "units": "seconds since 1980-01-06 00:00:00 UTC (calendar attribute = 'julian')",
+     "dims": "(time=1), int32",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time_bnds",
+     "units": "seconds since 1980-01-06 00:00:00 UTC",
+     "dims": "(time=1, nv=2), int32",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat_bnds",
+     "units": "degrees_north",
+     "dims": "(lat=1800, latv=2), float32, -90..90",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon_bnds",
+     "units": "degrees_east",
+     "dims": "(lon=3600, lonv=2), float32, -180..180",
+     "fill_value": "none",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "Regular 0.1 deg latitude/longitude grid of cell centres (GridHeader: Registration=CENTER, Origin=SOUTHWEST, LatitudeResolution=LongitudeResolution=0.1, bounding box -90..90 and -180..180). lat has 1800 values from -89.95 to 89.95, ascending SOUTH to NORTH. lon has 3600 values from -179.95 to 179.95, ascending west to east, using the -180..180 convention. Bounds: lat_bnds runs -90 to 90 and lon_bnds -180 to 180. The coordinates are stored as float32 with rounding noise (e.g. -89.94999695 and -179.94999695), so round them to 2 decimals before matching. Cell index for a point: i_lat = floor((lat + 90) * 10), j_lon = floor((lon + 180) * 10). Watch exact edges: 3.0N falls exactly on the edge between cells. DIMENSION ORDER: the data arrays are stored as (time=1, lon=3600, lat=1800), i.e. lon-major, NOT (lat, lon); xarray reports the dims the same way. The grid is identical in the first, middle and last files. HDF5 chunks are (1, 145, 1800) for the float32 variables and (1, 291, 1800) for the int16 ones, so reading a longitude range is cheap, but a latitude-only slice still decompresses full columns.",
+   "quirks": [
+    "Arrays are stored (time, lon, lat). Transpose to (lat, lon): use .T on the h5py array, or .transpose('lat','lon') in xarray. A naive reshape or imshow would come out rotated.",
+    "precipitation is the monthly MEAN RATE in mm/hr, not a monthly total. mm/month = rate x 24 x days in month (Jan 744 h, Sep 720 h, Feb 672 or 696 h).",
+    "The time units use the GPS epoch ('seconds since 1980-01-06 00:00:00 UTC'), not 1970, and the calendar attribute is 'julian'. xarray therefore decodes time to cftime.DatetimeJulian objects, not datetime64. Forcing xr.coders.CFDatetimeCoder(use_cftime=False) raises ValueError. ds.indexes['time'].to_datetimeindex() works but gives a RuntimeWarning. The labels are still correct for this period (Julian and Gregorian day counts agree between 1980 and 2099); this was checked by decoding the raw ints with Python datetime. The safest route is decode_times=False plus the epoch, or the date in the file name.",
+    "Missing values are -9999.9 for the float32 variables and -9999 for the int16 ones. There is no scale_factor or add_offset. h5py does NOT mask fills; xarray does, and it promotes the int16 variables to float32 with NaN.",
+    "The HDF5-level dataset fill values are junk: about 2.06e-08 for the float variables, and -28480 / -27936 for the int16 ones. They would only show up in unallocated chunks; all chunks were allocated in the 3 sampled files (25/25 and 13/13). Do not use h5py's .fillvalue as the missing flag; use the _FillValue attribute.",
+    "Missing cells are confined to the polar caps. Sep 2025: 47,099 of 6,480,000 cells (lat <= -89.45 and >= 89.25). Nov 2012: 34,861. Jan 2000: 68,084, including a patch at 74.35-76.15N (947 cells). In all 3 samples every cell from 89.05S to 74.25N was valid. probabilityLiquidPrecipitation had no fills at all.",
+    "Values are quantized to 0.001 mm/hr (about 0.72-0.74 mm/month). Every value sits on that 0.001 grid, the smallest non-zero value is 0.001, and 12.9% of valid cells were exactly 0 in Sep 2025. Very dry months cannot be resolved below about 0.7 mm.",
+    "precipitationQualityIndex has no units and no LongName in the file. Sampled values range from 0.24 to 1433, and its meaning is not stated in the file (ambiguous): check the IMERG technical documentation before using it.",
+    "Product seam: the local Final record ends 2025-09. Oct 2025 to Nov 2026 exists only in gpm_imerg_late_daily, which is a different IMERG run: daily .nc4 files, starting V07B, with the last file in the manifest (20261105) being V07C. The two folders have no overlapping months, so Late cannot be calibrated against Final from local data.",
+    "Gauge influence varies a lot. gaugeRelativeWeighting (Sep 2025) was 0% over the Pacific (0.05N 150.05W) and the Indian Ocean, and also 0% at 3.05N 101.05E (Kuala Lumpur area). It was 10% at 1.05N 114.05E (Borneo) and 52% at 2.95S 60.05W (Amazon). Even in 'Final', many fire-region cells are effectively satellite-only in a given month.",
+    "Files come from different processing dates but are all V07B / 3IMERGM_7.0: the 2000-01 file was generated 2024-11-02, 2012-11 on 2024-01-09, and 2025-09 on 2026-02-01.",
+    "RAM: one float32 field is 25.9 MB, and the full 309-month precipitation stack would be about 8.0 GB, more than this machine's 7.7 GB of RAM. Process file by file, or read a longitude range.",
+    "The root group has no variables, so netCDF tools must be given group='Grid'. The extension is .HDF5, not .nc/.nc4.",
+    "Housekeeping: my small scratch scripts are still in /tmp (/tmp/imerg_*.py, /tmp/imerg_scratch/, /tmp/imerg_final/, a few KB in total) because the deletion command was denied. /tmp/imerg_spec belongs to another job and was not touched. No data file was modified."
+   ],
+   "reader_snippet": "import calendar\nimport h5py\nimport numpy as np\n\ndef read_imerg_monthly(path, var=\"precipitation\"):\n    \"\"\"GPM IMERG Final V07B monthly HDF5 -> (data[lat, lon] float32 with fills as NaN,\n    lat (1800,) S->N -89.95..89.95, lon (3600,) W->E -179.95..179.95).\n    'precipitation' is the monthly MEAN RATE in mm/hr (x 24 x days_in_month -> mm/month).\"\"\"\n    with h5py.File(path, \"r\") as f:\n        g = f[\"Grid\"]\n        ds = g[var]                                   # stored as (time=1, lon=3600, lat=1800)\n        fv = ds.attrs[\"_FillValue\"]                   # -9999.9 (float32 vars) / -9999 (int16 vars)\n        raw = ds[0, :, :]                             # (lon, lat), one 26 MB field\n        bad = (raw == fv) | (raw < -9990)\n        a = np.ascontiguousarray(np.where(bad, np.nan, raw).astype(np.float32).T)  # -> (lat, lon)\n        lat = np.round(g[\"lat\"][:].astype(np.float64), 2)   # float32 in file, e.g. -89.94999695\n        lon = np.round(g[\"lon\"][:].astype(np.float64), 2)\n    return a, lat, lon\n\ndef imerg_month_start(path):\n    \"\"\"Month start from Grid/time (int32 s since GPS epoch 1980-01-06, no leap seconds).\"\"\"\n    with h5py.File(path, \"r\") as f:\n        return np.datetime64(\"1980-01-06T00:00:00\") + np.timedelta64(int(f[\"Grid/time\"][0]), \"s\")\n\nif __name__ == \"__main__\":\n    fn = (\"/home/sawy3/nasa_work/data/raw/gpm_imerg_monthly/\"\n          \"3B-MO.MS.MRG.3IMERG.20250901-S000000-E235959.09.V07B.HDF5\")\n    p, lat, lon = read_imerg_monthly(fn)\n    t = imerg_month_start(fn)                         # 2025-09-01T00:00:00\n    hours = 24 * calendar.monthrange(t.astype(object).year, t.astype(object).month)[1]\n    w = np.broadcast_to(np.cos(np.deg2rad(lat))[:, None], p.shape)\n    ok = np.isfinite(p)\n    print(t, p.shape, lat[[0, -1]], lon[[0, -1]], \"NaN:\", int((~ok).sum()))\n    print(\"global area-weighted mean mm/hr:\", round(float((p[ok] * w[ok]).sum() / w[ok].sum()), 5))\n    i, j = np.searchsorted(lat, 3.05), np.searchsorted(lon, 101.05)   # cell centred 3.05N 101.05E\n    print(\"3.05N 101.05E:\", float(p[i, j]), \"mm/hr =\", round(float(p[i, j]) * hours, 1), \"mm/month\")\n\n# Tested output with /home/sawy3/nasa_work/fire-harmony/.venv/bin/python -I:\n# 2025-09-01T00:00:00 (1800, 3600) [-89.95  89.95] [-179.95  179.95] NaN: 47099\n# global area-weighted mean mm/hr: 0.1174\n# 3.05N 101.05E: 0.3410000205039978 mm/hr = 245.5 mm/month\n# xarray equivalent: xr.open_dataset(fn, group='Grid', engine='h5netcdf', decode_times=False)['precipitation'].isel(time=0).transpose('lat','lon').values gives an identical array (NaN-aware array_equal = True).",
+   "sample_values": "All values below were read by code. Area means use cos(lat) weights over valid cells.\n- 2025-09 (last file): global mean 0.11740 mm/hr = 2.818 mm/day = 84.5 mm/month; 47,099 NaN cells.\n- The 4 cells around 3N 101E in 2025-09: 2.95N 100.95E = 0.625, 2.95N 101.05E = 0.436, 3.05N 100.95E = 0.500, 3.05N 101.05E = 0.341 mm/hr. Their mean is 0.4755 mm/hr, about 342 mm/month.\n- Geography check, 2025-09: Sahara 23.05N 10.05E = 0.001 mm/hr; Amazon 2.95S 60.05W = 0.142 mm/hr; Borneo 1.05N 114.05E = 0.601 mm/hr.\n- 2012-11 (middle file): global mean 0.11892 mm/hr; 34,861 NaN cells.\n- 2000-01 (first file): global mean 0.10768 mm/hr = 2.584 mm/day = 80.1 mm/month; 68,084 NaN cells. The 4 cells around 3N 101E: 0.211, 0.225, 0.244, 0.217 mm/hr (mean 0.2243 mm/hr, about 167 mm/month). Amazon 2.95S 60.05W = 0.437 mm/hr (wet season); Sahara = 0.012 mm/hr.\n- Ranges across the 3 samples: precipitation 0 to 2.005 / 2.822 / 2.275 mm/hr (Jan 2000 / Nov 2012 / Sep 2025); randomError 0.001 to 0.308 mm/hr; gaugeRelativeWeighting 0 to 100%; probabilityLiquidPrecipitation 0 to 100%; precipitationQualityIndex 0.24 to 1433. No valid value is negative.\n- The snippet's (lat, lon) field equals xarray's transposed field exactly. Point checks at 3.05N 101.05E, 2.95N 100.95E, 2.95S 60.05W and 60.05N 100.05E also match xarray .sel(..., method='nearest').",
+   "use_for_fire_harmony": "Gives monthly, gauge-adjusted ('Final') rainfall per H3 hexagon and month, worldwide, Jan 2000 to Sep 2025.\n\nAggregation: one IMERG cell is about 124 km2 at 3N and about 62 km2 at 60N (computed). H3 level 5 hexagons average about 253 km2 according to the H3 docs; that figure was not computed here because h3 is not installed in the venv. So:\n- Level 5: a hexagon holds roughly 2 to 4 IMERG cells. Take the cos(lat)-weighted mean of the cells whose centres fall inside it.\n- Levels 3 to 4: area-weighted means.\n- Levels 6 to 8: hexagons are smaller than one cell, so sample the cell at the hexagon centroid.\n- Convert mm/hr to mm/month (x 24 x days) before aggregating.\n\nDrivers: monthly rain in mm, anomaly or percent of a 2001-2020 normal, SPI-style standardized indices (1, 3 and 6 months) from the 25-year record, dry-season deficit, and 1 to 3 month lagged rain. Peat and savanna fires follow earlier drought, which ties in with the ONI/DMI climate indices. probabilityLiquidPrecipitation can flag snow months in boreal hexagons.\n\nOutlook: lagged rain is a predictor. However, the local Final record stops at Sep 2025, so Oct 2025 to Nov 2026 (including the Aug-Oct 2026 Central Kalimantan event) must come from gpm_imerg_late_daily, summed to months. There is no overlap month for calibrating Late against Final, so treat the switch as a product seam: for example, standardize each product against its own climatology, or fetch an overlap year of Late.\n\nHaze: rain drives wet scavenging, so it helps explain when MERRA-2 PM2.5 drops, for example at monsoon onset.\n\nValidation and uncertainty: randomError gives a per-cell RMS error to carry into prediction intervals. gaugeRelativeWeighting flags hexagons where rainfall is satellite-only: 0% over ocean, and 0% even at 3.05N 101.05E in Sep 2025."
+  },
+  {
+   "dataset": "GPM IMERG Late Run daily precipitation, product GPM_3IMERGDL.07 (title \"GPM IMERG Late Precipitation L3 1 day 0.1 degree x 0.1 degree (GPM_3IMERGDL)\", DOI 10.5067/GPM/IMERGDL/DAY/07), versions V07B and V07C",
+   "folder": "/home/sawy3/nasa_work/data/raw/gpm_imerg_late_daily",
+   "file_count": 401,
+   "file_pattern": "One file per UTC day. Example: 3B-DAY-L.MS.MRG.3IMERG.20251001-S000000-E235959.V07B.nc4. Regex: ^3B-DAY-L\\.MS\\.MRG\\.3IMERG\\.(\\d{8})-S000000-E235959\\.(V07[BC])\\.nc4$ where group 1 is YYYYMMDD and group 2 is the version. Glob for one month: 3B-DAY-L.MS.MRG.3IMERG.YYYYMM??-S000000-E235959.V07?.nc4 (it must allow both V07B and V07C).",
+   "format": "netCDF-4 (HDF5-based, data_model NETCDF4), flat with no groups, about 26-36 MB per file (12.19 GB in total). Variables are zlib level 3, no shuffle, chunked (1, 3600, 900), so each chunk holds all longitudes for one hemisphere. Reading any window decompresses 1 or 2 chunks of about 13 MB each. One time step per file. All 401 files on disk match the manifest (names and byte sizes).",
+   "time_coverage": "Daily, 2025-10-01 to 2026-11-05, 401 files, no missing days (checked against the manifest and the disk listing). V07B covers 2025-10-01 to 2026-03-02 (153 files); V07C covers 2026-03-03 to 2026-11-05 (248 files). Files per month: Oct-2025 31/31, Nov-2025 30/30, Dec-2025 31/31, Jan-2026 31/31, Feb-2026 28/28 (2026 is not a leap year), Mar-2026 31/31, Apr-2026 30/30, May-2026 31/31, Jun-2026 30/30, Jul-2026 31/31, Aug-2026 31/31, Sep-2026 30/30, Oct-2026 31/31, Nov-2026 only 5/30 (1-5 Nov). That gives 13 complete months (Oct 2025 to Oct 2026) plus one partial month. Each file is one UTC day [00:00:00, 23:59:59.999Z]: the time variable is 'days since 1980-01-06 00:00:00Z' (GPS epoch), e.g. 16705.0 = 2025-10-01 and 17105.0 = 2026-11-05, and time_bnds = [d, d+0.99998843]. The InputPointer attribute lists 48 half-hourly 3B-HHR-L files per day. ProductionTime is 14.4-16.2 h after the end of the day (e.g. 2026-11-06T14:24Z for 2026-11-05).\n\nMONTHLY TOTAL RECIPE: precipitation is a daily mean rate in mm/day, so each file's value is that UTC day's total in mm. The monthly total (mm) is the sum of the daily values over every day of the UTC calendar month: 28, 30 or 31 files, as listed above. Accept a month only when all of its days are present, which is true for every month Oct 2025 to Oct 2026. Nov 2026 has 5 of 30 days: report it as a 1-5 Nov month-to-date sum with n_days=5, not as a monthly total. NaN days occur only in the polar caps (|lat|>=88 deg), so for fire regions the strict rule loses nothing. If a nan-tolerant total is ever wanted, use mean_of_valid_days * days_in_month and keep the valid-day count. Use total/days_in_month (mean mm/day) to compare months of different length. Sum in float64.",
+   "variables": [
+    {
+     "name": "precipitation",
+     "long_name": "Daily mean precipitation rate (combined microwave-IR) estimate. Formerly precipitationCal.",
+     "units": "mm/day (daily mean rate, so the value equals the mm that fell in that UTC day)",
+     "dims": "(time=1, lon=3600, lat=1800), float32. Transpose to (lat, lon).",
+     "fill_value": "-9999.9 (_FillValue, float32). Occurs only where precipitation_cnt==0. No NaN or negative values otherwise.",
+     "scale_offset": "none (no scale_factor or add_offset)"
+    },
+    {
+     "name": "precipitation_cnt",
+     "long_name": "Count of all valid half-hourly precipitation retrievals for the day",
+     "units": "count (0-48)",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute. 0 means no data (exactly the cells where precipitation is fill).",
+     "scale_offset": "none"
+    },
+    {
+     "name": "precipitation_cnt_cond",
+     "long_name": "Count of half-hourly precipitation retrievals for the day where precipitation is at least 0.01 mm/hr",
+     "units": "count",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MWprecipitation",
+     "long_name": "Daily mean High Quality precipitation rate from all available microwave sources. Formerly HQprecipitation.",
+     "units": "mm/day",
+     "dims": "(time, lon, lat), float32",
+     "fill_value": "-9999.9",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MWprecipitation_cnt",
+     "long_name": "Count of all valid half-hourly MWprecipitation retrievals for the day",
+     "units": "count",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MWprecipitation_cnt_cond",
+     "long_name": "Count of half-hourly MWprecipitation retrievals for the day where precipitation is at least 0.01 mm/hr",
+     "units": "count",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute",
+     "scale_offset": "none"
+    },
+    {
+     "name": "randomError",
+     "long_name": "Root-mean-square error estimate for combined microwave-IR daily precipitation rate",
+     "units": "mm/day (as labelled; the magnitudes look suspect, see quirks)",
+     "dims": "(time, lon, lat), float32",
+     "fill_value": "-9999.9",
+     "scale_offset": "none"
+    },
+    {
+     "name": "randomError_cnt",
+     "long_name": "Count of valid half-hourly randomError retrievals for the day",
+     "units": "count",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute",
+     "scale_offset": "none"
+    },
+    {
+     "name": "probabilityLiquidPrecipitation",
+     "long_name": "Probability of liquid precipitation",
+     "units": "percent",
+     "dims": "(time, lon, lat), int8",
+     "fill_value": "no _FillValue attribute. 0 means missing (1 = likely solid, 100 = likely liquid or no precipitation).",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat",
+     "long_name": "Latitude",
+     "units": "degrees_north",
+     "dims": "(lat=1800), float64",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "Longitude",
+     "units": "degrees_east",
+     "dims": "(lon=3600), float32",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time",
+     "long_name": "time",
+     "units": "days since 1980-01-06 00:00:00Z",
+     "dims": "(time=1), float64, bounds=time_bnds",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time_bnds",
+     "long_name": "(time bounds)",
+     "units": "days since 1980-01-06 00:00:00Z",
+     "dims": "(time=1, nv=2), float64",
+     "fill_value": "none",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "Regular global 0.1 deg x 0.1 deg grid. Values are cell centres; cell edges fall on multiples of 0.1 deg.\n\n- lat: 1800 values, -89.95 to 89.95, ascending (SOUTH to NORTH), float64 with float noise up to 2e-14.\n- lon: 3600 values, -179.95 to 179.95, range -180..180, float32 (e.g. -179.9499969482422).\n- On-disk order of the data arrays is (time, lon, lat). Use .isel(time=0).transpose('lat','lon') or arr[0].T to get (lat, lon).\n- Index arithmetic was checked to be exact for every centre: i_lon = floor((lon+180)/0.1) and j_lat = floor((lat+90)/0.1).\n- The files have no lat_bnds or lon_bnds variables, so edges are centre +/- 0.05.\n- To use the project's north-to-south helpers (fireharmony/features.py _pixel_cells(con, i0, i1, nx=3600, res_deg=0.1) and _pixel_area_km2(i0, i1, 0.1), grid starting at (-180, 90)), flip rows: p_ns = p[::-1, :]. Row r is then lat 90-(r+0.5)*0.1 and column c is lon -180+(c+0.5)*0.1 (checked: p_ns[869, 2810] is the 3.05N, 101.05E cell).",
+   "reader_snippet": "import calendar, glob, os, re, datetime as dt\nimport numpy as np\nimport xarray as xr\n\nFOLDER = \"/home/sawy3/nasa_work/data/raw/gpm_imerg_late_daily\"\n\ndef read_imerg_late_day(path, var=\"precipitation\", bbox=None):\n    \"\"\"-> data[lat, lon] float32 mm/day (= mm that UTC day; fill -9999.9 -> NaN), lat S->N, lon -180..180, date.\"\"\"\n    with xr.open_dataset(path, engine=\"netcdf4\", mask_and_scale=True) as ds:\n        da = ds[var].isel(time=0)                              # on disk (time, lon, lat)\n        if bbox is not None:                                   # (lon_min, lon_max, lat_min, lat_max)\n            da = da.sel(lon=slice(bbox[0], bbox[1]), lat=slice(bbox[2], bbox[3]))\n        da = da.transpose(\"lat\", \"lon\")\n        data = da.values.astype(np.float32)                    # loads only the selection\n        lat = da[\"lat\"].values.astype(np.float64)\n        lon = da[\"lon\"].values.astype(np.float64)\n    date = dt.datetime.strptime(re.search(r\"3IMERG\\.(\\d{8})-\", os.path.basename(path)).group(1), \"%Y%m%d\").date()\n    return data, lat, lon, date\n\ndef month_files(year, month, folder=FOLDER):\n    \"\"\"One file per UTC day of the month; if two versions of a day ever exist, the newest (V07C > V07B) wins.\"\"\"\n    by_day = {}\n    for f in sorted(glob.glob(os.path.join(folder, f\"3B-DAY-L.MS.MRG.3IMERG.{year:04d}{month:02d}??-S000000-E235959.V07?.nc4\"))):\n        by_day[re.search(r\"3IMERG\\.(\\d{8})-\", f).group(1)] = f\n    return [by_day[k] for k in sorted(by_day)]\n\ndef monthly_total(year, month, bbox=None, files=None):\n    \"\"\"Monthly total (mm) = sum of the daily mm/day values over every day of the month.\n    total: NaN where any day is missing/NaN; mtd: sum over days present (month-to-date); n: valid days.\"\"\"\n    ndays = calendar.monthrange(year, month)[1]\n    files = month_files(year, month) if files is None else files\n    s = n = None\n    for f in files:\n        p, lat, lon, _ = read_imerg_late_day(f, bbox=bbox)\n        if s is None:\n            s = np.zeros(p.shape, np.float64); n = np.zeros(p.shape, np.int16)\n        ok = np.isfinite(p); s[ok] += p[ok]; n[ok] += 1\n    total = np.where(n == ndays, s, np.nan).astype(np.float32)\n    return total, s.astype(np.float32), n, ndays, lat, lon\n\n# usage\np, lat, lon, day = read_imerg_late_day(os.path.join(FOLDER, \"3B-DAY-L.MS.MRG.3IMERG.20251001-S000000-E235959.V07B.nc4\"))\np_ns = p[::-1, :]   # rows north->south: matches features._pixel_cells(con, i0, i1, 3600, 0.1) / _pixel_area_km2(i0, i1, 0.1)\n\n# TESTED with the fire-harmony .venv python (xarray 2026.9.0, engine netcdf4):\n# - read_imerg_late_day gives shape (1800, 3600) float32 and 6048 NaN, matching a raw netCDF4 read.\n# - The bbox read works.\n# - month_files counts match the per-month table.\n# - monthly_total was smoke-tested only on 1-2 sample files, to stay within the 3-file limit (not run over a whole month):\n#   a complete set gives exactly the sum of the days; a missing day gives an all-NaN total and the month-to-date sum.",
+   "sample_values": "All values below were read by running code.\n\n2025-10-01 (V07B, first file):\n- Global cos(lat)-weighted mean 2.9361 mm/day (unweighted 2.4387). Mean for |lat|<=60 is 3.1752 and for |lat|>60 is 1.3904.\n- Valid range 0 to 454.89 mm/day.\n- 6048 fill/NaN cells, all at |lat|>=88.05. Partial-count cells (0<cnt<48): 34,895, also all at |lat|>=88.05.\n- Near 3N 101E (3.0N, 101.0E is a cell corner, so all four surrounding cells are given):\n  - precipitation: (2.95N, 100.95E) 4.365, (3.05N, 100.95E) 4.110, (2.95N, 101.05E) 3.495, (3.05N, 101.05E) 3.165 mm/day.\n  - precipitation_cnt is 48 in all four.\n  - MWprecipitation: 4.20, 2.24, 1.64, 0.84.\n  - randomError: 306.5, 363.5, 266.3, 264.7.\n- SE Asia box 95-120E, 10S-10N: mean 6.793 mm/day, 51.1% of cells >=1 mm, no fill. MWprecipitation_cnt there is 4-11 (median 8 of 48).\n- Peninsular Malaysia window 99.5-104.5E, 0.5-7.5N: mean 6.455 mm/day.\n\n2026-11-05 (V07C, last file):\n- Global weighted mean 2.7143 mm/day; max 484.07.\n- 63 fill cells, all at |lat|>=88.65.\n- SE Asia box mean 7.868 mm/day (51.9% >=1 mm).\n- Borneo window 108-117E, 4.5S-4.5N: mean 6.221 mm.\n\n2026-03-03 (V07C, version-switch file): structure identical to the others. Its 48 inputs are 28 V07B half-hours (00:00-13:59 UTC) and 20 V07C half-hours (from 14:00 UTC).\n\nH3 level 5 (DuckDB h3, IMERG pixel centres):\n- SE Asia inner box: 19,083 hexes, 0 without a pixel; pixels per hex min 1, median 2, max 4; mean hex 267 km2.\n- Boreal 100-125E, 60-65N: 1,471 hexes, 0 without a pixel; min 3, median 5, max 7.",
+   "quirks": [
+    "Data arrays are stored (time, lon, lat), not (lat, lon). Transpose before use.",
+    "Latitude runs south to north (-89.95 to 89.95). The project's raster helpers (features._pixel_cells / _pixel_area_km2) assume a grid that starts at (-180, 90) going north to south, so flip rows with p[::-1, :] after transposing.",
+    "There are two versions in one record. V07B covers 2025-10-01 to 2026-03-02 (153 files) and V07C covers 2026-03-03 to 2026-11-05 (248 files). The file named V07C for 2026-03-03 actually mixes 28 V07B and 20 V07C half-hourly inputs (switch at 14:00 UTC). Dimensions, variables, attributes, title and DOI are identical across versions. Globs must use V07? and should keep one file per date.",
+    "precipitation is a daily MEAN RATE in mm/day ('Formerly precipitationCal'), so the value equals that day's total in mm. A monthly total is a plain sum of the daily files. The Final monthly 3B-MO files are a different case: GES DISC documents them in mm/hr, but I did not check that here. If confirmed, they would need x24 x days_in_month to compare.",
+    "Fill -9999.9 appears only where precipitation_cnt==0 and only in the polar caps: |lat|>=88.05 on 2025-10-01 (6048 cells) and |lat|>=88.65 on 2026-11-05 (63 cells). There is no fill within +/-60 deg, no NaN otherwise, and no negative values. Cells with 0<cnt<48 also sit only in those caps and keep a valid mean rate over the half-hours that exist.",
+    "randomError magnitudes look implausible for an RMS error in mm/day. In the SE Asia box, its median where rain>0 is 204 mm/day against a median rain of 2.9 mm/day (2025-10-01), and 345 against 4.6 (2026-11-05). Where rain is 0 it is about 2.77. Do not use it as an uncertainty without checking the V07 documentation. Whether this is a units or definition issue is unclear from the file.",
+    "MWprecipitation is a mean over only the half-hours that had a microwave overpass (MWprecipitation_cnt 3-11, median 8 of 48 in SE Asia). It is not a full-day estimate, so use precipitation for totals.",
+    "The count variables and probabilityLiquidPrecipitation are int8 with no _FillValue attribute, so xarray does not mask them. For probabilityLiquidPrecipitation, 0 means missing.",
+    "The files have no lat_bnds or lon_bnds (only time_bnds). Coordinates are not exact decimals: lon is float32, e.g. -179.9499969482422. Use index arithmetic (floor((x+180)/0.1), floor((y+90)/0.1), checked exact) or nearest-centre lookup, never ==. A point exactly on a 0.1-deg edge (e.g. 3.0N, 101.0E) is ambiguous, and floor picks the cell to its north-east.",
+    "The time units 'days since 1980-01-06 00:00:00Z' use the GPS epoch with a Z suffix. xarray 2026.9.0 decodes them correctly. time_bnds upper bound decodes to 23:59:59.000027 (float rounding). The date is also in the file name.",
+    "Days are UTC (S000000-E235959). In Malaysia (UTC+8) a file covers 08:00 to 07:59 local, and monthly totals are UTC-month totals, which shifts 8 h of rain across month boundaries.",
+    "This is the near-real-time Late Run (title 'GPM IMERG Late Precipitation'), produced 14.4-16.2 h after each day ends, not the Final Run. The Final monthly record in gpm_imerg_monthly (HDF5 3B-MO V07B, 309 files) ends at 2025-09 per the manifest, so the two meet at 2025-10-01 with no overlap month in this data to calibrate Late against Final. Expect a product seam if a 2000-2025 Final climatology is used for anomalies. The calibration difference (Late uses climatological gauge adjustment, Final uses monthly gauge analyses) comes from IMERG documentation and was not verified here.",
+    "Nov 2026 has only 5 of 30 days (1-5 Nov). Use it as month-to-date only, not as a monthly total.",
+    "Chunking is (1, 3600, 900): one chunk per hemisphere covering all longitudes. Windows that cross the equator (Borneo, Sumatra) decompress both chunks, about 26 MB per variable per file. Memory per full-field read is about 26 MB, and a monthly accumulator is about 65 MB (float64 sum + int16 count).",
+    "Daily-derived features (rain days, dry spells, max 1-day rain, antecedent windows) cannot be rebuilt from monthly totals. Compute them, or keep a small per-hex daily table, BEFORE the planned deletion of these 12 GB of raw files.",
+    "Scratch files from this inspection remain in /tmp/imerg_spec (about 20 KB on tmpfs: reader.py, monthly.py, final_snippet.py, harness.py, an empty duck/ dir and __pycache__). My rm was denied by the permission system. No data file was modified."
+   ],
+   "use_for_fire_harmony": "Per H3 level-5 hexagon and UTC month this dataset gives the following. Complete months are Oct 2025 to Oct 2026; Nov 2026 is 1-5 Nov month-to-date only.\n\nHow to join pixels to hexes:\n- Use the project's pixel-centre join after flipping rows. Every level-5 hex in the tested SE Asia and boreal boxes holds at least 1 IMERG pixel centre (median 2 in the tropics, 5 at 60-65N).\n- Area-weight those pixels with _pixel_area_km2(i0, i1, 0.1).\n\n1. Drivers (fuel dryness):\n- Monthly rainfall total (mm) and mean mm/day.\n- From the daily files: rain days (>=1 mm), longest run of consecutive dry days (<1 mm), max 1-day rain, and 30/60/90-day antecedent rain. These are available from Oct 2025 on; the first windows are short because there are no earlier daily files.\n- This is the only rainfall source here for the Aug-Oct 2026 El Nino fire season (e.g. the Central Kalimantan anomaly), because the IMERG Final monthly record stops at Sep 2025.\n\n2. Outlook: data to 5 Nov 2026, with about 15 h latency, show current dryness or the arrival of monsoon rain, which matters for whether the 2026 fire season is ending.\n\n3. Haze: rain totals and rain days serve as a wet-scavenging / haze-clearing covariate alongside MERRA-2 PM2.5. The overlap with merra2_aer_monthly is Oct 2025 to Sep 2026; with merra2_cnn_pm25_seasia it is only Oct-Nov 2025.\n\n4. Validation:\n- Check that rainfall deficits line up with hotspot anomalies in the harmonized record.\n- Cross-check against GFWED Drought Code / FWI over their overlap (Oct 2025 to Apr 2026).\n\nCaveat: anomalies against a 2000-2025 climatology mix Late and Final products, with a seam at Oct 2025 and no overlap month in this data. Label them as such, or build the climatology knowing this."
+  },
+  {
+   "dataset": "MERRA-2 M2TMNXAER v5.12.4 (tavgM_2d_aer_Nx), global monthly-mean aerosol diagnostics, DOI 10.5067/FH9A0MLJPC7N. The local copy is a 6-variable cloud-OPeNDAP subset: total AOD at 550 nm (TOTEXTTAU) plus the 5 surface-mass components needed for PM2.5 (BCSMASS, OCSMASS, DUSMASS25, SSSMASS25, SO4SMASS). The product has no PM2.5 variable, so PM2.5 has to be derived. Standard NASA GES DISC formula (verified in nasa/gesdisc-tutorials notebooks/How_to_MERRA2_PM25_Monthly.ipynb, after Buchard et al. 2017, J. Clim. 30:6851): PM2.5 [kg m-3] = DUSMASS25 + SSSMASS25 + BCSMASS + OCSMASS + 1.375 x SO4SMASS, where 1.375 = 132.14/96.06 turns sulfate-ion mass into ammonium-sulfate mass. Every term is in kg m-3; multiply by 1e9 for ug m-3. All 5 components are in the files, so nothing is missing for this formula. MERRA-2 itself does not model nitrate or ammonium (beyond the ammonium implied by the 1.375 factor).",
+   "folder": "/home/sawy3/nasa_work/data/raw/merra2_aer_monthly",
+   "file_count": 321,
+   "file_pattern": "MERRA2_<stream>.tavgM_2d_aer_Nx.<YYYYMM>.nc4, regex ^MERRA2_(\\d{3})\\.tavgM_2d_aer_Nx\\.(\\d{6})\\.nc4$ (all 321 names match). Example: MERRA2_400.tavgM_2d_aer_Nx.202609.nc4. The stream number changes with the date: 200 = 2000 (12 files), 300 = 2001-2010 (120), 400 = 2011-01 to 2026-09 (184), and 401 = 202009, 202106, 202107, 202108, 202109 (5 reprocessed files that replace the 400 files; no 400 copy of those months is present). Glob on MERRA2_*.tavgM_2d_aer_Nx.*.nc4 and take the month from the YYYYMM group, never from a fixed stream number.",
+   "format": "netCDF-4/HDF5 (data_model NETCDF4, no groups), written by NASA cloud OPeNDAP (Hyrax 1.18.0) as a DAP4 subset (.dap.nc4) of each granule. Data are zlib-compressed little-endian float32 with no scale_factor or add_offset. Files are about 3.69-3.73 MB up to 2015-06 and 4.31-4.34 MB from 2015-07 on, about 1.2 GB in total. Every file is listed in /home/sawy3/nasa_work/data/raw/manifest.csv (321 rows, all with the same constraint /TOTEXTTAU;/BCSMASS;/OCSMASS;/DUSMASS25;/SSSMASS25;/SO4SMASS;/lat;/lon;/time, plus SHA-256).",
+   "time_coverage": "First month 2000-01 (MERRA2_200...200001), last month 2026-09 (MERRA2_400...202609). Monthly means, one time step per file. The filenames give 321 consecutive months, the same as the expected 2000-01..2026-09 count, with no gaps and no duplicates. In each file the time variable is int32 value 0 and its units change per file: 'minutes since YYYY-MM-01 00:30:00'. It therefore decodes to the 1st of the month at 00:30 (for example 2026-09-01T00:30), not to mid-month. The global attributes RangeBeginningDate/RangeEndingDate give the averaging window, e.g. 2026-09-01..2026-09-30. Latency: the Sep 2026 file says 'Original file generated: Sun Oct 11 22:41:19 2026 GMT' and its dmr++ was built 2026-10-20. Oct 2026 is not in the folder.",
+   "variables": [
+    {
+     "name": "TOTEXTTAU",
+     "long_name": "Total Aerosol Extinction AOT [550 nm]",
+     "units": "1 (dimensionless AOD at 550 nm)",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15 (_FillValue = missing_value = fmissing_value). None found in the 3 sampled files.",
+     "scale_offset": "none"
+    },
+    {
+     "name": "BCSMASS",
+     "long_name": "Black Carbon Surface Mass Concentration",
+     "units": "kg m-3",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15. None found.",
+     "scale_offset": "none"
+    },
+    {
+     "name": "OCSMASS",
+     "long_name": "Organic Carbon Surface Mass Concentration __ENSEMBLE__",
+     "units": "kg m-3",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15. None found.",
+     "scale_offset": "none"
+    },
+    {
+     "name": "DUSMASS25",
+     "long_name": "Dust Surface Mass Concentration - PM 2.5",
+     "units": "kg m-3",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15. None found.",
+     "scale_offset": "none"
+    },
+    {
+     "name": "SSSMASS25",
+     "long_name": "Sea Salt Surface Mass Concentration - PM 2.5",
+     "units": "kg m-3",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15. None found.",
+     "scale_offset": "none"
+    },
+    {
+     "name": "SO4SMASS",
+     "long_name": "SO4 Surface Mass Concentration __ENSEMBLE__ (sulfate-ion mass)",
+     "units": "kg m-3",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15. None found.",
+     "scale_offset": "none (multiply by 1.375 in the PM2.5 sum)"
+    },
+    {
+     "name": "lat",
+     "long_name": "latitude",
+     "units": "degrees_north",
+     "dims": "(lat=361) float64",
+     "fill_value": "none (only vmin/vmax/valid_range = +/-1e15 attributes)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "longitude",
+     "units": "degrees_east",
+     "dims": "(lon=576) float64",
+     "fill_value": "none (only vmin/vmax/valid_range = +/-1e15 attributes)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time",
+     "long_name": "time",
+     "units": "minutes since YYYY-MM-01 00:30:00 (reference date changes per file)",
+     "dims": "(time=1) int32, value 0",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "PM25 (derived, not stored in the files)",
+     "long_name": "Surface PM2.5 = DUSMASS25 + SSSMASS25 + BCSMASS + OCSMASS + 1.375*SO4SMASS",
+     "units": "ug m-3 (after multiplying the kg m-3 sum by 1e9)",
+     "dims": "(lat=361, lon=576)",
+     "fill_value": "NaN wherever any component is fill",
+     "scale_offset": "x1e9 (kg m-3 to ug m-3)"
+    }
+   ],
+   "grid": "Regular MERRA-2 native grid, 0.5 deg lat x 0.625 deg lon. lat has 361 values from -90.0 to 90.0 in steps of exactly 0.5, ordered SOUTH to NORTH (lat[0] = -90). lon has 576 values from -180.0 to 179.375 in steps of exactly 0.625, on the -180..180 convention (no 0..360). The coordinates are grid-point centres: with 361 rows that include +/-90 exactly, the polar rows are half-height cells. Cell edges are lat +/- 0.25 (clipped at +/-90) and lon +/- 0.3125; the files have no bounds variables. Data arrays are ordered (time, lat, lon) = (1, 361, 576). lat and lon are identical in all 3 sampled files. Nearest-cell index (tested): i = round((lat+90)/0.5), j = round((lon+180)/0.625) % 576. For example 3N 101E gives i=186, j=450, the cell at 3.0N 101.25E. A cell is about 56 km x 70 km (about 3,900 km2) near the equator.",
+   "quirks": [
+    "Formula: PM2.5 = DUSMASS25 + SSSMASS25 + BCSMASS + OCSMASS + 1.375*SO4SMASS (kg m-3), x1e9 for ug m-3. I checked it against the official GES DISC tutorial notebook, which uses the same recipe to rebuild NASA's country-level M2_TMAX_PM25 product. All 5 components are present.",
+    "Species missing from MERRA-2 itself, not just from this subset: nitrate and explicit ammonium. CMR's list for M2TMNXAER (50 data variables plus 50 Var_* variance fields) has no nitrate, ammonium or PM25 variable, and Buchard et al. 2017 says nitrate aerosols are not included in the model. So PM2.5 runs low where nitrate matters, such as cold-season farm and urban basins. Buchard 2017 also reports MERRA-2 overestimates dust and especially sea-salt PM2.5. Coastal cells are affected: at 3.0N 101.25E, SSSMASS25 was 9.7 ug m-3 in Sep 2026.",
+    "Ambiguity, OM:OC factor: the official recipe adds OCSMASS unscaled, but some papers multiply OC by 1.4 (or more) to get organic matter. I could not confirm from primary sources whether MERRA-2 OC already represents organic matter. The choice matters: at 3.0N 101.25E in Sep 2026, PM2.5 is 38.9 ug m-3 as official versus 46.8 with 1.4*OC. Pick one and document it.",
+    "The subset holds only 6 of the 50 data variables. Not downloaded: total dust and sea salt (DUSMASS, SSSMASS, needed for PM10), per-species AOD (BCEXTTAU, OCEXTTAU, DUEXTTAU, SSEXTTAU, SUEXTTAU), TOTANGSTR (Angstrom exponent, which helps tell smoke from dust), column masses (*CMASS), SO2SMASS, and the Var_* within-month variance fields.",
+    "The stream prefix changes (200/300/400/401). The 401 files are reprocessed replacements for 2020-09 and 2021-06..09. The 202009 file says 'Re-processed file generated: Tue Nov 3 22:38:36 2020 GMT'; I did not open the other four 401 files. Never hard-code MERRA2_400.",
+    "The time units change per file and the value is always 0. Decode per file, or take YYYYMM from the filename. Concatenating raw time values without decoding gives all zeros. The decoded timestamp is the month start at 00:30, not mid-month.",
+    "Storage layout varies, which readers handle transparently. 200001 uses chunks (1,91,144) with shuffle + deflate level 2. 202009 and 202609 use one chunk (1,361,576) with deflate level 4 and no shuffle. File sizes jump from about 3.7 MB to about 4.3 MB at 2015-07 (from ls). I did not open 201506/201507, so I have not confirmed that this is where the layout switches.",
+    "Of the 3 files opened, only 202609 has time as an UNLIMITED dimension (plus a global attribute DODS_EXTRA.Unlimited_Dimension). netCDF4.MFDataset needs an unlimited dimension in every file, so it is unreliable here. dask is not installed in the venv, so xr.open_mfdataset is unavailable too. Loop over files instead; each 2D field is only 0.83 MB as float32. Reading all 6 variables plus PM2.5 peaked at about 148 MB RSS.",
+    "Every variable, including lat, lon and time, carries vmin/vmax/valid_range = +/-1e15. Data variables also have _FillValue = missing_value = fmissing_value = 1e15. In all 6 fields of the 3 sampled files there were no fill values, NaNs, zeros or negative values: the coverage is global and complete.",
+    "The global attribute TemporalRange = '1980-01-01 -> 2016-12-31' is stale, even in the 2026 file. Ignore it. VersionID is 5.12.4 everywhere, though the Source CVS tag changes (GEOSadas-5_12_4, then _p24, then _p41).",
+    "The long_names of OCSMASS and SO4SMASS end in the literal text '__ENSEMBLE__', a leftover from the GMAO file template. It is harmless.",
+    "These are monthly means of hourly fields, so short haze peaks are smoothed out. Hourly bias-corrected PM2.5 for SE Asia (Jul-Nov) is in dataset C1, merra2_cnn_pm25_seasia.",
+    "From MERRA-2 documentation, not verified from these files: MERRA-2 assimilates MODIS AOD, and its biomass-burning emissions come from QFED, which is based on MODIS fire radiative power (from about 2010). Its smoke is therefore not independent of MODIS/FIRMS fire detections, which makes validation circular.",
+    "Scratch files are left in /tmp/merra2_inspect (about 2.4 MB: scripts plus fetched docs) because the cleanup rm was denied. The tested reader is /tmp/merra2_inspect/final_snippet.py. No data file was modified."
+   ],
+   "reader_snippet": "import numpy as np\nimport xarray as xr\n\n# GES DISC recipe (nasa/gesdisc-tutorials How_to_MERRA2_PM25_Monthly.ipynb; Buchard et al. 2017):\n# PM2.5 [kg m-3] = DUSMASS25 + SSSMASS25 + BCSMASS + OCSMASS + (132.14/96.06)*SO4SMASS ; x1e9 -> ug m-3\nPM25_WEIGHTS = {\"DUSMASS25\": 1.0, \"SSSMASS25\": 1.0, \"BCSMASS\": 1.0, \"OCSMASS\": 1.0, \"SO4SMASS\": 132.14 / 96.06}\n\ndef read_merra2_aer(path, var=\"TOTEXTTAU\"):\n    \"\"\"-> field[lat, lon] float64 (NaN = fill), lat (361, S->N), lon (576, -180..179.375), 'YYYY-MM'.\n    var: TOTEXTTAU (AOD 550 nm, 1) | BCSMASS OCSMASS DUSMASS25 SSSMASS25 SO4SMASS (kg m-3) | PM25 (derived, ug m-3)\"\"\"\n    with xr.open_dataset(path, engine=\"netcdf4\", mask_and_scale=True) as ds:  # 1e15 fill -> NaN\n        if var == \"PM25\":\n            field = sum(w * ds[v].isel(time=0).values.astype(\"float64\") for v, w in PM25_WEIGHTS.items()) * 1e9\n        else:\n            field = ds[var].isel(time=0).values.astype(\"float64\")\n        lat, lon = ds[\"lat\"].values.astype(\"float64\"), ds[\"lon\"].values.astype(\"float64\")\n        month = str(ds[\"time\"].values[0])[:7]  # time = YYYY-MM-01T00:30, one step per file\n    return field, lat, lon, month\n\n# usage (files: sorted(glob.glob(\".../merra2_aer_monthly/MERRA2_*.tavgM_2d_aer_Nx.*.nc4\")) - stream number varies)\nf = \"/home/sawy3/nasa_work/data/raw/merra2_aer_monthly/MERRA2_400.tavgM_2d_aer_Nx.202609.nc4\"\npm25, lat, lon, month = read_merra2_aer(f, \"PM25\")\naod = read_merra2_aer(f)[0]\ni, j = int(round((3.0 + 90) / 0.5)), int(round((101.0 + 180) / 0.625)) % 576  # nearest cell centre\nprint(month, pm25.shape, lat[i], lon[j], round(pm25[i, j], 3), round(aod[i, j], 4))  # 2026-09 (361, 576) 3.0 101.25 38.891 0.5559\n\n# Tested with .venv/bin/python -I: exit 0, prints exactly the line in the comment above. I also ran it on 200001 and 202009,\n# checked that month matches the filename, and checked fill handling on a synthetic copy in /tmp:\n# 1e15 cells came back as NaN in AOD and in the PM25 sum, and other cells were unchanged.",
+   "sample_values": "Global means are cos(lat)-weighted; PM2.5 is the derived value in ug m-3.\n- 2000-01: global mean AOD 0.1046, PM2.5 11.166. Cell 3.0N 101.25E: AOD 0.0866, PM2.5 7.334 (OC 2.426, BC 0.556, SO4 1.707 before the x1.375 factor, sea salt 1.919, dust 0.086). SE Asia box 90-130E, 12S-12N: AOD 0.0972, PM2.5 8.420.\n- 2020-09 (401 file): global mean AOD 0.1584, PM2.5 11.707. Cell 3.0N 101.25E: AOD 0.1619, PM2.5 12.221. SE Asia box: AOD 0.1206, PM2.5 8.982. The global PM2.5 maximum is 1229.2 at 40.0N 123.125W (N. California fires), where OCSMASS is 1172.2.\n- 2026-09: global mean AOD 0.1378, PM2.5 11.348. Cell 3.0N 101.25E: AOD 0.5559, PM2.5 38.891 (OC 19.740, BC 2.475, SO4 4.819, sea salt 9.671, dust 0.376). SE Asia box: AOD 0.3355, PM2.5 21.587, a clear haze month.\n- Raw example: OCSMASS at 3.0N 101.25E in 2026-09 is 1.974e-08 kg m-3.\n- Ranges over the 3 files: TOTEXTTAU 0.0088-1.71; BCSMASS 4.7e-13 to 5.2e-08 kg m-3; OCSMASS 2.1e-12 to 1.17e-06; DUSMASS25 4.9e-12 to 3.6e-07; SSSMASS25 1.5e-12 to 3.6e-08; SO4SMASS 1.9e-11 to 2.1e-08; derived PM2.5 0.174-1229.2 ug m-3.",
+   "use_for_fire_harmony": "Per H3 hexagon and month, 2000-01 to 2026-09: monthly mean surface PM2.5 (derived, ug m-3) and AOD at 550 nm (TOTEXTTAU).\n- Mapping to hexagons: a MERRA-2 cell (about 3,900 km2) is larger than an H3 res-4 hexagon (about 1,770 km2, approximate). For res 4 and finer, give each hexagon the value of the cell holding its centroid, using the nearest-cell index formula. For coarser hexagons, take a cos(lat)-weighted mean of the overlapping cells.\n- Haze and exposure: PM2.5 and AOD per hexagon-month, plus anomalies against a per-calendar-month climatology (e.g. z-scores over 2000-2025) to flag haze episodes, including smoke carried across borders, downwind of the fires.\n- Smoke attribution: the carbonaceous share (BC+OC)/PM2.5 and the OC/BC ratio separate smoke from dust (DUSMASS25), sea salt and sulfate. At 3.0N 101.25E the BC+OC share was 57% in Sep 2026, 41% in Jan 2000 and 32% in Sep 2020.\n- Validation and consistency: compare OC/BC/AOD anomalies with FIRMS counts or FRP per hexagon-month. This is circular, because MERRA-2 smoke emissions come from MODIS FRP (QFED) and it assimilates MODIS AOD (from documentation). Treat it as an impact or consistency check, not independent validation.\n- Calibration: over SE Asia, calibrate or cross-check against C1 (MERRA-2 CNN bias-corrected hourly PM2.5, Jul-Nov), averaged to monthly.\n- Not a fire driver: aerosols are an outcome of fire. Weather drivers come from C3 (merra2_slv_monthly) and the GFWED FWI.\n- Not an outlook: there is no forecast and latency is about 3-7 weeks. It can supply last month's haze and seasonal haze climatology as context."
+  },
+  {
+   "dataset": "MERRA-2 tavgM_2d_slv_Nx (GES DISC M2TMNXSLV v5.12.4, CMR C1276812859-GES_DISC). Single-level diagnostics, monthly means of hourly values, on the native 0.5 x 0.625 degree global grid. Locally this is an OPeNDAP subset holding only 4 data variables (U10M, V10M, T2M, QV2M) plus lat/lon/time. There is no pressure and no dew point.",
+   "folder": "/home/sawy3/nasa_work/data/raw/merra2_slv_monthly",
+   "file_count": 321,
+   "file_pattern": "Regex: ^MERRA2_(200|300|400|401)\\.tavgM_2d_slv_Nx\\.(\\d{4})(\\d{2})\\.nc4$ (all 321 names match it). Example: MERRA2_400.tavgM_2d_slv_Nx.202609.nc4, where the token before .nc4 is YYYYMM. The 3-digit stream number depends on the date: 200 = 2000 (12 files), 300 = 2001-2010 (120), 400 = 2011-2026 (184), 401 = 2020-09, 2021-06, 2021-07, 2021-08, 2021-09 (5 GMAO re-processed files; there is no 400 duplicate for those months). Match on YYYYMM only, e.g. glob MERRA2_*.tavgM_2d_slv_Nx.{YYYYMM}.nc4.",
+   "format": "NetCDF-4 / HDF5 classic data model, CF-1, no groups. Produced by NASA cloud OPeNDAP (Hyrax 1.18) as a variable subset; dap4.ce=/U10M;/V10M;/T2M;/QV2M;/lat;/lon;/time, the same for all 321 manifest rows. zlib+shuffle compression. Data are float32, lat/lon float64, time int32. No scale_factor/add_offset. One month (one time step) per file, about 2.36-2.91 MB each, 796 MB total. Reads with xarray (engine h5netcdf or netcdf4, identical arrays) and with netCDF4/h5py.",
+   "time_coverage": "From 2000-01 (MERRA2_200...200001.nc4) to 2026-09 (MERRA2_400...202609.nc4). 321 consecutive calendar months with no gaps or duplicates, checked against the expected list of month dates. Time step is one calendar month; each file has time size 1. The time variable is int32 0 with units 'minutes since YYYY-MM-01 00:30:00' (a different units string in every file), so it decodes to YYYY-MM-01T00:30:00. That is the start of the month, not mid-month. The global attributes RangeBeginningDate/RangeEndingDate give the averaging window, e.g. 2026-09-01 to 2026-09-30, plus RangeBeginningTime 00:00:00 and RangeEndingTime 23:59:59. The last file was produced 2026-10-12 (History attribute), so there is roughly a 1-2 month lag: no Oct/Nov 2026 yet.",
+   "variables": [
+    {
+     "name": "T2M",
+     "long_name": "2-meter_air_temperature",
+     "units": "K",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15 (_FillValue = missing_value = fmissing_value = float32 1e15); valid_range [-1e15, 1e15], vmin/vmax +-1e15; 0 fill cells in all 3 sampled files",
+     "scale_offset": "none"
+    },
+    {
+     "name": "QV2M",
+     "long_name": "2-meter_specific_humidity",
+     "units": "kg kg-1",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15 (same attributes as T2M); 0 fill cells in samples",
+     "scale_offset": "none"
+    },
+    {
+     "name": "U10M",
+     "long_name": "10-meter_eastward_wind",
+     "units": "m s-1",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15 (same attributes as T2M); 0 fill cells in samples",
+     "scale_offset": "none"
+    },
+    {
+     "name": "V10M",
+     "long_name": "10-meter_northward_wind",
+     "units": "m s-1",
+     "dims": "(time=1, lat=361, lon=576) float32",
+     "fill_value": "1e15 (same attributes as T2M); 0 fill cells in samples",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat",
+     "long_name": "latitude",
+     "units": "degrees_north",
+     "dims": "(lat=361) float64",
+     "fill_value": "none (valid_range +-1e15 only)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "longitude",
+     "units": "degrees_east",
+     "dims": "(lon=576) float64",
+     "fill_value": "none (valid_range +-1e15 only)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time",
+     "long_name": "time",
+     "units": "minutes since YYYY-MM-01 00:30:00 (changes per file; value is 0)",
+     "dims": "(time=1) int32",
+     "fill_value": "none (valid_range +-1e15; attributes begin_date=YYYYMM01, begin_time=3000, time_increment=60000)",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "The grid is regular, global, and the same in all 3 sampled files.\n\nlat: 361 values from -90.0 to 90.0 in 0.5 degree steps, ascending SOUTH to NORTH (row 0 = -90). Both poles are included as rows.\n\nlon: 576 values from -180.0 to 179.375 in 0.625 degree steps, range -180..180 (lon +180 wraps to index 0).\n\nThe values are MERRA-2 grid-point (cell-centre) coordinates and the file has no bounds variables. Treat each value as the centre of a 0.5 x 0.625 degree box (+-0.25 lat, +-0.3125 lon); this follows GMAO convention. The lon=-180 box straddles the antimeridian, and the pole rows are half-boxes. A cell is about 55.7 km x 69.6 km (about 3,870 km2) at the equator.\n\nExact index formula, checked against every coordinate value: i = rint((lat+90)/0.5), j = rint((lon+180)/0.625) % 576. All values are exact multiples of the step except two: the equator row lat[180] is stored as -1.797e-13 and the prime meridian lon[288] as -5.920e-13.\n\nData array dimension order is (time, lat, lon) = (1, 361, 576).",
+   "quirks": [
+    "PRESSURE IS NOT PRESENT. The files contain only U10M, V10M, T2M, QV2M plus lat/lon/time. The subset request in every manifest URL dropped PS, SLP, T2MDEW, T2MWET, TS, QV10M, U2M/V2M and the Var_* fields. Public CMR metadata for the source collection (M2TMNXSLV, C1276812859-GES_DISC; 97 variables) confirms that PS (surface_pressure, Pa), SLP (sea_level_pressure, Pa), T2MDEW (dew_point_temperature_at_2_m, K), T2MWET, and Var_U10M / Var_V10M / Var_T2M / Var_QV2M (Variance_of_X) all exist there on the same (1, 361, 576) grid. They can be fetched by adding e.g. /PS;/T2MDEW to the dap4.ce list of the same manifest URLs. No DEM, elevation, constants or pressure file exists anywhere in data/raw (checked folder list and manifest).",
+    "RELATIVE HUMIDITY FROM q, T, p. Vapour pressure e = q*p/(0.622 + 0.378*q) in Pa (q = QV2M in kg/kg, p in Pa). Saturation vapour pressure es = 611.2*exp(17.67*Tc/(Tc+243.5)) in Pa (Bolton 1980, over water), with Tc = T2M - 273.15. RH = 100*e/es, clipped to 0-100. Tested: 80.44% at the 3N 101.25E cell for 2026-09 with p = 101325 Pa. The WMO mixing-ratio form w/ws gives 79.80% at the same cell. RH is linear in p, so the relative error in p becomes the same relative error in RH. Options for p, best first: (a) re-download PS for an exact result, or T2MDEW, which needs no pressure: RH = 100*es(T2MDEW)/es(T2M). (b) Take elevation z = PHIS/9.80665 from the MERRA-2 constants collection M2C0NXASM (C1276812819-GES_DISC, same 0.5x0.625 grid, PHIS in m2 s-2; confirmed in CMR, not downloaded), then use the standard atmosphere p = 101325*(1 - 2.25577e-5*z)^5.25588. (c) A constant 101325 Pa is acceptable only in lowlands. Computed overestimate factors from assuming it: x1.012 at 100 m, x1.061 at 500 m, x1.127 at 1000 m, x1.198 at 1500 m, x1.445 at 3000 m. Dew point and VPD from QV2M need p for the same reason.",
+    "MONTHLY-MEAN CAVEATS. RH or VPD computed from monthly-mean T2M and QV2M is not the monthly mean of hourly RH, because es(T) is nonlinear. It is also not the afternoon minimum that drives fire danger. hypot(U10M, V10M) from monthly means is the size of the mean wind vector. That is a lower bound on mean wind speed and can be much smaller where winds reverse (e.g. monsoon transitions). With Var_U10M and Var_V10M (not downloaded), RMS speed = sqrt(U^2 + V^2 + VarU + VarV). This assumes Var_* is the within-month variance of hourly values, which is not checked.",
+    "Alphabetical file order is NOT chronological. The 5 MERRA2_401 files sort after MERRA2_400...202609, and `ls | tail -1` returns 202109. Sort by the YYYYMM token and never hard-code the stream number. The 401 files carry History 'Re-processed file generated: Wed Nov 4 01:12:28 2020 GMT' (202009). Their structure is the same as the 200/400 files.",
+    "The decoded time is YYYY-MM-01T00:30, not mid-month. Take the month key from the filename or by flooring to month start. Each file has its own units string ('minutes since YYYY-MM-01 00:30:00') with value 0.",
+    "The equator and prime meridian are not exactly 0.0 (lat[180] = -1.797e-13, lon[288] = -5.92e-13). Exact .sel(lat=0) or float equality joins will miss, and a test like lat >= 0 puts the equator row in the southern hemisphere. Use the integer index formula or .sel(method='nearest').",
+    "Latitude runs south to north (row 0 = 90S). Flip with [::-1] for north-up rasters. lon runs -180..179.375, so lon 180 wraps to index 0. No lat_bnds/lon_bnds variables.",
+    "Fill/missing value is float32 1e15, stored in _FillValue, missing_value and fmissing_value; valid_range is [-1e15, 1e15]. xarray CF decoding turns it into NaN (tested on a synthetic /tmp file with the same attributes). No fill cells occur in any of the 4 variables in the 3 sampled files: coverage is complete over land and ocean. Raw netCDF4-python with auto-mask prints harmless warnings ('valid_range not used since it cannot be safely cast...' and 'invalid value encountered in cast' for the int32 time). xarray raised no warnings with -W error.",
+    "Units: T2M is in K (subtract 273.15 for degC); QV2M is in kg/kg (multiply by 1000 for g/kg).",
+    "Internal storage changes over time but values are not affected. The 200001 file uses chunks (1,91,144) at zlib level 2. The 202009 and 202609 files use one chunk (1,361,576) at level 4. The 202609 file has an unlimited time dimension and a DODS_EXTRA.Unlimited_Dimension attribute. The Source attribute tag changes (GEOSadas-5_12_4 -> _p24_SLES12 -> _p41_SLES15). The global attribute TemporalRange '1980-01-01 -> 2016-12-31' is stale; ignore it.",
+    "Acquisition Log section 2c says a MERRA-2 subset file holds 'exactly the requested 6 variables'. That matches the aerosol subset (6 data variables: TOTEXTTAU, BCSMASS, OCSMASS, DUSMASS25, SSSMASS25, SO4SMASS), not this folder, which has 4 data variables plus 3 coordinates.",
+    "Integrity: the manifest's 321 rows equal the 321 files on disk, with every byte size matching. sha256 matches for the 3 opened files (200001, 202009, 202609). Downloaded 2026-11-07 09:15-10:29 UTC.",
+    "Memory: one variable for all 321 months as float32 is about 267 MB, and all four together about 1.07 GB. dask is NOT installed in the venv. On this low-RAM machine, loop file by file (one 0.8 MB field at a time) and aggregate to H3 per month instead of building a full cube.",
+    "Resolution: each cell is about 3,870 km2 at the equator. By H3's published averages (h3 is not installed in the venv, so this was not computed) that sits between res 3 (~12,400 km2) and res 4 (~1,770 km2). At res 5 and finer, many hexagons share one MERRA-2 value, so sample at hex centroids (nearest cell or bilinear) rather than area-averaging."
+   ],
+   "reader_snippet": "import glob, os\nimport numpy as np\nimport xarray as xr\n\nFOLDER = \"/home/sawy3/nasa_work/data/raw/merra2_slv_monthly\"\n\ndef merra2_slv_path(year, month, folder=FOLDER):\n    # stream prefix varies (200 / 300 / 400 / 401) -> match on the YYYYMM token only\n    hits = glob.glob(os.path.join(folder, f\"MERRA2_*.tavgM_2d_slv_Nx.{year:04d}{month:02d}.nc4\"))\n    if len(hits) != 1:\n        raise FileNotFoundError(f\"expected 1 file for {year}-{month:02d}, found {len(hits)}\")\n    return hits[0]\n\ndef read_merra2_slv(path, var=\"T2M\"):\n    \"\"\"-> (arr[lat, lon] float32 with 1e15 fill as NaN, lat[361] S->N, lon[576] -180..179.375).\n    var in {\"T2M\" (K), \"QV2M\" (kg kg-1), \"U10M\", \"V10M\" (m s-1)}.\"\"\"\n    with xr.open_dataset(path, engine=\"h5netcdf\") as ds:   # CF decode: _FillValue/missing_value 1e15 -> NaN\n        arr = ds[var].isel(time=0).values                   # dims (time=1, lat, lon) -> (lat, lon)\n        lat = ds[\"lat\"].values\n        lon = ds[\"lon\"].values\n    return arr, lat, lon\n\ndef rh_from_q_t_p(q, t_k, p_pa):\n    \"\"\"RH (%) from specific humidity (kg/kg), temperature (K), pressure (Pa). Pressure is NOT in these files.\"\"\"\n    e = q * p_pa / (0.622 + 0.378 * q)                     # vapour pressure, Pa\n    tc = t_k - 273.15\n    es = 611.2 * np.exp(17.67 * tc / (tc + 243.5))         # Bolton (1980), over water, Pa\n    return np.clip(100.0 * e / es, 0.0, 100.0)\n\ndef pressure_from_elevation(z_m):\n    \"\"\"Fallback surface pressure (Pa) from elevation (m), ICAO standard atmosphere.\"\"\"\n    return 101325.0 * (1.0 - 2.25577e-5 * np.asarray(z_m, dtype=\"float64\")) ** 5.25588\n\nif __name__ == \"__main__\":\n    t2m, lat, lon = read_merra2_slv(merra2_slv_path(2026, 9), \"T2M\")\n    q2m, _, _ = read_merra2_slv(merra2_slv_path(2026, 9), \"QV2M\")\n    i = int(np.rint((3.0 + 90) / 0.5)); j = int(np.rint((101.0 + 180) / 0.625)) % 576   # nearest cell\n    print(t2m.shape, t2m.dtype, lat[[0, -1]], lon[[0, -1]], \"NaN:\", int(np.isnan(t2m).sum()))\n    print(\"cell\", (lat[i], lon[j]), \"T2M\", t2m[i, j], \"QV2M\", q2m[i, j],\n          \"RH@101325Pa %.2f\" % rh_from_q_t_p(q2m[i, j], t2m[i, j], 101325.0))\n\n# Tested: /home/sawy3/nasa_work/fire-harmony/.venv/bin/python -I -W error /tmp/m2slv_check/snippet.py -> exit 0, prints\n# (361, 576) float32 [-90.  90.] [-180.     179.375] NaN: 0\n# cell (3.0, 101.25) T2M 302.17834 QV2M 0.020062396 RH@101325Pa 80.44",
+   "sample_values": "Each value below was read with the reader. All shapes are (361, 576) float32 with 0 NaN. \"Mean\" means area-weighted (cos lat) global mean. \"KL cell\" is the cell nearest 3N 101E, i.e. grid point lat 3.0, lon 101.25 (index i=186, j=450).\n\n2000-01 (MERRA2_200):\n- Global means: T2M 285.34 K, QV2M 0.0095551 kg/kg, U10M -0.458 m/s, V10M -0.402 m/s.\n- Ranges: T2M 233.08-305.78 K, QV2M 0.000106-0.019977.\n- KL cell: T2M 300.065 K, QV2M 0.0177008, U10M -1.65355, V10M -1.29715, mean-vector speed 2.10 m/s, RH 80.40% (assuming p = 101325 Pa).\n\n2020-09 (MERRA2_401):\n- Global means: T2M 288.97 K, QV2M 0.010735.\n- KL cell: T2M 300.977 K, QV2M 0.0188281, U10M -0.421678, V10M 1.9886, RH 81.02% (p = 101325 assumed).\n\n2026-09 (MERRA2_400):\n- Global means: T2M 289.45 K, QV2M 0.011075, U10M 0.105, V10M 0.555.\n- Range: T2M 205.36-310.93 K.\n- KL cell: T2M 302.178 K, QV2M 0.0200624, U10M -0.699161, V10M 1.65144, mean-vector speed 1.79 m/s, RH 80.44% (101325 Pa) / 80.02% (100800 Pa).\n\nThe h5netcdf and netcdf4 engines gave bit-identical T2M for 2026-09.",
+   "use_for_fire_harmony": "Per H3 hexagon and month, sampled at the hex centroid (nearest MERRA-2 cell, about 56 x 70 km), from 2000-01 to 2026-09:\n\n(1) Fire-weather drivers:\n- 2 m temperature (K to degC) and 2 m specific humidity.\n- Relative humidity, dew point and VPD, but only once pressure is supplied: re-fetch PS or T2MDEW, use PHIS-based standard-atmosphere pressure, or take 101325 Pa in lowland peat areas, where the error is about +1.2% per 100 m of elevation.\n- 10 m wind vector (U10M, V10M), giving mean wind direction and mean-vector speed. That speed is a lower bound on true mean wind speed.\n- Monthly anomalies and z-scores against a per-calendar-month climatology (e.g. 2000-2025) for heat or dryness signals in El Nino / positive-IOD years, when combined with climate_indices.\n\n(2) Outlook: lagged predictors only, such as anomaly persistence plus ENSO/IOD. MERRA-2 is a reanalysis with about a 1-2 month lag, not a forecast.\n\n(3) Haze: the prevailing 10 m wind direction and speed show where smoke from a hexagon's fires is carried (e.g. Sumatra/Borneo peat smoke toward Malaysia and Singapore). Pair with merra2_aer_monthly (AOD, PM2.5 components) and merra2_cnn_pm25_seasia.\n\n(4) Validation and context: compare with FIRMS hotspot counts and burned area, and with the GFWED FWI (built from MERRA-2-based inputs). This is coarse context, not sub-hex detail. RH and VPD from monthly means miss the afternoon minimum."
+  },
+  {
+   "dataset": "GFWED v2.0 (Global Fire Weather Database, NASA GISS / Columbia University, Robert Field). MERRA2.CORRECTED meteorology, 'Default' configuration, daily files. Only 2 days per month are held (the 8th and 22nd). Each file holds the full Canadian FWI system: FWI, DC, DMC, FFMC, ISI, BUI and DSR.",
+   "folder": "/home/sawy3/nasa_work/data/raw/gfwed_fwi_sampled",
+   "format": "netCDF-3 64-bit offset (magic bytes 'CDF\\x02'; netCDF4 reports file_format NETCDF3_64BIT_OFFSET), not compressed. There is one file per day, and all 7 variables are in that same file (not one file per variable). Every file is exactly 4,317,424 bytes (all 584 the same size). Opens with xarray's default netcdf4 engine or with netCDF4.Dataset. Source URL pattern (from manifest.csv): https://portal.nccs.nasa.gov/datashare/GlobalFWI/v2.0/fwiCalcs.MERRA2/Default/MERRA2.CORRECTED/YYYY/<file>. The SHA-256 of all 3 sample files matches manifest.csv.",
+   "file_count": 584,
+   "file_pattern": "FWI.MERRA2.CORRECTED.Daily.Default.YYYYMMDD.nc (e.g. FWI.MERRA2.CORRECTED.Daily.Default.20020108.nc). Regex: ^FWI\\.MERRA2\\.CORRECTED\\.Daily\\.Default\\.(\\d{4})(\\d{2})(\\d{2})\\.nc$ . DD is always 08 or 22. The file name is the ONLY place the date is stored.",
+   "time_coverage": "First file 2002-01-08, last file 2026-04-22. Checked complete: 292 months x 2 days (8th and 22nd) = 584 files, none missing, none extra. Each file is one day (time dimension length 1). It is not a continuous daily series: steps alternate between 14 days (8th to 22nd) and 14-17 days (22nd to the next 8th, depending on month length). The download script (download_gfwed_sampled.sh) stops at 2026-04-30, so I did not check whether later dates exist on the NCCS server. The last file's History attribute says it was produced on 11-Jun-2026.",
+   "variables": [
+    {
+     "name": "MERRA2.CORRECTED_FWI",
+     "long_name": "MERRA2.CORRECTED Fire Weather Index",
+     "units": "'' (empty string; dimensionless index)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "IEEE NaN stored in the data. The attribute missing_value is the STRING 'NaN'; there is no _FillValue",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_DC",
+     "long_name": "MERRA2.CORRECTED Drought Code",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_DMC",
+     "long_name": "MERRA2.CORRECTED Duff Moisture Code",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_FFMC",
+     "long_name": "MERRA2.CORRECTED Fine Fuel Moisture Code",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_ISI",
+     "long_name": "MERRA2.CORRECTED Initial Spread Index",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_BUI",
+     "long_name": "MERRA2.CORRECTED Buildup Index",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MERRA2.CORRECTED_DSR",
+     "long_name": "MERRA2.CORRECTED Daily Severity Rating",
+     "units": "'' (dimensionless)",
+     "dims": "(time=1, lat=267, lon=576) float32",
+     "fill_value": "NaN (missing_value='NaN' string)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat",
+     "long_name": "(none)",
+     "units": "degrees_north",
+     "dims": "(lat=267) float64",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "(none)",
+     "units": "degrees_east",
+     "dims": "(lon=576) float64",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "time",
+     "long_name": "time",
+     "units": "'day' with calendar 'none' (not CF; there is no 'since' reference date)",
+     "dims": "(time=1) float64",
+     "fill_value": "none",
+     "scale_offset": "none; the value is 1.0 in every file"
+    }
+   ],
+   "grid": "Regular lat/lon grid with MERRA-2 native spacing: 0.5 deg in latitude x 0.625 deg in longitude, 267 x 576 cells. lat is float64 and runs SOUTH to NORTH: first -58.0, last 75.0, step 0.5. lon is float64 on the -180..180 convention: first -180.0, last 179.375, step 0.625. The coordinates are identical in the first, middle and last files. There are no bounds variables. The values are MERRA-2 grid points, which by MERRA-2 convention are cell centres, so each cell spans lat +/-0.25 and lon +/-0.3125. Coverage is therefore 58.25S to 75.25N, and the lon=-180 cell straddles the antimeridian. Data arrays are ordered (time, lat, lon) with time length 1; after isel(time=0) the array is (lat, lon) = (267, 576). Direct index for a point: i = rint((lat+58)/0.5), j = rint(((lon+180) % 360)/0.625) % 576. I tested this on 20,000 random points: every one fell within half a cell of the chosen centre. Example: 3N 101E gives [122, 450] = (3.0, 101.25). From the coordinate values (-58 = -90+0.5*64 and 75 = -90+0.5*330), these rows should match rows 64..330 of the global 361x576 MERRA-2 grid, so it should line up cell for cell with the MERRA-2 folders. I did not open those files to confirm this.",
+   "quirks": [
+    "All 7 indices are in ONE file per day; it is not one file per variable. The variable names contain a dot ('MERRA2.CORRECTED_FWI'), so use ds['MERRA2.CORRECTED_FWI'], not attribute access. Order inside the file: lat, lon, time, DC, DMC, FFMC, ISI, BUI, FWI, DSR.",
+    "The date is not stored inside the file. The time value is 1.0 in every file, with units 'day' and calendar 'none'. xarray leaves it as float64 (no warning). Parse the date from the file name.",
+    "Multi-file loading: with every time = 1.0, xr.combine_by_coords on two files raises ValueError ('Could not find any dimension coordinates to use to order the Dataset objects'), and xr.concat gives duplicate time values [1., 1.]. dask is NOT installed in the venv, so xr.open_mfdataset is not available. Loop over files and assign time from the file name (tested: concat then works).",
+    "Fill values: missing cells are real IEEE NaN in the data (the NaNs appear even with mask_and_scale=False). The missing_value attribute is the STRING 'NaN' and there is no _FillValue. xarray handles this with no warnings, and re-saving a subset with to_netcdf worked.",
+    "Most cells are NaN. Valid share of the 153,792 cells: 11.9% on 2002-01-08, 15.0% on 2014-04-08, 15.9% on 2026-04-22. Masked areas: ocean (land fraction < 0.1); hyper-arid deserts (Sahara 23N 10E and Rub al Khali 20N 50E are NaN in all 3 samples; global attr minPrec = 0.25 mm/day mean annual); very cold climates (minT = -10 C mean annual); and seasonal winter or snow shut-down (the 50-75N band had 98 valid cells on 8 Jan 2002 against 1,206-2,068 in April). A winter NaN means the fire codes are switched off, not missing data. After winter the codes restart at DC=15, DMC=6, FFMC=85 (global attributes).",
+    "The NaN mask is identical across all 7 variables within each file (checked in all 3 samples), but it changes over time, and not only by season. At snow-free latitudes (|lat| < 35), between the 2014-04-08 and 2026-04-22 samples, 437 cells became valid and 194 became NaN. 436 of the 437 new cells border a NaN cell, so they are coastal or desert-edge cells. In the SE Asia box (90-130E, 12S-12N) the 2002 and 2014 samples have the same 711 valid cells, while 2026 has 760 (49 extra coastal or island cells). Example: central Java at -7.0, 110.0 is NaN in 2002 and 2014 but 0.007 in 2026. The likely cause is the production run: History is '23-Oct-2016 13:55:14' in the 2002 and 2014 files and '11-Jun-2026 17:26:11' in the 2026 file. Where in the record the change happens was NOT checked; that would need a header scan of all files, beyond the 3-file limit. For a consistent time series, use a fixed mask or fill from the nearest valid cell.",
+    "Global attributes come in pairs: the key with a trailing colon holds a description and the plain key holds the value (e.g. 'minLat:' = 'Min latitude for analysis', 'minLat' = -58.0). Apart from History, all global and variable attributes are identical in the 3 samples.",
+    "Very long tails in arid areas. Sample maxima: DC 9475, DMC 3756, BUI 3606, ISI 143.9, FWI 150.0, DSR 193.2; median DC is only 143-279. FFMC max is 100.3, below the theoretical 101. Three cells had DMC of about -6.7e-16 on 2014-04-08 (rounding noise; clip at 0). Use percentiles or ranks, or clip, before averaging.",
+    "The values are internally consistent with the Van Wagner (1987) equations: DSR = 0.0272*FWI^1.77 (max error 3e-5), BUI = f(DMC, DC) and FWI = f(ISI, BUI) (max error 2e-4) in all 3 samples. This confirms the variables are the standard indices, and also that DSR, BUI and FWI are derived from the others, not independent information.",
+    "Only 2 snapshot days per month. A 'monthly' value is a 2-sample mean: noisy for the fast codes (FFMC, ISI, FWI) and more representative for the slow codes (DMC, DC). The usual time lags (about 2/3 day for FFMC, about 12 days for DMC, about 52 days for DC) are general FWI-system knowledge, not stated in the files.",
+    "Not stated in the files, from general GFWED knowledge, so unverified: 'CORRECTED' most likely means MERRA-2 meteorology with MERRA-2's gauge-corrected precipitation, and the indices are computed for local noon.",
+    "Memory and disk: files are uncompressed, and a whole file is 4.3 MB (one 2D variable is about 600 KB). The reader peaks at about 140 MB RSS and runs in 0.7 s. One variable for all 584 files is 584 x 267 x 576 x 4 B, about 359 MB, so cut to the region first (the SE Asia box is 49 x 65 cells) before stacking on this low-RAM machine."
+   ],
+   "reader_snippet": "import re, datetime as dt\nimport numpy as np\nimport xarray as xr\n\ndef read_gfwed(path, var=\"FWI\"):\n    \"\"\"One GFWED v2.0 MERRA2.CORRECTED daily file -> (field[lat, lon], lat, lon, date).\n    var: FWI, DC, DMC, FFMC, ISI, BUI or DSR (all 7 are in every file).\"\"\"\n    # the file's own 'time' is always 1.0 with units 'day' -> the date only exists in the file name\n    date = dt.datetime.strptime(re.search(r\"\\.(\\d{8})\\.nc$\", path).group(1), \"%Y%m%d\").date()\n    with xr.open_dataset(path, decode_times=False) as ds:\n        field = ds[f\"MERRA2.CORRECTED_{var}\"].isel(time=0).values.astype(\"float32\")  # (267, 576)\n        lat = ds[\"lat\"].values   # -58.0 .. 75.0 step 0.5, ascending (south -> north)\n        lon = ds[\"lon\"].values   # -180.0 .. 179.375 step 0.625\n    field[~np.isfinite(field)] = np.nan   # fill is already IEEE NaN in the file (missing_value attr is the string 'NaN')\n    return field, lat, lon, date\n\nif __name__ == \"__main__\":\n    f = \"/home/sawy3/nasa_work/data/raw/gfwed_fwi_sampled/FWI.MERRA2.CORRECTED.Daily.Default.20020108.nc\"\n    fwi, lat, lon, date = read_gfwed(f)\n    i, j = np.abs(lat - 3).argmin(), np.abs(lon - 101).argmin()\n    print(date, fwi.shape, fwi.dtype, lat[[0, -1]], lon[[0, -1]])\n    print(\"valid cells\", int(np.isfinite(fwi).sum()), \"mean FWI\", float(np.nanmean(fwi)), \"at\", lat[i], lon[j], \"=\", float(fwi[i, j]))\n# Tested output: 2002-01-08 (267, 576) float32 [-58. 75.] [-180. 179.375]\n#                valid cells 18333 mean FWI 26.032001495361328 at 3.0 101.25 = 5.0775628089904785\n# (saved as /tmp/gfwed_check/reader.py; run with .venv/bin/python -I)",
+   "sample_values": "2002-01-08: 18,333 valid cells. FWI mean 26.03 (cos-lat weighted 25.87), median 12.74, max 140.1. At the cell nearest 3N 101E (lat 3.0, lon 101.25, index [122, 450], Selangor): FWI 5.0776, DC 58.2513, DMC 9.3361, FFMC 82.7114, ISI 3.9878, BUI 13.3308, DSR 0.4826. Other points the same day: Argentina 35S 63W FWI 15.93; N Australia 15S 133E 0.86; Sahara 23N 10E NaN; Siberia 62N 130E NaN (winter shut-down). 2014-04-08: 23,136 valid. FWI mean 18.25 (cos-lat 18.56). At 3.0N 101.25E: FWI 0.1421, DC 112.4236, FFMC 54.8285. 2026-04-22: 24,444 valid. FWI mean 21.90 (cos-lat 22.38), max 150.0. At 3.0N 101.25E: FWI 0.2323, DC 13.0793, FFMC 65.9865. Mean FWI in the SE Asia box (90-130E, 12S-12N), in the order 2002-01-08 / 2014-04-08 / 2026-04-22: 3.65 / 2.84 / 6.00.",
+   "use_for_fire_harmony": "What it can give per H3 hexagon and month:\n1. Drivers: the full FWI system. FWI is the overall danger. DC (deep drought) is the best single proxy for peat dryness and the haze season in Sumatra, Kalimantan and Malaysia. DMC is mid-depth dryness, BUI is available fuel, FFMC and ISI are surface ignition and spread, and DSR is a difficulty-of-control rating. Combine the 8th and 22nd snapshots into a month mean and max, then compute per-cell anomalies or percentiles against a 2002-2025 baseline built from the same snapshot days.\n2. Outlook: DC and BUI change slowly, so the 22nd's DC/BUI can serve as a persistence predictor for next month's fire activity, together with ONI/DMI and IMERG rainfall.\n3. Haze: DC/BUI anomaly over peat (PEATMAP) as a predictor of MERRA-2 PM2.5 episodes.\n4. Validation and explanation: check that FIRMS hotspot counts and burned area per hex-month rise with the FWI percentile.\n\nMapping caveats:\n- One GFWED cell is about 55.6 x 69.5 km (about 3,860 sq km) at the equator. That is bigger than an H3 res-4 hex (about 1,770 sq km) and roughly a third of a res-3 hex (about 12,393 sq km), so at res 4 and finer many hexes share one value. Assign by the cell containing the hex centroid (direct index formula) or by area weighting.\n- Coastal and island hexes often fall on NaN cells, so fill from the nearest valid cell. Use one fixed mask over the whole record, because the coastal mask differs between the 2016- and 2026-produced files.\n- Treat NaN in deserts and in winter as 'not computed / no fire season', not as zero danger.\n\nLimits: Jan 2002 to Apr 2026 only; nothing north of 75.25N or south of 58.25S; no daily continuity, so no daily peaks or counts of high-danger days."
+  },
+  {
+   "dataset": "MERRA-2 CNN HAQAST bias-corrected hourly surface total PM2.5, V1 (ShortName MERRA2_CNN_HAQAST_PM25, DOI 10.5067/OCKK5HCFW5N3, NASA GSFC / GES DISC collection C3094710982-GES_DISC). This copy is an OPeNDAP subset covering the SE Asia box (12S-12N, 90-130E) for July to November of each year.",
+   "folder": "/home/sawy3/nasa_work/data/raw/merra2_cnn_pm25_seasia",
+   "file_count": 3672,
+   "file_pattern": "MERRA2_HAQAST_CNN_L4_V1.YYYYMMDD.nc4, one file per UTC day, e.g. MERRA2_HAQAST_CNN_L4_V1.20150925.nc4. Regex: ^MERRA2_HAQAST_CNN_L4_V1\\.(\\d{8})\\.nc4$ . All 3672 names on disk match it and match the 3672 manifest rows exactly. The internal Filename/GranuleID attributes put an underscore before the date (MERRA2_HAQAST_CNN_L4_V1_20150925.nc4), but files on disk use a dot.",
+   "format": "netCDF-4 / HDF5 (CF-1), flat (no groups). Produced by a Hyrax 1.18 cloud OPeNDAP subset (opendap.earthdata.nasa.gov) with the constraint MERRA2_CNN_Surface_PM25[0:23][156:204][432:496] on the global granule. Each file holds one zlib (level 4) chunk of shape (24,49,65) and is about 0.3 MB; the folder totals 1.1 GB. xarray's netcdf4 and h5netcdf engines return identical values (verified), and netCDF4 also reads it directly. dask is not installed in the venv, so xr.open_mfdataset fails. Loop over the files instead (about 8 ms per file when cached).",
+   "time_coverage": "First file 2002-07-01, last file 2025-11-30. Only Jul 1 to Nov 30 of each year 2002-2025 is present: 153 days x 24 years = 3672 files, with no missing days (checked against the file names). Dec-Jun are not in this archive, and 2026 is not in it either. Each file has 24 hourly means stamped 00:30, 01:30 ... 23:30 UTC. The time variable is int32 'hours since <file date> 00:30:00' with values 0..23 (proleptic_gregorian), and xarray decodes it to e.g. 2015-09-25T00:30. The source is MERRA-2 tavg1_2d_aer_Nx, so each value is an hour-long mean and the :30 stamp marks the centre of that hour.",
+   "variables": [
+    {
+     "name": "MERRA2_CNN_Surface_PM25",
+     "long_name": "Bias corrected surface total PM2.5 mass concentration",
+     "units": "ug m-3",
+     "dims": "(time=24, lat=49, lon=65), float32",
+     "fill_value": "-999.0 (_FillValue; xarray and netCDF4 turn it into NaN/masked). No -999, NaN or negative values found in the 3 sample files, but exact 0.0 values do occur",
+     "scale_offset": "none (stored as physical float32)"
+    },
+    {
+     "name": "time",
+     "long_name": "time",
+     "units": "hours since YYYY-MM-DD 00:30:00 (reference date changes per file)",
+     "dims": "(time=24), int32, values 0..23",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lat",
+     "long_name": "latitude",
+     "units": "degree_north",
+     "dims": "(lat=49), float32, -12.0..12.0 step 0.5",
+     "fill_value": "none",
+     "scale_offset": "none"
+    },
+    {
+     "name": "lon",
+     "long_name": "longitude",
+     "units": "degree_east",
+     "dims": "(lon=65), float32, 90.0..130.0 step 0.625",
+     "fill_value": "none",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "Regular MERRA-2 lat/lon grid of 0.5 deg lat x 0.625 deg lon, with values at cell centres. lat has 49 values from -12.0 to 12.0, running south to north (ascending). lon has 65 values from 90.0 to 130.0, ascending; in this box the -180..180 and 0..360 conventions give the same numbers. Data arrays are ordered (time, lat, lon). Cell edges sit at +-0.25 deg lat and +-0.3125 deg lon, so the files cover 12.25S-12.25N and 89.6875E-130.3125E. In the global 361x576 grid these are rows 156-204 and columns 432-496. The grid is identical in the first, middle and last files. A cell is about 55.7 km x 69.6 km (about 3,870 km2) at the equator. To find the cell for a point: iy = round((lat+12)/0.5), ix = round((lon-90)/0.625), valid when 0<=iy<49 and 0<=ix<65. Nearest cells for the cities: Kuala Lumpur -> (3.0N, 101.875E) [iy30, ix19]; Singapore -> (1.5N, 103.75E) [27, 22]; Pekanbaru -> (0.5N, 101.25E) [25, 18]; Palangka Raya -> (2.0S, 113.75E) [20, 38].",
+   "quirks": [
+    "Coverage is limited to Jul-Nov and to 12S-12N, 90-130E. Bangkok, Manila, Myanmar, Laos, northern Thailand and northern Vietnam are outside the box (tested: Bangkok returns index -1), and the Feb-Apr mainland burning season is absent. Ho Chi Minh City, Sumatra, Borneo, Java and the Malay Peninsula are inside.",
+    "No 2026 data. The 2025 granules state TemporalRange '2000-01-01 -> 2025-12-31', and the archive ends 2025-11-30. The project's Aug-Oct 2026 Central Kalimantan finding therefore cannot be checked against this product; the uncorrected MERRA-2 aerosol monthlies (merra2_aer_monthly, to Sep 2026) would be needed for that.",
+    "The time units change per file ('hours since <that day> 00:30:00') while the raw values are always 0..23. Decode each file separately (xarray does this) or rebuild times as file date + 30 min + hour. Never concatenate the raw integers.",
+    "Times are UTC hour-long means centred at :30. Kuala Lumpur and Singapore use UTC+8 (MYT/SGT); Pekanbaru and Palangka Raya use WIB, UTC+7. A local civil day D therefore takes the last 8 (or 7) hours of UTC file D-1 and the first 16 (or 17) hours of file D; these 16/8 and 17/7 counts were confirmed in code. Because Jun 30 is not in the archive, local Jul 1 is always incomplete (16 or 17 of 24 hours). Local Dec 1 is partial and should be dropped. UTC days are complete for all 153 days.",
+    "The global attributes come from the global granule and do not describe this subset: SpatialCoverage='global', Southernmost/Northernmost/Westernmost/EasternmostLatitude/Longitude = -90/90/-180/179.375. Use the lat/lon arrays instead. The first 'history' line in every file names MERRA2_400.tavg1_2d_aer_Nx.20221231, a leftover from the producer's processing, not the file's date. RangeBeginningDate/RangeEndingDate are correct per file.",
+    "The 2025 granules come from a later production run (ProductionDateTime 2026-02-02, against 2024-06 for 2002 and 2015). They change TemporalRange to 2025-12-31, add the variable attributes fullnamepath and origname, and set DODS_EXTRA.Unlimited_Dimension to 'time\\ntime'. Variable name, units, fill value, grid and VersionID V1 are unchanged. Whether the CNN set-up is exactly the same cannot be confirmed from metadata (ambiguous).",
+    "Exact 0.0 values occur over open ocean: 491, 5 and 260 of the 76,440 values in the 2002, 2015 and 2025 samples, e.g. around 10-12S 105-111E and 5S 96-98E. They are probably clipped CNN outputs. Treat them as valid near-zero values, not as missing. No -999 fill was present in the samples, but mask it anyway.",
+    "Extreme peat-smoke haze may be underestimated (ambiguous; not checked against station data here). On 2015-09-25, a peak day of the 2015 Indonesian haze, the box-wide hourly maximum was only 106.8 ug/m3 (at 3.0S 119.375E). UTC daily means were 35.3 for Singapore, 27.1 for Palangka Raya and 15.1 for Pekanbaru. Widely reported station levels for that episode were several times higher (outside knowledge). Use the product for timing, anomalies and rankings, and check absolute levels against ground monitors before quoting them.",
+    "Values do not saturate. In 2015 and 2025 the maxima are 106.8 and 106.1, but only 4 and 2 values exceed 100, and the hourly series at the maximum cell rises and falls smoothly.",
+    "A city 'point' value is really the average over a ~56 x 70 km grid cell. The Singapore cell (1.25-1.75N, 103.44-104.06E) also includes southern Johor. On 2015-09-25, nearest-cell and bilinear daily means differ by up to 1.6 ug/m3: Singapore 35.31 vs 33.70, Pekanbaru 15.13 vs 13.67, Kuala Lumpur 37.96 vs 38.26, Palangka Raya 27.10 vs 27.08.",
+    "Recipe, daily mean: take the 24 hourly values in a file for the UTC day, or shift times by +8 h (Kuala Lumpur, Singapore) or +7 h (Pekanbaru, Palangka Raya) and group by local date to get local civil days. Keep only days with 24 valid hours. The 24-hour mean is what the WHO 2021 guideline (15 ug/m3) is written against.",
+    "Recipe, monthly mean: average the complete daily means in each calendar month, which equals the mean of all hourly values when every day is complete. UTC months are complete: 31/31/30/31/30 days for Jul-Nov. A local-time July has 30 complete days because local Jul 1 is partial. Group with to_period('M') so the absent Dec-Jun months do not appear as empty rows.",
+    "Memory use is small. Reading one whole file is about 0.3 MB. A full city extraction gives 88,128 hourly rows x 4 cities, and the whole-box monthly cube is 120 months x 49 x 65 float32 (about 1.5 MB), built one file at a time.",
+    "The tested scratch scripts are in /tmp/cnn_check: final_snippet.py (the reader plus city helpers below), monthly_grid.py (whole-box monthly accumulator and the H3 L5 -> grid-cell mapping through DuckDB's h3 extension), and city.py (also cross-checks against xarray nearest and bilinear). /tmp is tmpfs, so these files are lost on a WSL restart."
+   ],
+   "reader_snippet": "import re\nimport numpy as np, pandas as pd, xarray as xr, netCDF4\n\nVAR = \"MERRA2_CNN_Surface_PM25\"   # ug m-3, dims (time=24, lat=49, lon=65), _FillValue -999.0, no scale/offset\n\ndef read_cnn_pm25(path, hour_index=0):\n    \"\"\"One daily file -> (pm25[lat, lon] float32 with NaN for fill, lat 1D, lon 1D, time_utc).\n    hour_index 0..23 = hourly means centred at 00:30 .. 23:30 UTC.\"\"\"\n    with xr.open_dataset(path, engine=\"netcdf4\") as ds:              # -999 -> NaN, time decoded per file\n        pm25 = ds[VAR].isel(time=hour_index).values.astype(\"float32\")   # (lat, lon), lat south -> north\n        lat = ds[\"lat\"].values.astype(\"float64\")                       # -12.0 .. 12.0, step 0.5 (49)\n        lon = ds[\"lon\"].values.astype(\"float64\")                       #  90.0 .. 130.0, step 0.625 (65)\n        t = ds[\"time\"].values[hour_index]                              # datetime64, e.g. 2015-09-25T00:30\n    pm25[pm25 <= -998.0] = np.nan                                      # belt and braces\n    return pm25, lat, lon, t\n\n# ---- city points: hourly -> daily (UTC day or local civil day) -> monthly ----\nFNAME = re.compile(r\"MERRA2_HAQAST_CNN_L4_V1\\.(\\d{8})\\.nc4$\")\nCITIES = {\"Kuala Lumpur\": (3.14, 101.69, 8), \"Singapore\": (1.35, 103.82, 8),      # lat, lon, UTC offset (h)\n          \"Pekanbaru\": (0.51, 101.45, 7), \"Palangka Raya\": (-2.21, 113.92, 7)}    # MYT/SGT +8, WIB +7\n\ndef city_hourly(paths, cities=CITIES):\n    \"\"\"Hourly PM2.5 of the grid cell containing each city. Index = UTC time (HH:30), one column per city.\"\"\"\n    frames, idx, grid = [], None, None\n    for p in sorted(map(str, paths)):\n        day = pd.Timestamp(FNAME.search(p).group(1))\n        with netCDF4.Dataset(p) as ds:\n            lat, lon = ds[\"lat\"][:].data, ds[\"lon\"][:].data\n            if idx is None:\n                grid = (lat.copy(), lon.copy())\n                idx = {c: (int(np.abs(lat - la).argmin()), int(np.abs(lon - lo).argmin())) for c, (la, lo, _) in cities.items()}\n            assert np.array_equal(lat, grid[0]) and np.array_equal(lon, grid[1]), \"grid changed: \" + p\n            a = ds[VAR][:].filled(np.nan)                              # (24, 49, 65), ~0.3 MB\n        t = day + pd.Timedelta(minutes=30) + pd.to_timedelta(np.arange(24), unit=\"h\")\n        frames.append(pd.DataFrame({c: a[:, iy, ix] for c, (iy, ix) in idx.items()}, index=t))\n    return pd.concat(frames).sort_index()\n\ndef daily_means(hourly, cities=CITIES, local=True, min_hours=24):\n    \"\"\"24-h mean per city. local=True groups by the city's civil day, which uses the last 8 (UTC+8) or\n    7 (UTC+7) hours of the previous UTC file, so pass consecutive files. Days with < min_hours -> NaN.\"\"\"\n    out = {}\n    for c in hourly.columns:\n        s = hourly[c].dropna()\n        if local:\n            s = s.set_axis(s.index + pd.Timedelta(hours=cities[c][2]))\n        g = s.groupby(s.index.floor(\"D\"))\n        d = pd.DataFrame({\"mean\": g.mean(), \"n_hours\": g.count()})\n        d.loc[d[\"n_hours\"] < min_hours, \"mean\"] = np.nan\n        out[c] = d\n    return pd.concat(out, axis=1)                                      # columns (city, mean | n_hours)\n\ndef monthly_means(daily):\n    \"\"\"Calendar-month mean of the complete daily means (only Jul-Nov exist) and the number of days used.\"\"\"\n    m = daily.xs(\"mean\", axis=1, level=1)\n    g = m.groupby(m.index.to_period(\"M\"))\n    return g.mean(), g.count()\n\nif __name__ == \"__main__\":\n    import glob, sys\n    D = \"/home/sawy3/nasa_work/data/raw/merra2_cnn_pm25_seasia/\"\n    pm25, lat, lon, t = read_cnn_pm25(D + \"MERRA2_HAQAST_CNN_L4_V1.20150925.nc4\", hour_index=0)\n    print(t, pm25.shape, \"NaN\", int(np.isnan(pm25).sum()), \"box mean %.3f\" % np.nanmean(pm25),\n          \"| 3N 101E cell %.3f\" % pm25[np.abs(lat - 3).argmin(), np.abs(lon - 101).argmin()])\n    paths = sys.argv[1:] or sorted(glob.glob(D + \"MERRA2_HAQAST_CNN_L4_V1.*.nc4\"))   # whole archive ~3672 files\n    h = city_hourly(paths)\n    du = daily_means(h, local=False)              # UTC days: every file is one complete day\n    dl = daily_means(h, local=True)               # local days: needs consecutive files\n    mm, nd = monthly_means(du)\n    print(du.round(2).to_string()); print(dl.to_string()); print(mm.round(2).to_string()); print(nd.to_string())\n\n# Tested 2026-11-08 as /tmp/cnn_check/final_snippet.py with the venv python (-I -W error::DeprecationWarning),\n# on the 3 sample files only (20020701, 20150925, 20251130); exit code 0.",
+   "sample_values": "Read with the snippet above. Values are 'box mean' = unweighted mean over the 49x65 grid; the cos-lat weighted mean differs by less than 0.03.\n2002-07-01 00:30 UTC: box mean 5.339 ug/m3 (weighted 5.338), min 0.000, max 56.228; cell (3.0N, 101.25E), nearest to 3N 101E = 12.838.\n2015-09-25 00:30 UTC: box mean 10.238, max 84.424, 3N/101.25E = 27.557. At 06:30 UTC: box mean 11.729, 3N/101.25E = 34.868.\n2025-11-30 00:30 UTC: box mean 12.301, max 100.776, 3N/101.25E = 45.344.\nWhole-day (24 h) box means: 5.606 / 10.945 / 12.274. Whole-day maxima: 74.91 (6.0S 106.875E, 23:30), 106.78 (3.0S 119.375E, 15:30), 106.05 (10.5N 106.25E, 01:30).\nCity UTC-day means, nearest cell (Kuala Lumpur / Singapore / Pekanbaru / Palangka Raya):\n- 2002-07-01: 8.98 / 7.54 / 7.35 / 15.63\n- 2015-09-25: 37.96 / 35.31 / 15.13 / 27.10\n- 2025-11-30: 34.21 / 40.68 / 49.29 / 15.69\nAll have n_hours = 24. Bilinear on 2015-09-25: 38.26 / 33.70 / 13.67 / 27.08.\nSingapore hourly on 2015-09-25: 40.3 at 00:30 UTC, peaking at 51.4 at 09:30, falling to 17.2 at 23:30.\nWith non-consecutive files, local-day hour counts came out as 16 + 8 (UTC+8) and 17 + 7 (UTC+7), so the local-day code is correctly marking those days incomplete.\nThe whole-box monthly accumulator gives the same city values as the city extractor. H3 L5 hex centroids for the four cities map to the same grid cells as nearest-point lookup.",
+   "use_for_fire_harmony": "This dataset measures haze impact, not a fire driver, and is valid only for the SE Asia box and Jul-Nov 2002-2025.\n\n(1) Haze per H3 cell and month. Build monthly grids by looping over the files (sum and count per cell). Map each level-5 cell centroid (DuckDB h3_cell_to_lat/h3_cell_to_lng) to its grid cell with iy = round((lat+12)/0.5), ix = round((lon-90)/0.625); centroids outside the box get no value. One MERRA-2 cell (~3,870 km2) holds about 15 L5 cells (~253 km2 average), so L5 values are a lookup with no added detail. For L3 (~12,400 km2), average the 2-3 cells whose centres fall inside the hexagon. Useful monthly fields:\n- mean PM2.5\n- highest daily mean and 90th percentile of daily means\n- number of days above the WHO 24-h guideline of 15 ug/m3\n- anomaly against the same calendar month across the 24 seasons 2002-2025\n\n(2) City haze link (architecture notebook 10_haze_link_se_asia). Build local-day and monthly PM2.5 series for Kuala Lumpur, Singapore, Pekanbaru and Palangka Raya. Regress them, with 0-3 day lags (daily) or in the same month (monthly), on harmonized fire-count anomalies in upwind L5 cells, using MERRA-2 winds (merra2_slv_monthly).\n\n(3) Drivers and outlook. Use PM2.5 as the target for a haze-risk model: relate Sep-Oct mean PM2.5 to ONI/DMI (climate_indices), fire weather (gfwed) and rainfall (IMERG), and test known El Nino years such as 2015, 2019 and 2023. There is no forecast in the product, and no 2026 data, so a 2026 haze estimate would have to come from such a model or from the uncorrected merra2_aer_monthly.\n\n(4) Validation and exposure. Check that months of high harmonized fire activity in Sumatra and Kalimantan line up with PM2.5 peaks. Multiply days above the guideline by GPWv4 population to estimate people exposed. Use rankings and anomalies rather than absolute levels in extreme peat-smoke episodes, which appear to be underestimated."
+  },
+  {
+   "dataset": "NOAA climate indices: CPC Oceanic Nino Index (ONI, ENSO; this copy is the ERSSTv6-based ONI) and NOAA PSL Dipole Mode Index (DMI, Indian Ocean Dipole, HadISST1.1)",
+   "folder": "/home/sawy3/nasa_work/data/raw/climate_indices",
+   "format": "Plain ASCII text files with LF line endings: no CR characters, no blank lines, trailing newline present.\n\nnoaa_oni.txt: a whitespace-delimited table with fixed 24-character lines. Header line is ' SEAS  YR   TOTAL   ANOM', followed by 921 rows, one per overlapping 3-month season, e.g. '  DJF 1950  25.01  -1.32'. Every row has 4 fields.\n\nnoaa_psl_dmi_iod.txt: the standard NOAA PSL monthly-timeseries text format.\n- Line 1 is ' 1870 2026' (first and last year).\n- Lines 2-158 are 157 fixed-width rows of 124 characters: a 4-character year, then 12 values in %10.3f format (Jan to Dec).\n- Line 159 is '-9999', the missing-value code.\n- Lines 160-165 are free-text notes: 'DMI HadISST1.1', 'Created Sat Jul 25 13:56:30 MDT 2026', 'using SST anomaly 10S:10N,50E-70E minus 10S:0,90E-110E area averaged', 'Timeseries output created at NOAA PSL', 'https://psl.noaa.gov/gcos_wgsp/timeseries/DMI', 'Preliminary. ' (with a trailing space).",
+   "file_count": 2,
+   "file_pattern": "There is no date in the file names. Each file holds the whole series.\n- noaa_oni.txt comes from https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt (23,050 bytes).\n- noaa_psl_dmi_iod.txt comes from https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data (19,861 bytes).\nBoth were downloaded 2026-11-07T07:14Z. Sizes and SHA-256 match manifest.csv (118c5633... and 42c1000e...).",
+   "time_coverage": "ONI: DJF 1950 to ASO 2026, 921 consecutive overlapping 3-month seasons on a monthly step, with no gaps and no missing values.\n- Labelled by central month: Jan 1950 to Sep 2026.\n- Labelled by the last month of the season: Feb 1950 to Oct 2026.\n- 2026 has 9 rows (DJF to ASO). Seasons not yet available are simply absent.\n\nDMI: monthly, Jan 1870 to May 2026, with 1,877 valid months.\n- The file's table runs to Dec 2026. Jun-Dec 2026 hold -9999.000 (7 cells, the only missing values).\n- The footer says 'Created Sat Jul 25 13:56:30 MDT 2026', so the latest DMI value was 5+ months old when downloaded on 7 Nov 2026.",
+   "variables": [
+    {
+     "name": "ANOM (noaa_oni.txt col 4) = ONI",
+     "long_name": "Oceanic Nino Index: 3-month running mean of ERSST.v6 SST anomaly in the Nino-3.4 region (5N-5S, 120W-170W), on centred 30-year base periods updated every 5 years. The region and dataset are from the CPC v6 page; the base-period steps were checked against the data.",
+     "units": "degC",
+     "dims": "921 season rows (SEAS, YR), parsed to a 1-D Series indexed (year, month)",
+     "fill_value": "No missing-value code in the file (0 NaN). The parser masks values <= -99 as NaN only as a precaution.",
+     "scale_offset": "none; plain decimals with 2 dp; range -2.04 to +2.59"
+    },
+    {
+     "name": "TOTAL (noaa_oni.txt col 3)",
+     "long_name": "3-month running mean absolute Nino-3.4 SST (ERSST.v6). TOTAL minus ANOM gives the base-period climatology.",
+     "units": "degC",
+     "dims": "921 season rows, parsed to Series indexed (year, month)",
+     "fill_value": "none present",
+     "scale_offset": "none; 2 dp; range 24.39 to 29.23"
+    },
+    {
+     "name": "DMI (noaa_psl_dmi_iod.txt, 12 monthly columns)",
+     "long_name": "Dipole Mode Index from HadISST1.1: area-averaged SST anomaly over 10S-10N, 50E-70E minus 10S-0, 90E-110E (from the file footer). Anomalies are relative to the 1991-2020 calendar-month climatology (checked: the 1991-2020 monthly means are 0.0000). Not detrended. Marked 'Preliminary.'",
+     "units": "degC",
+     "dims": "157 years x 12 months (rows 1870..2026, columns Jan..Dec), parsed to a 1-D Series of 1,884 values indexed (year, month)",
+     "fill_value": "-9999 (written -9999.000 in cells; the code is also on line 159 after the data block)",
+     "scale_offset": "none; 3 dp; valid range -1.634 to +1.279"
+    }
+   ],
+   "grid": "There is no spatial grid. Each file is one area-averaged scalar time series (a global teleconnection index), so every H3 cell gets the same value in a given month.\n- ONI box: Nino-3.4, 5N-5S, 120W-170W.\n- DMI boxes: western 10S-10N, 50E-70E minus eastern 10S-0, 90E-110E.\n\nData order:\n- ONI rows are chronological, DJF to NDJ within each YR.\n- DMI is a year-by-month matrix (rows are years 1870..2026, columns Jan..Dec).\n- Both parsers flatten to a 1-D float64 pandas Series with a year-major MultiIndex named (year, month), both levels int64.\n- Use s.rename('value').reset_index() to get a (year, month, value) DataFrame (tested: ONI gives 921 x 3, dtypes int64/int64/float64).",
+   "reader_snippet": "\"\"\"Parsers for ~/nasa_work/data/raw/climate_indices (NOAA CPC ONI + NOAA PSL DMI).\nBoth return a float pandas Series indexed by MultiIndex (year, month); missing -> NaN.\"\"\"\nimport numpy as np\nimport pandas as pd\n\nRAW = \"/home/sawy3/nasa_work/data/raw/climate_indices\"\n\n# CPC season code -> central calendar month. YR is the year of the central month:\n# DJF 1950 = Dec1949+Jan1950+Feb1950 -> (1950, 1); NDJ 1950 = Nov1950+Dec1950+Jan1951 -> (1950, 12)\nSEASON_CENTER = {\"DJF\": 1, \"JFM\": 2, \"FMA\": 3, \"MAM\": 4, \"AMJ\": 5, \"MJJ\": 6,\n                 \"JJA\": 7, \"JAS\": 8, \"ASO\": 9, \"SON\": 10, \"OND\": 11, \"NDJ\": 12}\n\n\ndef read_oni(path=f\"{RAW}/noaa_oni.txt\", column=\"ANOM\", align=\"center\"):\n    \"\"\"CPC oni.ascii.txt: header 'SEAS YR TOTAL ANOM', whitespace separated, one row per\n    overlapping 3-month season. column='ANOM' (the ONI, degC) or 'TOTAL' (Nino-3.4 SST, degC).\n    align='center': label = middle month of the season (CPC convention).\n    align='end':    label = last month of the season (value only knowable after that month).\"\"\"\n    df = pd.read_csv(path, sep=r\"\\s+\", header=0)\n    if list(df.columns) != [\"SEAS\", \"YR\", \"TOTAL\", \"ANOM\"]:\n        raise ValueError(f\"unexpected ONI header {list(df.columns)}\")\n    m = df[\"SEAS\"].map(SEASON_CENTER)\n    if m.isna().any():\n        raise ValueError(f\"unknown season codes {sorted(set(df['SEAS'][m.isna()]))}\")\n    t = df[\"YR\"].to_numpy(int) * 12 + m.to_numpy(int) - 1 + (1 if align == \"end\" else 0)\n    idx = pd.MultiIndex.from_arrays([t // 12, t % 12 + 1], names=[\"year\", \"month\"])\n    s = pd.Series(df[column].to_numpy(float), index=idx, name=f\"oni_{column.lower()}\")\n    # This file has NO missing-value code (unavailable seasons are simply not listed);\n    # mask CPC-style sentinels (-99.9 / -99.99 / -9999) defensively anyway.\n    s = s.mask(s <= -99)\n    if not (s.index.is_unique and s.index.is_monotonic_increasing):\n        raise ValueError(\"ONI rows not in strict time order\")\n    return s\n\n\ndef read_psl_monthly(path=f\"{RAW}/noaa_psl_dmi_iod.txt\", name=\"dmi\"):\n    \"\"\"NOAA PSL standard monthly text format (here dmi.had.long.data):\n    line 1 'FIRST_YEAR LAST_YEAR'; then one row per year: YEAR + 12 values (Jan..Dec);\n    then one line holding the missing-value code (-9999); then free-text notes.\"\"\"\n    with open(path) as f:\n        lines = f.read().splitlines()\n    y0, y1 = (int(v) for v in lines[0].split())\n    n = y1 - y0 + 1\n    a = np.array([ln.split() for ln in lines[1:1 + n]], dtype=float)\n    if a.shape != (n, 13) or not (a[:, 0] == np.arange(y0, y1 + 1)).all():\n        raise ValueError(\"unexpected PSL table layout\")\n    missing = float(lines[1 + n].split()[0])            # -9999.0 in this file\n    vals = a[:, 1:].copy()\n    vals[np.isclose(vals, missing)] = np.nan\n    idx = pd.MultiIndex.from_product([range(y0, y1 + 1), range(1, 13)], names=[\"year\", \"month\"])\n    s = pd.Series(vals.ravel(), index=idx, name=name)\n    s.attrs.update(missing_value=missing, notes=[ln.strip() for ln in lines[2 + n:] if ln.strip()])\n    return s\n\n\nif __name__ == \"__main__\":\n    oni, dmi = read_oni(), read_psl_monthly()\n    print(oni.tail(3), dmi.dropna().tail(3), dmi.attrs, sep=\"\\n\")\n    print(oni.rename(\"value\").reset_index().head(3))    # (year, month, value) frame\n\n# Tested with /home/sawy3/nasa_work/fire-harmony/.venv/bin/python -I (pandas 3.1.1, numpy 2.5.4).\n# Copy kept at /tmp/ci_scratch/reader_snippet.py. Parsed values matched the raw text in all\n# 921 ONI rows (ANOM and TOTAL) and all 1,884 DMI cells (0 mismatches; 7 '-9999.000' cells -> 7 NaN).",
+   "sample_values": "All values below were read with the parsers and checked against the raw lines.\n\nONI (ANOM, labelled by central month):\n- DJF 1950 (1950, 1) = -1.32, TOTAL 25.01. ASO 2026 (2026, 9) = +2.46, TOTAL 29.23; with align='end' the same value is (2026, 10).\n- Maximum +2.59 at NDJ 2015 (2015, 12). Minimum -2.04 at NDJ 1973 (1973, 12).\n- (1997, 9) = +2.04, (1997, 12) = +2.37, (2015, 9) = +2.02, (2019, 9) = +0.31, (2023, 9) = +1.50.\n- NDJ 2025 (2025, 12) = -0.60. DJF 2026 (2026, 1) = -0.39.\n- Mean over 2001-2025 = 0.018.\n\nDMI:\n- Jan 1870 = -0.438. Last valid month May 2026 = +0.146. Jun-Dec 2026 = NaN.\n- Maximum +1.279 in Nov 1997. Minimum -1.634 in Sep 1906.\n- Sep 2015 = +0.294, Oct 2006 = +0.577, Sep 2019 = +0.892, Oct 2019 = +0.964, Sep 2023 = +0.946.\n- Mean over 2001-2025 = 0.043. Calendar-month means over 1991-2020 are all 0.0000 (rms 1e-4).\n\nCross-checks:\n- The file's ONI matches CPC's ERSSTv6 ONI web table in 921 of 921 seasons (within the 0.05 rounding of the 1-dp table).\n- It matches the ERSSTv5 table in only 422 of 917 seasons.",
+   "quirks": [
+    "ONI version: this oni.ascii.txt is the ERSSTv6-based ONI, not v5. It matches the CPC v6 table (cpc.ncep.noaa.gov/products/analysis_monitoring/enso/oni/v6/) in all 921 seasons and the v5 table in only 46%. The v5 and v6 tables differ by a mean of 0.06 degC (max 0.3) over 2000-2026 and 0.08 (max 0.4) over 1950-1999, so ONI values quoted in older papers will not match exactly.",
+    "Official ENSO index changed: CPC pages say that under NWS Public Information Statement 26-05 the Relative ONI (RONI) is now used for official ENSO monitoring. RONI is the ERSSTv6 Nino-3.4 anomaly minus the 20N-20S tropical-mean SST anomaly, on a 1991-2020 base. RONI is NOT in this folder, and it differs a lot from the ONI here: ASO 2026 RONI 2.0 vs ONI 2.46, SON 2023 1.3 vs 1.74, JAS 2019 -0.1 vs +0.20, NDJ 2015 2.3 vs 2.59. Any statement of official El Nino status in the report should cite RONI.",
+    "Season-label convention (checked in code): YR is the year of the CENTRAL month. DJF 1950 = Dec 1949 to Feb 1950, mapped to (1950, 1); NDJ 1950 = Nov 1950 to Jan 1951, mapped to (1950, 12). Evidence: DJF 2026 is present in a file downloaded on 7 Nov 2026, and NDJ(Y) runs smoothly into OND(Y) and DJF(Y+1) (mean |difference| 0.10 and 0.13 degC) but not into DJF(Y) (1.17 degC).",
+    "Look-ahead leak: each ONI value is a 3-month running mean, so the central-month label includes the following month. For predictors use read_oni(align='end'), which labels each season by its last month, and lag further for an outlook. CPC updates by the 5th of each month and says recent values can change up to two months after first posting, so treat JAS and ASO 2026 as provisional.",
+    "ONI anomalies use a sliding baseline: TOTAL minus ANOM steps in 5-year blocks, at 1956, 1961, 1966, ..., 2006 and 2011. The 2011-2026 climatology equals the 1996-2025 mean of TOTAL (max difference 0.014, versus 0.139 for 1991-2020). The 2006-2010 block matches 1991-2020 (0.016) and 1981-1985 matches 1966-1995. So ANOM is not relative to one fixed climatology; recompute from TOTAL if you need a fixed base. Every 5-yearly re-basing by CPC will rewrite recent history in later downloads. TOTAL minus ANOM also carries +/-0.01 rounding noise.",
+    "Missing values: the ONI file has no missing-value code and no NaNs; unavailable seasons are simply absent. The DMI file uses -9999 (written -9999.000) only for Jun-Dec 2026. The DMI code is declared on the line after the data block, not in a header.",
+    "DMI layout: header line, data block, missing-code line, then 6 free-text lines. Running np.loadtxt or pd.read_csv over the whole file fails; read exactly last-first+1 rows after line 1, as the parser does.",
+    "DMI is stale: the last valid month is May 2026, the file was created 25 Jul 2026, and it is flagged 'Preliminary.' For an outlook issued in Nov 2026 the DMI for Jun-Oct 2026 is not available from this file; it would need a later re-download or another DMI source.",
+    "DMI baseline and trend: anomalies are relative to 1991-2020 (checked) and the series is not detrended. Means are -0.377 for 1870-1899, -0.223 for 1950-1979 and +0.040 for 2000-2025. IOD event thresholds published elsewhere (e.g. +/-0.4 degC) were defined on other DMI products and base periods, so event classes from this series are approximate.",
+    "Both PSL documentation URLs for the DMI returned HTTP 404 on 8 Nov 2026: the one in the file footer (psl.noaa.gov/gcos_wgsp/timeseries/DMI) and the capitalised /Timeseries/DMI/. The data directory /gcos_wgsp/Timeseries/Data/ returns 200. So the box and base definitions here rest on the file footer plus my own check of the base.",
+    "pandas 3.1.1 in the venv has dropped delim_whitespace=True; use sep=r'\\s+' as the snippet does. MultiIndex levels come back as numpy int64.",
+    "The acquisition log row C8 says '1950 / 1870 to now'. The actual ends are ONI ASO 2026 (central month Sep 2026) and DMI May 2026."
+   ],
+   "use_for_fire_harmony": "These are global scalar drivers, not maps. Every H3 hexagon gets the same value in a given month, so their value comes from interactions with location: region or biome, the SE Asia peat flag (PEATMAP), land cover. Join on (year, month).\n\n1) Drivers: lagged ONI (align='end', lags 0-6) and DMI as monthly predictors of fire-count and burned-area anomalies. ONI fully covers the 2000-2026 FIRMS and MERRA-2 era. DMI covers 1870 to May 2026. The SE Asia fire years show in the data: Sep 1997 ONI +2.04 with DMI +0.77 (Nov 1997 DMI +1.28 is the record); Sep 2015 ONI +2.02 with DMI +0.29; Sep-Oct 2019 a weak ONI (+0.31/+0.51) but strong DMI (+0.89/+0.96); Sep 2023 ONI +1.50 with DMI +0.95. This supports using both indices and their interaction.\n\n2) Outlook: the latest ONI is ASO 2026 = +2.46 (Nino-3.4 SST 29.23 degC), a strong El Nino. That is a central input to a late-2026 / 2027 fire and haze outlook. The official CPC wording uses RONI (2.0 for ASO 2026), which is not downloaded. DMI cannot inform the outlook past May 2026 without a fresher download.\n\n3) Haze: ENSO and IOD phase as covariates when explaining MERRA-2 PM2.5 and AOD anomalies and the bias-corrected SE Asia PM2.5 (Jul-Nov).\n\n4) Validation: a physical sanity test of the harmonised fire record, for example SE Asia peat hexagons should show higher harmonised fire activity in ONI >= +0.5 and/or DMI > 0 dry seasons than in ONI <= -0.5 seasons, consistently across MODIS-only and VIIRS-era years."
+  },
+  {
+   "dataset": "ESA Fire_cci (FireCCI) monthly burned-area grids at 0.25 degrees, two products. (1) MRBA60H \"Harmonised Medium Resolution Burned Area Grid v6.0\" (files *_MR_HAR-fv6.0.0.nc), 2003-2018, DOI 10.5285/db75c5f51ee240ae8743355dcebbb9b9. It is a machine-learning harmonisation of FireCCI51 (MODIS 250 m) with MODIS MCD14ML active fires and climate/vegetation inputs, built to estimate what the Sentinel-3 product would have detected before Sentinel-3 existed. (2) Sentinel-3 SYN (OLCI+SLSTR) Burned Area Grid v1.1 = FireCCIS311, now renamed MRBA60 (files *-SYN-fv1.1.nc), 2019-2024, DOI 10.5285/da8e669a74334c82a56e0b470bc4ef04. The CEDA catalogue record for MRBA60H says \"From 2019 onwards, the Grid product of MRBA60 can be used as the continuation of MRBA60H, providing a consistent dataset\". CEDA's Sentinel3_SYN/grid holds only v1.0 and v1.1 and Harmonised/grid/v6.0 only 2003-2018 (checked live with curl), so HAR 2003-2018 + SYN v1.1 2019-2024 is the pairing the producers intend. Producer: University of Alcala. Licence: ESA CCI Data Policy, free and open; cite the DOIs.",
+   "folder": "/home/sawy3/nasa_work/data/raw/esa_firecci_grid",
+   "file_count": 264,
+   "file_pattern": "One file per calendar month, named for the 1st of the month: YYYYMM01-ESACCI-L4_FIRE-BA-<product>.nc. HAR example 20030101-ESACCI-L4_FIRE-BA-MR_HAR-fv6.0.0.nc (192 files, 2003-2018, 0.21-0.34 MB each). SYN example 20190101-ESACCI-L4_FIRE-BA-SYN-fv1.1.nc (72 files, 2019-2024, 2.0-2.3 MB each). Regex matching all 264: ^(\\d{4})(\\d{2})01-ESACCI-L4_FIRE-BA-(MR_HAR-fv6\\.0\\.0|SYN-fv1\\.1)\\.nc$ (group1 = year, group2 = month, group3 = product). The folder is flat (no year subfolders). All 264 file sizes match manifest.csv.",
+   "format": "netCDF-4 on HDF5, CF-1.7, CCI Data Standards v2.3. HAR: NETCDF4 data model; burned_area and uncertainty zlib level 5, one chunk (1,720,1440). SYN: NETCDF4_CLASSIC data model; zlib 5 + shuffle, chunks (1,45,1440). Both open with xarray using engine netcdf4 or h5netcdf (verified: identical results, no warnings).",
+   "time_coverage": "Verified from file contents: first = 2003-01 (time = 12053 days since 1970-01-01 = 2003-01-01; time_bounds 2003-01-01..2003-01-31). Last = 2024-12 (time = 20058 = 2024-12-01; bounds 2024-12-01..2024-12-31). Step: 1 calendar month, one time step per file, values summed over the month (cell_methods 'time: sum'). File names give 264 consecutive months, 2003-01 to 2024-12, with no gaps or duplicates. HAR covers 2003-01..2018-12 (12 files per year x 16). SYN covers 2019-01..2024-12 (12 x 6). The products do not overlap in time.",
+   "variables": [
+    {
+     "name": "burned_area",
+     "long_name": "total burned_area (standard_name burned_area); cell_methods time: sum",
+     "units": "m2 (area burned inside the 0.25-degree cell during the calendar month)",
+     "dims": "(time=1, lat=720, lon=1440), float32, both products",
+     "fill_value": "HAR: _FillValue 9.96921e36. SYN: no _FillValue attribute (netCDF default 9.96921e36 implied). In the 3 sampled files: 0 fill cells, 0 NaN, ocean/ice/desert = 0",
+     "scale_offset": "none (no scale_factor/add_offset). valid_range HAR [0, 7.69288944e8], SYN [0, 7.693146e8] = equatorial cell area. No value exceeds it."
+    },
+    {
+     "name": "uncertainty",
+     "long_name": "uncertainty of burned area, calculated as Root Mean Square Error (HAR only)",
+     "units": "m2",
+     "dims": "(time, lat, lon) float32",
+     "fill_value": "9.96921e36 (_FillValue). None present in samples",
+     "scale_offset": "none. valid_range [0, 7.69288944e8]"
+    },
+    {
+     "name": "standard_error",
+     "long_name": "standard error of the estimation of burned area (SYN only)",
+     "units": "m2",
+     "dims": "(time, lat, lon) float32",
+     "fill_value": "no _FillValue attribute. None present",
+     "scale_offset": "none. valid_range [0, 7.693146e8]"
+    },
+    {
+     "name": "fraction_of_burnable_area",
+     "long_name": "fraction of the cell that is burnable vegetation, from C3S Land Cover (SYN only)",
+     "units": "1 (0-1)",
+     "dims": "(time, lat, lon) float32",
+     "fill_value": "no _FillValue attribute. None present",
+     "scale_offset": "none. valid_range [0, 1]"
+    },
+    {
+     "name": "fraction_of_observed_area",
+     "long_name": "fraction of the burnable area observed in the month, i.e. not unobservable for lack of input data (SYN only)",
+     "units": "1 (0-1)",
+     "dims": "(time, lat, lon) float32",
+     "fill_value": "no _FillValue attribute. None present",
+     "scale_offset": "none. valid_range [0, 1]"
+    },
+    {
+     "name": "burned_area_in_vegetation_class",
+     "long_name": "burned area in vegetation class, 18 C3S land-cover classes coded 10,20,...,180 (e.g. 50 broadleaved evergreen tree, 160/170 flooded tree cover, 180 flooded shrub/herbaceous) (SYN only)",
+     "units": "m2",
+     "dims": "(time, vegetation_class=18, lat, lon) float32, chunks (1,1,45,1440)",
+     "fill_value": "no _FillValue attribute",
+     "scale_offset": "none. The sum over the 18 classes equals burned_area (verified: max per-cell difference 53 m2)"
+    },
+    {
+     "name": "vegetation_class / vegetation_class_name",
+     "long_name": "class codes (int32) and names (char array 18x150; decode with netCDF4.chartostring) (SYN only)",
+     "units": "1",
+     "dims": "(vegetation_class) / (vegetation_class, strlen)"
+    },
+    {
+     "name": "lat, lon, lat_bounds, lon_bounds, time, time_bounds, crs",
+     "long_name": "coordinates (float64 cell centres with bounds); time in days since 1970-01-01, standard calendar; crs = WGS84 with an i2m attribute",
+     "units": "degree_north / degree_east / days since 1970-01-01",
+     "dims": "(lat), (lon), (lat,2), (lon,2), (time), (time,2), scalar"
+    }
+   ],
+   "grid": "Regular 0.25-degree WGS84 lat/lon grid, 720 x 1440. Data arrays are (time, lat, lon). Coordinate values are cell centres, with explicit bounds (for example the centre -89.875 has bounds [-90, -89.75]). Longitude is -179.875 to 179.875 ascending (range -180..180) and identical in both products. Latitude order DIFFERS. HAR is stored SOUTH to NORTH (lat[0] = -89.875, lat[-1] = 89.875). SYN is stored NORTH to SOUTH (lat[0] = 89.875, lat[-1] = -89.875). Both files carry the same crs:i2m = '0.25,0.0,0.0,-0.25,-180.0,90.0' (north-up), which is wrong for HAR. Checks that HAR's data follows its own lat vector: Jan 2003 burned area peaks at 0-10N (northern African savanna season) and Sep 2015 at 10-20S. Correlation of 1-degree log burned area with SYN Dec 2024 is 0.736 using the lat vector, against 0.019 if the rows followed i2m. Always georeference from the lat/lon variables and flip one product before stacking (the reader sorts both to north-to-south). Cell areas follow the WGS84 ellipsoid: equatorial cell 7.693146e8 m2 = 769.3 km2 (exactly SYN's valid_range max; HAR's max is 7.69288944e8), about 385 km2 at 60 degrees. The sum of all cells is 5.100656e14 m2.",
+   "reader_snippet": "import numpy as np\nimport xarray as xr\n\ndef read_firecci_month(path, var=\"burned_area\", engine=\"netcdf4\"):\n    \"\"\"One ESA Fire_cci monthly 0.25-deg grid file (HAR v6.0 = 2003-2018, SYN v1.1 = 2019-2024).\n    Returns ba (720, 1440) float32 = burned area in m2 per cell summed over the calendar month,\n    rows north->south, NaN = fill; lat 89.875..-89.875 and lon -179.875..179.875 (cell centres); month.\"\"\"\n    with xr.open_dataset(path, engine=engine) as ds:              # masks HAR _FillValue -> NaN\n        da = ds[var].isel(time=0).sortby(\"lat\", ascending=False)   # HAR is stored SOUTH->north, SYN north->south\n        ba = da.values.astype(np.float32)\n        lat, lon = da[\"lat\"].values, da[\"lon\"].values\n        month = ds[\"time\"].values[0]\n    ba[~np.isfinite(ba) | (ba < 0) | (ba > 1e30)] = np.nan        # SYN has no _FillValue attr: guard default fill\n    return ba, lat, lon, month\n\ndef cell_area_m2(lat, d=0.25):\n    \"\"\"WGS84 ellipsoidal area of a d x d degree cell centred at lat (equator: 7.693146e8 m2 = SYN valid_range max).\"\"\"\n    a, f = 6378137.0, 1 / 298.257223563\n    e2 = f * (2 - f); e = np.sqrt(e2)\n    def q(phi):\n        s = np.sin(np.radians(phi))\n        return s / (1 - e2 * s * s) + np.log((1 + e * s) / (1 - e * s)) / (2 * e)\n    return a * a * (1 - e2) / 2 * np.radians(d) * np.abs(q(lat + d / 2) - q(lat - d / 2))\n\n# usage (tested on 20030101 HAR, 20150901 HAR, 20241201 SYN; engines netcdf4 and h5netcdf):\n# ba, lat, lon, month = read_firecci_month(\"/home/sawy3/nasa_work/data/raw/esa_firecci_grid/20241201-ESACCI-L4_FIRE-BA-SYN-fv1.1.nc\")\n# ba_km2 = ba / 1e6                              # monthly burned area per cell, km2\n# frac = ba / cell_area_m2(lat)[:, None]         # burned fraction of the cell (max seen 0.949)\n# Same call works for both products; var=\"uncertainty\" (HAR) or \"standard_error\" / \"fraction_of_burnable_area\" / \"fraction_of_observed_area\" (SYN).\n# Saved copy: /tmp/firecci_probe/snippet_final.py",
+   "sample_values": "Read with the snippet and cross-checked against a raw netCDF4 read (allclose = True).\n- Global monthly totals: HAR 2003-01 = 616,193.8 km2 (61.62 Mha; 12,897 burning cells; mean 0.5943 km2 per cell). HAR 2015-09 = 616,239.6 km2 (24,072 burning cells; mean 0.5944). SYN 2024-12 = 444,245.0 km2 (17,210 burning cells; mean 0.4285).\n- Largest cells: HAR 2003-01 698.6 km2 at 3.625N, -72.125 (Colombian llanos; 91.0% of the cell). HAR 2015-09 696.7 km2 at -17.625, 136.625 (northern Australia; 94.9%). SYN 2024-12 617.5 km2 at 8.125N, 26.375E (South Sudan; 81.1%).\n- Near 3N 101E: the point sits on the corner of four cells (2.875/3.125N x 100.875/101.125E), all 0.000 km2 in all three months. They are Malacca Strait water: SYN fraction_of_burnable_area 0.000, 0.000, 0.020, 0.030. The whole 2-4N 100-102E box is 0 km2 in all three months.\n- SE Asia, HAR Sep 2015, box 6S-7N 95-120E: 18,554.5 km2 in 744 burning cells. Top cells: -3.125, 113.875 (Central Kalimantan) 220.5 km2 = 28.7% of the cell; -3.375, 105.375 (South Sumatra) 166.5 km2; -2.375, 114.625 163.7 km2. The same box in SYN Dec 2024 is only 1.5 km2.\n- Uncertainty scales differ: HAR Jan 2003 uncertainty sums to 116,533 km2 (max 564.8 km2 in one cell). SYN Dec 2024 standard_error sums to 19,634 km2 (max 3.0 km2).",
+   "use_for_fire_harmony": "The main use is an independent, reflectance-based burned area for each H3 hex and month, consistent over 2003-2024. It can validate or calibrate the FIRMS-hotspot harmonised record (hotspot counts against burned km2 by region and season, and seam checks at 2012 and 2002). It also cross-checks MCD64A1/VNP64A1 (raw copies here are only 2019, 10 tiles) and the Global Fire Atlas (2003-2016). For drivers and the outlook, it gives a burned-area target or feature per hex-month: monthly climatology, anomalies and seasonality to relate to ONI/IOD, GFWED FWI/DC and IMERG rain. For haze, SYN's burned_area_in_vegetation_class (classes 160/170/180 flooded tree and shrub, 50 evergreen forest), combined with PEATMAP, gives a peat or forest burn proxy as a lagged predictor of MERRA-2 / CNN PM2.5 (SYN 2019-2024 only; HAR has no class split). Burned area is an extensive quantity, so transfer it to H3 by area. At L3/L4 (about 12,400 / 1,770 km2 per hex, larger than one cell) summing each cell's burned_area into the hex containing its centre roughly conserves the total. At L5 (about 253 km2, the project panel level) a hex is smaller than a cell (769 km2 at the equator, about 385 km2 at 60 degrees), so use hex_BA = burned fraction (ba / cell_area_m2) x overlap area, or x hex area as the centroid approximation. Limits: it ends 2024-12, so there is no near-real-time or 2025-2026 coverage. It is monthly only (no day of burn) and at 0.25 degrees small coastal or peat burns blur. HAR is a modelled estimate, not a detection. It has no burnable or observed fraction, so 0 can mean unobserved; borrow SYN fraction_of_burnable_area or the project land mask. The level for Selangor or the Malacca coast is mostly 0 at this resolution.",
+   "quirks": [
+    "LATITUDE ORDER DIFFERS: HAR is stored south to north (lat -89.875..89.875) and SYN north to south (89.875..-89.875). Flip one before stacking or differencing. Verified from the data, not just the coordinates (orientation correlation 0.736 vs 0.019).",
+    "HAR's crs:i2m attribute ('0.25,0.0,0.0,-0.25,-180.0,90.0', north-up) contradicts its own lat vector. Tools that georeference from i2m (SNAP/BEAM style) would turn HAR upside down. Use the lat/lon variables.",
+    "There are no missing cells: oceans, ice and deserts are 0, not fill or NaN (0 fill and 0 NaN in all 3 sampled files). HAR has no land mask, no burnable fraction and no observed fraction, so a 0 cannot be told apart from 'not observed'. SYN has fraction_of_burnable_area and fraction_of_observed_area.",
+    "HAR declares _FillValue 9.96921e36 but SYN declares none. xarray will not mask SYN default-fill values (netCDF4-python would), so the reader guards against values above 1e30 or below 0. netCDF4-python also masks values outside valid_range; none occur.",
+    "Variable sets differ. HAR has only burned_area plus uncertainty (RMSE, m2). SYN has burned_area, standard_error, fraction_of_burnable_area, fraction_of_observed_area and burned_area_in_vegetation_class (18 C3S classes). SYN v1.1 has no number_of_patches. HAR's RMSE and SYN's standard_error are different statistics with very different magnitudes (Jan 2003 HAR RMSE total = 19% of burned area; Dec 2024 SYN standard error = 4.4%), so do not splice them as one uncertainty series.",
+    "HAR 2003-2018 is a machine-learning harmonisation built to emulate the Sentinel-3 product (MRBA60 = FireCCIS311) from FireCCI51 plus MODIS MCD14ML active fires and climate/vegetation inputs. Per CEDA, SYN from 2019 is the intended continuation. The 2018-12/2019-01 seam was NOT checked numerically here (no overlap years; limited to 3 sample files).",
+    "Naming confusion: the HAR global metadata calls the Sentinel-3 product 'MRBA60 (previously known as FireCCIS311)', but the SYN files are labelled fv1.1 / product_version v1.1. CEDA has no Sentinel-3 v6.0 directory (only v1.0 and v1.1). The SYN title attribute even says 'version 1.0' while product_version = v1.1 and the file name says fv1.1.",
+    "time is the 1st of the month. time_bounds are [1st, last day at 00:00] (e.g. 2003-01-01..2003-01-31) while time_coverage_end says ...T23:59:59Z. HAR time_bounds are float64, SYN float32. Treat each file as one calendar month.",
+    "valid_range max differs slightly: HAR 7.69288944e8, SYN 7.693146e8 (the latter is exactly the WGS84 equatorial 0.25-degree cell area). For burned fraction use ellipsoidal cell areas, not a sphere (R = 6371007 m gives 7.7277e8, 0.45% too large at the equator).",
+    "HAR has 11 cells in Jan 2003 with uncertainty > 0 where burned_area = 0. Minor.",
+    "The HAR files are small (about 0.2-0.3 MB) because they have only two variables; size is not a sign of truncation (all match manifest.csv)."
+   ]
+  },
+  {
+   "dataset": "Global Fire Atlas with Characteristics of Individual Fires, 2003-2016: the monthly 0.25-degree gridded product. NASA Carbon Monitoring System, ORNL DAAC short name CMS_Global_Fire_Atlas_1642, doi:10.3334/ORNLDAAC/1642, dataset version 1 (user guide revised 2019-02-12; Andela, Morton, Giglio, Randerson). Built from MODIS Collection 6 MCD64A1 burned area.",
+   "folder": "/home/sawy3/nasa_work/data/raw/global_fire_atlas",
+   "format": "GeoTIFF: classic TIFF, little-endian. Each file holds one variable for one calendar year. IFD 0 is 1440 x 720 px with 12 samples per pixel (band k = month k, Jan..Dec), stored as float32 (SampleFormat=3), pixel-interleaved (PlanarConfig=1), LZW-compressed with no predictor, in 720 one-row strips. IFD 1 is an internal 720x360 overview, tiled 128x128. GDAL_NODATA tag = \"-9999\". GDAL_METADATA holds only per-band STATISTICS_MIN/MAX/MEAN/STDDEV. There are no units, names, scale/offset or time tags. Files are 1.09 MB (direction_2016) to 1.97 MB (speed_2005), 165,499,800 bytes in total. All 98 manifest byte sizes match the files on disk (sha256 not recomputed).",
+   "file_count": 98,
+   "file_pattern": "Global_fire_atlas_{variable}_monthly_{YYYY}.tif, regex ^Global_fire_atlas_(direction|duration|fire_line|ignitions|size|speed|spread)_monthly_(\\d{4})\\.tif$. YYYY is the calendar year, 2003..2016. The month is not in the file name: it is the band index 1..12 inside the file. 7 variables x 14 years = 98 files, all present. Example: Global_fire_atlas_ignitions_monthly_2003.tif, band 9 = Sep 2003.",
+   "time_coverage": "Jan 2003 to Dec 2016, monthly calendar months, 168 steps per variable (14 annual files x 12 bands). Checked: the Jan 2003 band of ignitions_2003 has 11,366 valid cells and the Dec 2016 band of ignitions_2016 has 9,217. No empty edge months were found. Valid (fire) cells per month: 10,776-20,526 in 2003 and 9,217-16,632 in 2016, out of 1,036,800 cells.",
+   "variables": [
+    {
+     "name": "ignitions",
+     "long_name": "Monthly ignition count = number of individual fires, with each fire shared among the cells and months it burned in, in proportion to its burned area. Values are fractional.",
+     "units": "fires per 0.25-deg cell per month (guide: Number/month)",
+     "dims": "per file (band=12 months, y=720 lat, x=1440 lon); reader returns (lat, lon)",
+     "fill_value": "-9999 (GDAL_NODATA) = no fire mapped; no zeros exist",
+     "scale_offset": "none (raw float32 physical values)"
+    },
+    {
+     "name": "size",
+     "long_name": "Average per-fire TOTAL area burned (the whole fire, which can exceed the cell), weighted by burned-area fraction",
+     "units": "km2",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    },
+    {
+     "name": "duration",
+     "long_name": "Average per-fire duration",
+     "units": "days",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    },
+    {
+     "name": "fire_line",
+     "long_name": "Average daily fire line length (mean across the days of each fire)",
+     "units": "km",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    },
+    {
+     "name": "speed",
+     "long_name": "Average per-fire speed of spread",
+     "units": "km/day",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    },
+    {
+     "name": "spread",
+     "long_name": "Average per-fire daily expansion (daily growth in burned area)",
+     "units": "km2/day",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    },
+    {
+     "name": "direction",
+     "long_name": "Dominant direction of spread, multi-day fires only: 1=N, 2=NE, 3=E, 4=SE, 5=S, 6=SW, 7=W, 8=NW",
+     "units": "category code (unitless), stored as float32 but integer-valued",
+     "dims": "(band=12, y=720, x=1440)",
+     "fill_value": "-9999",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "Regular lat/lon grid, 0.25 x 0.25 deg, global, 1440 columns x 720 rows, EPSG:4326 (WGS 84 geographic; GeoKeys ModelType=Geographic, RasterType=PixelIsArea, GeographicType=4326, unit = degree). ModelTiepoint maps raster (0,0) to (-180, 90), the top-left CORNER; ModelPixelScale is (0.25, 0.25). Cell centres: lon = -180 + 0.25*(i+0.5), giving -179.875..179.875 west to east (-180..180 convention); lat = 90 - 0.25*(j+0.5), giving 89.875..-89.875, NORTH TO SOUTH (row 0 = north). Cell edges fall on multiples of 0.25 deg. Logical order per file is (month band, lat, lon), but storage is pixel-interleaved: each strip is 1 row x 1440 px x 12 bands. Cell area on a sphere with R=6371.007 km: 772.8 km2 at the equator, 384.9 km2 at 60N.",
+   "quirks": [
+    "Burned area is not a layer, but it can be derived as ignitions x size (km2 per cell-month). Checked on 2016: it never exceeds the cell's area (highest ratio 0.98, 99.9th percentile at most 0.91 in every month), and the 2016 global total is 3.62 million km2. Not cross-checked against MCD64A1 or Fire_cci here.",
+    "ignitions is NOT a count of ignition points. Only 31-49% of valid values are integers and the smallest value seen is 5.3e-05. Each fire is shared among the cells and months it burned, in proportion to burned area. Example: cell 3.375N 101.125E, 2016: Mar = 0.31343284 and Apr = 0.6866, which sum to 1.0 (one fire). Yearly global sums are about the number of fires: 989,937 in 2003 and 908,489 in 2016; the guide gives 13.3 million fires for 2003-2016.",
+    "No zeros anywhere: a cell-month with no mapped fire is nodata (-9999 -> NaN). Ocean, desert and 'no data' all look the same (a Sahara cell and a Pacific cell were checked), and there is no separate land or unmapped flag. For counts and burned area set NaN to 0 on land; for the per-fire averages keep NaN.",
+    "size, duration, fire_line, speed and spread are per-fire averages weighted by burned-area fraction (the guide's example: a 1 km2 fire and a 99 km2 fire give 50 km2). size is each fire's whole size, which can be larger than the cell (max 10,124 km2 in Oct 2016). Aggregate these as ignitions-weighted means, sum(ign*var)/sum(ign), never as plain means or sums.",
+    "ignitions and size have identical valid masks in all 12 months of 2016 (checked). direction is only defined for multi-day fires (guide), so its mask may be smaller; not checked.",
+    "direction is categorical: in 2009 it takes only the integers 1-8, with no fractions and no 0. Do not average it; use a weighted mode. It is strongly biased toward the cardinal directions: across 5 sampled months of 2009, E=19,572 cells, S=8,880, N=7,634, W=7,195, while the diagonals have only 3,315-4,453 each.",
+    "There are no units, long names or time coordinate in the files. Units come from Table 4 of the ORNL DAAC user guide. The month is the band index (the DAAC stacked original files named like Duration_200801.tif) and the year comes from the file name. Months are calendar months of the MODIS burn date, not the FIRMS solar months used in the project's gold layer.",
+    "The embedded GDAL band statistics work as a checksum: the reader reproduces min/max/mean/std of all 12 bands of ignitions_2003 to a relative 4.8e-14.",
+    "Pillow cannot open these files: Image.open fails with 'More samples per pixel than can be decoded: 12'. The venv has no rasterio, GDAL, rioxarray, tifffile, pyproj or h3. The snippet re-describes the LZW strips with a synthetic IFD and decodes them with Pillow's bundled libtiff. It was cross-checked bit-for-bit against an independent pure-Python LZW decoder on 7 rows x 12 bands. With rioxarray installed, rioxarray.open_rasterio(path, masked=True) should work, but that was NOT tested here.",
+    "Each file has a second, reduced-resolution image (IFD 1, 720x360 = 0.5 deg, tiled). Ignore it and read IFD 0 (the snippet does this).",
+    "Latitude is north to south; flip with [::-1] if you need ascending order. 3N 101E sits exactly on a cell corner. The 4 cells touching it (3.125/2.875N x 100.875/101.125E) are NaN in all 24 months read (2003 and 2016).",
+    "The record ends Dec 2016, so it overlaps VIIRS S-NPP FIRMS only for 2012-2016 and not at all with NOAA-20/21. The smallest fire is one MODIS 500 m pixel (minimum size in the data 0.2144 km2), so small fires that MCD64A1 misses are absent.",
+    "Scope of this inspection: all months decoded for ignitions_2003, ignitions_2016 and size_2016; 5 months decoded for direction_2009; header tags only (no pixel data) for the duration, fire_line, speed and spread 2003 files (same structure, nodata and georeferencing). The other 90 files were not opened. Scratch files are in /tmp/gfa_scripts (scripts; tested snippet at /tmp/gfa_scripts/snippet.py) and /tmp/gfa_doc (user guide PDF and extracted text, guide3.txt). They total about 1.5 MB on the RAM-backed /tmp; my cleanup command was denied, so they are still there."
+   ],
+   "reader_snippet": "import io, struct\nimport numpy as np\nfrom PIL import Image  # Pillow wheel built with libtiff; no rasterio/GDAL/tifffile needed\n\ndef read_gfa(path, month, rows=slice(None), chunk=120):\n    \"\"\"Global Fire Atlas monthly GeoTIFF -> (data[lat, lon] float32 with NaN, lat, lon).\n    month = 1..12 (band k = calendar month k). rows = optional raster-row slice (row 0 = 89.875N).\n    Pillow refuses 12-sample TIFFs, so the LZW strips (1 row x 1440 px x 12 float32 each) are\n    re-described by a synthetic IFD as a 1-band float32 image 1440*12 wide and decoded by libtiff.\"\"\"\n    buf = open(path, 'rb').read()\n    assert buf[:4] == b'II*\\x00', 'little-endian classic TIFF expected'\n    off = struct.unpack_from('<I', buf, 4)[0]\n    t = {}\n    for i in range(struct.unpack_from('<H', buf, off)[0]):\n        tag, typ, cnt, val = struct.unpack_from('<HHII', buf, off + 2 + 12 * i)\n        sz = {1: 1, 2: 1, 3: 2, 4: 4, 12: 8}[typ] * cnt\n        p = off + 2 + 12 * i + 8 if sz <= 4 else val\n        t[tag] = buf[p:p + sz].decode().rstrip('\\0') if typ == 2 else \\\n            struct.unpack('<' + {1: 'B', 3: 'H', 4: 'I', 12: 'd'}[typ] * cnt, buf[p:p + sz])\n    W, H, S = t[256][0], t[257][0], t[277][0]                       # 1440, 720, 12\n    assert (t[259][0], t[284][0], t[278][0], t.get(317, (1,))[0], set(t[258]), set(t[339])) == (5, 1, 1, 1, {32}, {3})\n    idx = range(H)[rows]\n    out = np.empty((len(idx), W), np.float32)\n    for k in range(0, len(idx), chunk):\n        r = idx[k:k + chunk]; n = len(r); b = bytearray(buf) + b'\\0' * (len(buf) % 2)\n        ifd = len(b); arr = ifd + 2 + 11 * 12 + 4\n        so = arr if n > 1 else t[273][r[0]]; sc = arr + 4 * n if n > 1 else t[279][r[0]]\n        ent = [(256, 4, 1, W * S), (257, 4, 1, n), (258, 3, 1, 32), (259, 3, 1, 5), (262, 3, 1, 1), (273, 4, n, so),\n               (277, 3, 1, 1), (278, 4, 1, 1), (279, 4, n, sc), (284, 3, 1, 1), (339, 3, 1, 3)]\n        b += struct.pack('<H', 11) + b''.join(struct.pack('<HHII', *e) for e in ent) + b'\\0' * 4\n        if n > 1:\n            b += struct.pack('<%dI' % n, *[t[273][j] for j in r]) + struct.pack('<%dI' % n, *[t[279][j] for j in r])\n        struct.pack_into('<I', b, 4, ifd)\n        out[k:k + n] = np.asarray(Image.open(io.BytesIO(bytes(b))), np.float32).reshape(n, W, S)[:, :, month - 1]\n    out[out == float(t.get(42113, '-9999'))] = np.nan                # GDAL_NODATA tag = \"-9999\"\n    (dx, dy), (x0, y0) = t[33550][:2], t[33922][3:5]                # 0.25, 0.25 ; -180, 90 = top-left corner\n    lon = x0 + dx * (np.arange(W) + 0.5)                            # -179.875 .. 179.875 (west -> east)\n    lat = y0 - dy * (np.asarray(idx) + 0.5)                         # 89.875 .. -89.875 (north -> south)\n    return out, lat, lon\n\nif __name__ == '__main__':\n    a, lat, lon = read_gfa('/home/sawy3/nasa_work/data/raw/global_fire_atlas/Global_fire_atlas_ignitions_monthly_2003.tif', month=1)\n    print(a.shape, lat[0], lat[-1], lon[0], lon[-1], np.isfinite(a).sum(), np.nanmean(a), np.nansum(a))\n# tested output: (720, 1440) 89.875 -89.875 -179.875 179.875 11366 7.8334765 89035.3   (0.35 s, 71 MB peak RSS)\n# rows=slice(312, 408) decodes only 11.875N..-11.875S (SE Asia band). Works for all 7 variables (same layout).\n# 18/18 test cases bit-identical to the cross-checked decoder.",
+   "sample_values": "ignitions Jan 2003 (band 1): 11,366 valid cells out of 1,036,800; mean over valid cells 7.833477 in float64, matching the embedded GDAL STATISTICS_MEAN 7.8334771 (np.nanmean in float32 gives 7.8334765); global sum 89,035.3 fires; max 101.58. Yearly global ignitions: 989,937 in 2003 and 908,489 in 2016. Box 90-130E, 12S-12N: Aug 2003 = 1,378.1 and Sep 2003 = 1,496.5 fires; the busiest cell in Sep 2003 is 2.625S 110.625E (Kalimantan) at 42.97. Near 3N 101E: the 4 cells touching the point are NaN (no fire) in every month of 2003 and 2016. The nearest fire cell, 3.375N 101.125E, has ignitions Mar 2016 = 0.31343284, Apr 2016 = 0.6866, May 2003 = 4.6, Jun 2003 = 0.071; 2.875N 101.375E has Feb 2003 = 1.0. size 2016: min 0.2144 km2, max 10,124 km2 (Oct). Sum of ignitions x size in 2016 = 3,619,259 km2. direction Sep 2009: 69.625N 172.125E = 7 (W), 69.375N 172.125E = 3 (E). Header statistics for 2003: duration 1-70 days, fire_line 0.084-190 km, speed 0.046-144 km/day, spread 0.039-475 km2/day, ignitions max 184.6 (Oct).",
+   "use_for_fire_harmony": "Only covers 2003-2016, so it cannot be a live input. What it gives per H3 hexagon (the project's level 5, about 253 km2) and calendar month: (1) VALIDATION, the main use. It is an independent count of individual fires (ignitions) and a burned-area estimate (ignitions x size, km2). These test whether the harmonized monthly FIRMS counts follow real fires and burned area, as the architecture doc plans. They can also calibrate hotspots-per-fire and hotspots-per-km2-burned by region, land cover and peat. The VIIRS S-NPP versus MODIS comparison is only possible for 2012-2016. (2) DRIVERS and fire-regime descriptors: ignitions-weighted mean fire size, duration, speed, daily expansion and fire line per hexagon, as monthly values or a 2003-2016 climatology. These separate long, large peat and forest fires (big haze sources) from short, small savanna and cropland burns, and can be related to GFWED FWI, IMERG rain, MERRA-2 weather and ONI/DMI. (3) HAZE: fire size, duration and spread in SE Asia as covariates for MERRA-2 CNN PM2.5 in 2003-2016 (for example the 2006 and 2015 El Nino years). (4) OUTLOOK: seasonal baseline and training targets for 2003-2016 only. direction has little use (categorical, biased toward cardinal directions). Aggregation rules: a 0.25 deg cell (773 km2 at the equator, 385 km2 at 60N) covers about 1.5-3 level-5 hexagons, so split cells by overlap area. Sum ignitions and burned area as area-weighted totals after setting NaN to 0 on land. Average size, duration, speed, spread and fire_line as sum(w*ign*var)/sum(w*ign), with w the overlap fraction. Use an ignitions-weighted mode for direction. Note GFA uses calendar months by burn date, while the gold layer uses solar months."
+  },
+  {
+   "dataset": "Calibration tile products for 2019 on 10 MODIS sinusoidal tiles: burned area MCD64A1 (C6.1, '061') and VNP64A1 ('002'), monthly at 500 m; daily active-fire maps MOD14A1 (Terra, 061), MYD14A1 (Aqua, 061), VNP14A1 (Suomi-NPP, 002) and VJ114A1 (NOAA-20, 002) at 1 km. Tiles: h08v05, h11v03, h12v10, h12v11, h20v08, h20v10, h22v02, h25v06, h29v09, h30v10. Counts match manifest.csv (120/120/460/460/3650/3650).",
+   "folder": "/home/sawy3/nasa_work/data/raw/{burned_mcd64a1, burned_vnp64a1, firemap_mod14a1, firemap_myd14a1, firemap_vnp14a1, firemap_vj114a1}. The tested reader is at /tmp/fhinspect/snippet.py (tests in /tmp/fhinspect/test_snippet.py; FIRMS geolocation cross-check in /tmp/fhinspect/geocheck.py and /tmp/fhinspect/crosscheck.py).",
+   "format": "HDF4 / HDF-EOS2 for MOD14A1, MYD14A1, MCD64A1 and VNP64A1 (.hdf; HDFEOSVersion HDFEOS_V2.19 in MOD14A1, HDFEOS_V2.20 in VNP64A1). Read them with pyhdf: xarray/netCDF4 in this venv fails on HDF4 with 'NetCDF: Attempt to use feature that was not turned on'. HDF5 / HDF-EOS5 (HDFEOS_5.1.16, Conventions CF-1.6) for VNP14A1 and VJ114A1 (.h5). Read them with h5py, or with xarray (engine h5netcdf or netcdf4) using group='HDFEOS/GRIDS/VIIRS_Grid_Daily_Fire/Data Fields'. HDF4 grid names: MODIS_Grid_Daily_Fire (MOD/MYD14A1), MOD_Grid_Monthly_500m_DB_BA (MCD64A1), MOD_Grid_Monthly_500m_BA (VNP64A1). HDF5 paths: /HDFEOS/GRIDS/VIIRS_Grid_Daily_Fire/Data Fields/{FireMask,QA,MaxFRP,sample,Projection}, /HDFEOS/GRIDS/VIIRS_Grid_Daily_Fire/{XDim,YDim}, '/HDFEOS INFORMATION/StructMetadata.0', /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES (FireCells, tile, bounding coords).",
+   "file_count": 8460,
+   "file_pattern": "^(MOD14A1|MYD14A1|MCD64A1|VNP64A1|VNP14A1|VJ114A1)\\.A(\\d{4})(\\d{3})\\.h(\\d{2})v(\\d{2})\\.(\\d{3})\\.(\\d{13})\\.(hdf|h5)$ (matched 8460/8460). Groups: product, year, DOY, tile H, tile V, collection (061 or 002), production timestamp YYYYDDDHHMMSS, extension. Example: MOD14A1.A2019241.h20v10.061.2020307123938.hdf. What the DOY means: MOD/MYD14A1 = first day of an 8-day stack (001, 009, ..., 361); VNP/VJ114A1 = the single UTC day (001..365); MCD64A1/VNP64A1 = first day of the calendar month (001, 032, 060, 091, 121, 152, 182, 213, 244, 274, 305, 335).",
+   "time_coverage": "MOD14A1 and MYD14A1: 46 files per tile, each a stack of 8 daily layers (dimension 'Number of Days' = 8). The dates are in the global attribute 'Dates' (StartDate/EndDate). First day 2019-01-01, last day 2020-01-03: file A2019361 holds 2019-12-27..2020-01-03, so its layers 5-7 are 2020-01-01..03 (46 x 8 = 368 = 365 + 3). VNP14A1 and VJ114A1: 365 files per tile, one UTC day each (StartTime 00:00:00, EndTime 23:59:00), 2019-01-01..2019-12-31, no missing dates. MCD64A1 and VNP64A1: 12 files per tile, one per calendar month Jan..Dec 2019; ProductStartDay/ProductEndDay give the month's DOY range (Jan 1-31, Sep 244-273, Dec 335-365). Daily layers are UTC days: 100% of FIRMS Aqua points with acq_date 2019-08-29 fall on fire pixels of the MYD14A1 layer for 08-29, against 0.2-2.5% for the other 7 layers. Points from 2019-09-05 fall 100% on layer 7.",
+   "variables": [
+    {
+     "name": "FireMask (MOD14A1, MYD14A1)",
+     "units": "class code",
+     "dims": "(Number of Days=8, YDim=1200, XDim=1200), uint8; index [day, row, col]",
+     "fill_value": "_FillValue = 0 (class 0 'missing input data'); valid_range [0, 9]",
+     "long_name": "legend: 0 missing input data, 1 not processed (obsolete), 2 not processed (obsolete), 3 non-fire water, 4 cloud, 5 non-fire land, 6 unknown, 7 fire (low confidence), 8 fire (nominal confidence), 9 fire (high confidence)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "FireMask (VNP14A1, VJ114A1)",
+     "units": "class code",
+     "dims": "(YDim=1200, XDim=1200), uint8, chunks (80,1200), gzip; one day per file",
+     "fill_value": "no _FillValue attribute; class 0 = 'missing input data' (none seen in the 6 sampled VIIRS tile-days); valid_range [0, 9]",
+     "long_name": "'fire mask'; same legend as MODIS except 1 = 'not processed (trim)'. Codes 3 water, 4 cloud, 5 non-fire land, 6 unknown, 7/8/9 fire low/nominal/high confidence",
+     "scale_offset": "none"
+    },
+    {
+     "name": "QA (all four fire maps)",
+     "units": "bit field",
+     "dims": "same as FireMask, uint8",
+     "fill_value": "none; valid_range [0, 6]",
+     "long_name": "bits 0-1 land/water state (00 water, 01 coast, 10 land, 11 missing data); bit 2 day/night flag (0 night, 1 day). The legend is only in the VIIRS files. MODIS files have none, but their observed values {0,1,2,4,5,6} pair with FireMask the same way (water class 3 has QA 0/1/4/5; land and fire classes have QA 2/6)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "MaxFRP (all four fire maps)",
+     "units": "MW",
+     "dims": "same as FireMask, int32",
+     "fill_value": "_FillValue = 0 (all non-fire pixels are 0)",
+     "long_name": "maximum fire radiative power",
+     "scale_offset": "scale_factor 0.1 (MW = raw * 0.1); xarray decodes VIIRS automatically to float32 with 0 as NaN"
+    },
+    {
+     "name": "sample (fire maps)",
+     "units": "swath sample index",
+     "dims": "same as FireMask; MODIS uint16, VIIRS int16",
+     "fill_value": "MODIS: no fill attribute, 0 outside fire pixels, valid_range 0-1353; VIIRS: _FillValue -1, valid_range 0-3199",
+     "long_name": "sample number within swath (scan position of the detection)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "Burn Date (MCD64A1, VNP64A1)",
+     "units": "day of year (ordinal day in attribute 'year' = 2019)",
+     "dims": "(YDim=2400, XDim=2400), int16",
+     "fill_value": "_FillValue -1 = unmapped; attribute water = -2; 0 = unburned land; valid_range [0, 366]",
+     "long_name": "ordinal day of burn. A monthly file only holds DOYs inside its month (Sep file: 244..273)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "Burn Date Uncertainty",
+     "units": "days",
+     "dims": "(2400, 2400), uint8",
+     "fill_value": "none; 0 outside burned pixels",
+     "long_name": "uncertainty in day of burn (Sep h20v10 burned pixels: MCD64A1 1-7, VNP64A1 1-12, median 1)",
+     "scale_offset": "none"
+    },
+    {
+     "name": "QA (burned area)",
+     "units": "bit field",
+     "dims": "(2400, 2400), uint8",
+     "fill_value": "none (water pixels = 0)",
+     "long_name": "bit0 land(1)/water(0); bit1 valid data; bit2 shortened mapping period; bit3 relabeled in contextual phase; bit4 spare; bits5-7 special code for unburned cells: 1 obs too sparse, 2 too few training obs / poor separability, 3 burn date at limits of time series, 4 water contamination, 5 persistent hot spot. The legend is the 'QA Legend' attribute in MCD64A1 only; in VNP64A1 the bit0 and bit1 counts equal LandCells and LandCells-MissingCells, so the layout is the same",
+     "scale_offset": "none"
+    },
+    {
+     "name": "First Day / Last Day (burned area)",
+     "units": "day of year",
+     "dims": "(2400, 2400), int16",
+     "fill_value": "_FillValue -1, water -2; valid_range [1, 366]",
+     "long_name": "first / last day of reliable change detection. These extend beyond the month (Sep h20v10: 221..297)",
+     "scale_offset": "none"
+    }
+   ],
+   "grid": "All six products use the same MODIS land sinusoidal grid. StructMetadata gives Projection GCTP_SNSOID / HE5_GCTP_SNSOID, sphere radius R = 6371007.181 m, GridOrigin UL. The UpperLeftPointMtrs of MODIS and VIIRS files agree to 5 micrometres. The global grid is 36 x 18 tiles. A tile is T = 1111950.519667 m square (10 degrees of arc at the equator). The UL corner of tile hHvV is x = -20015109.354 + H*T, y = 10007554.677 - V*T; for h08v05 the stored UL is (-11119505.196662, 4447802.078664) and LR is (-10007554.676995, 3335851.558997). Fire maps: 1200 x 1200 per tile, pixel 926.625433 m, area 0.858635 km2. Burned area: 2400 x 2400 per tile, pixel 463.312717 m, area 0.214659 km2. The grid is equal-area, so every pixel has the same area. Arrays are [row, col] = [YDim, XDim] (MOD/MYD14A1: [day, YDim, XDim]); row 0 is the north edge (north to south), col 0 is the west edge. This was verified: FIRMS Aqua points land 100% on MYD14A1 fire pixels, and flipping rows or columns drops that to 0.1%. A given (row, col) is the same place in all four fire maps; 500 m pixel (r, c) nests in 1 km pixel (r//2, c//2) (the 1 km centre equals the mean of its 2x2 500 m centres to 1e-8 deg). Pixel centre with s = T/n: x = X0 + H*T + (col+0.5)*s; y = Y0 - V*T - (row+0.5)*s; lat = deg(y/R); lon = deg(x / (R*cos(lat_rad))). So lat is 1D (one value per row) but lon is 2D (it depends on row and col). Inverse: x = R*lon_rad*cos(lat_rad), y = R*lat_rad, H = floor((x-X0)/T), V = floor((Y0-y)/T), col = floor((x-X0-H*T)/s), row = floor((Y0-y-V*T)/s). Longitudes are -180..180, and none of the 10 tiles has off-globe pixels. VIIRS files also store XDim/YDim in metres, but these are pixel upper-left edges, not centres: XDim[0] is exactly the UL x and steps by 926.625433, so add +463.3127 to x and -463.3127 to y to get centres. Tile extents (1 km pixel centres): h08v05 30-40N, 130.5W-103.9W; h11v03 50-60N, 140.0W-93.4W; h12v10 10-20S, 63.8W-50.8W; h12v11 20-30S, 69.3W-53.2W; h20v08 0-10N, 20.0E-30.5E; h20v10 10-20S, 20.3E-31.9E; h22v02 60-70N, 80.0E-146.2E; h25v06 20-30N, 74.5E-92.4E; h29v09 0-10S, 110.0E-121.9E; h30v10 10-20S, 121.9E-138.3E.",
+   "quirks": [
+    "The last MODIS file of the year (MOD14A1/MYD14A1 A2019361) covers 2019-12-27..2020-01-03. For 2019 only, drop layers 5-7 of that file. Always take dates from the 'Dates' attribute, not from filename DOY + index across years.",
+    "VNP14A1 and VJ114A1 come from the 750 m M-band VIIRS fire product, not the 375 m I-band product in FIRMS. Evidence: the 'sample' valid_range is 0-3199, which fits the 3200-sample M-band swath. On h20v10 2019-08-30 only 34.3% of the 8,742 FIRMS Suomi-NPP 375 m points fall on a VNP14A1 fire pixel (57.4% within 1 px), while FIRMS MODIS points match the MODIS grids 99.9-100%. So the 3.4x-8.1x 'VIIRS / MODIS' ratios in the Acquisition Log (from 375 m FIRMS) do not describe these grids.",
+    "MODIS grids flag more 1 km cells than there are swath detections. On h20v10 2019-08-30 MYD14A1 has 3,035 fire cells for 1,328 FIRMS Aqua points (MOD14A1 1,751 cells for 1,042 Terra points). Only 42.4% of grid fire cells contain a point, but 98.4% are within 1 px and 99.6% within 2 px. This fits large off-nadir swath footprints being written into several grid cells (an inference, not a documented fact). Grid fire-pixel counts are therefore not detection counts, and per-pixel MODIS-vs-VIIRS matching needs a neighbourhood tolerance or aggregation to H3.",
+    "MODIS has orbit gaps at low latitudes, stored as class 0. MOD14A1 h20v10 has about 167,000 px (11.6%) missing on 4 of 8 days; MYD14A1 2019-08-30 has 52,854 px missing; h08v05 had none. The 6 sampled VIIRS tile-days had no class 0. Leave class 0 (and cloud, class 4) out of the denominator.",
+    "Each daily layer merges the day and night overpasses of that UTC day. MOD14A1 CoreMetadata lists 8 MOD14GD + 8 MOD14GN input granules with DAYNIGHTFLAG 'Both'; VIIRS InputPointer lists VNP14GD + VNP14GN. The only time-of-day information in the files is QA bit 2 (day/night); there are no overpass times.",
+    "Sinusoidal grid: lat is 1D per row but lon is 2D. The reader returns lat1d with shape (n,) and lon2d with shape (n, n); a true 1D lon does not exist.",
+    "FireMask _FillValue = 0 is declared only in the MODIS files; VIIRS has no _FillValue (0 still means missing input). Classes 1 and 2 never appeared in the samples. Class 6 'unknown' does appear (MOD14A1 h30v10 2019-12-31: 2,515 px; VNP14A1 same day: 37 px).",
+    "MODIS QA has no legend attribute (VIIRS QA does). VNP64A1 has no 'QA Legend' attribute (MCD64A1 does).",
+    "Burn Date in each monthly file only holds burns within that calendar month; combine the 12 files for an annual map (their DOY ranges do not overlap). -1 = unmapped, -2 = water, 0 = unburned. 'First Day'/'Last Day' are the detection window and run about 3 weeks past the month.",
+    "xarray can open the VIIRS HDF5 group, but no coordinates attach (XDim/YDim live in the parent group), and FireMask stays raw uint8. h5py returns string attributes as bytes (e.g. b'2019-08-30 00:00:00'), so decode them. HDF4 files need pyhdf.",
+    "VNP64A1 has the misspelled global attribute 'VERITICALTILENUMBER'. Take the tile from the filename or the 'tile' attribute. The burned-area grid names also differ (MOD_Grid_Monthly_500m_DB_BA vs MOD_Grid_Monthly_500m_BA).",
+    "Per-file summary attributes match the arrays exactly and allow screening without reading data: MODIS FirePix (8 values, one per day) equals the count of classes 7-9 (plus CloudPix, MissingPix, UnknownPix); VIIRS FireCells (in /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES) equals the count of classes 7-9; burned-area BurnedCells equals the count of Burn Date > 0 (also MissingCells, LandCells, ValidLandCells).",
+    "h29v09 is 0-10S, 110-121.9E: southern Kalimantan, Java east of 110E, Bali and Nusa Tenggara, SW Sulawesi. It contains no part of Sumatra (95-106E), although the Acquisition Log labels it 'Sumatra / Borneo'. 3N 101E is in tile h28v08, which was not downloaded.",
+    "On the one sampled tile-day, Aqua agrees with VIIRS about 3x more often than Terra. That fits Aqua sharing the afternoon/after-midnight orbit times of S-NPP and NOAA-20 (orbit times are general knowledge, not in the files). Compute the MODIS-sees-VIIRS probability separately for Terra and Aqua.",
+    "pyproj, rasterio and h3 are not installed in /home/sawy3/nasa_work/fire-harmony/.venv; the reader uses the closed-form spherical formula. DuckDB's spatial extension is also absent: FIRMS geometry must be cast to BLOB and the 21-byte WKB points parsed by hand (done in /tmp/fhinspect/geocheck.py).",
+    "Small VIIRS files (about 117 KB, mostly h30v10 in the dry season) are low-entropy clear tiles, not empty files. I did not open all 3,650 files per product to check for empty days."
+   ],
+   "reader_snippet": "import re\nimport numpy as np\n\nR = 6371007.181                       # sphere radius (m), ProjParams in StructMetadata\nT = 1111950.519667                    # tile width = height (m) = 10 deg of arc at the equator\nX0, Y0 = -20015109.354, 10007554.677  # upper-left corner of tile h00v00 (m); 36 x 18 tiles\n\n\ndef tile_latlon(h, v, n):\n    \"\"\"Pixel-CENTRE lat (1D, one per row, north->south) and lon (2D, row x col), degrees.\n    n = 1200 for the 1 km fire maps, 2400 for the 500 m burned area.\"\"\"\n    s = T / n                                         # 926.625433 m or 463.312717 m\n    x = X0 + h * T + (np.arange(n) + 0.5) * s\n    y = Y0 - v * T - (np.arange(n) + 0.5) * s\n    lat = np.degrees(y / R)\n    lon = np.degrees(x[None, :] / (R * np.cos(np.radians(lat))[:, None]))\n    return lat, lon\n\n\ndef latlon_to_tile(lat, lon, n):\n    \"\"\"Inverse: lat/lon (deg) -> (h, v, row, col) on the n x n per-tile grid.\"\"\"\n    s = T / n\n    x = R * np.radians(lon) * np.cos(np.radians(lat))\n    y = R * np.radians(lat)\n    h = np.floor((x - X0) / T).astype(int)\n    v = np.floor((Y0 - y) / T).astype(int)\n    return h, v, np.floor((Y0 - y - v * T) / s).astype(int), np.floor((x - X0 - h * T) / s).astype(int)\n\n\ndef read_tile(path, day=0):\n    \"\"\"-> (data2d float32, lat1d, lon2d, date).\n    Fire maps: FireMask class 1-9, 0 'missing input data' -> NaN.\n      MOD14A1/MYD14A1: day = layer 0..7 of the 8-day stack; VNP14A1/VJ114A1: 1 day per file.\n    Burned area (MCD64A1/VNP64A1): Burn Date day-of-year 1-366, 0 = unburned;\n      -1 unmapped and -2 water -> NaN.\"\"\"\n    name = path.rsplit('/', 1)[-1]\n    prod = name.split('.')[0]\n    h, v = map(int, re.search(r'\\.h(\\d\\d)v(\\d\\d)\\.', name).groups())\n    if prod in ('VNP14A1', 'VJ114A1'):                         # HDF5 (h5py)\n        import h5py\n        with h5py.File(path, 'r') as f:\n            a = f['HDFEOS/GRIDS/VIIRS_Grid_Daily_Fire/Data Fields/FireMask'][:].astype(np.float32)\n            date = f.attrs['RangeBeginningDate']\n        date = date.decode() if isinstance(date, bytes) else str(date)\n        a[a == 0] = np.nan\n    else:                                                      # HDF4 (pyhdf)\n        from pyhdf.SD import SD, SDC\n        sd = SD(path, SDC.READ)\n        ga = sd.attributes()\n        if prod in ('MOD14A1', 'MYD14A1'):\n            a = sd.select('FireMask')[day, :, :].astype(np.float32)   # reads one day only\n            date = ga['Dates'].split()[day]\n            a[a == 0] = np.nan\n        else:                                                  # MCD64A1, VNP64A1\n            a = sd.select('Burn Date')[:, :].astype(np.float32)\n            date = '%d DOY %03d-%03d' % (ga['year'], ga['ProductStartDay'], ga['ProductEndDay'])\n            a[a < 0] = np.nan\n        sd.end()\n    lat, lon = tile_latlon(h, v, a.shape[0])\n    return a, lat, lon, date\n\n# Tested with /home/sawy3/nasa_work/fire-harmony/.venv/bin/python -I on 18 files (first/middle/last of each product), peak RSS ~280 MB:\n# a, lat, lon, date = read_tile('/home/sawy3/nasa_work/data/raw/firemap_mod14a1/MOD14A1.A2019241.h20v10.061.2020307123938.hdf', day=1)\n# -> date '2019-08-30', a.shape (1200, 1200), lat.shape (1200,), lon.shape (1200, 1200); int(np.isin(a, [7, 8, 9]).sum()) == 1751",
+   "sample_values": "h20v10 on 2019-08-30, 1 km grid. MOD14A1 (A2019241 layer 1): fire 1,751 px (low 38, nominal 1,282, high 431; equals the FirePix attribute), cloud 11,129, land 1,410,109, water 17,011, missing 0. MYD14A1: fire 3,035, missing 52,854. VNP14A1 (A2019242): fire 2,261 (56/1,505/700; equals FireCells). VJ114A1: fire 2,497. MaxFRP at fire pixels: MOD14A1 3.8-604.3 MW, VNP14A1 3.7-454.3 MW. MODIS fire on the same pixel and day, given a VIIRS fire there (exact / within 1 px): Aqua given S-NPP 0.211 / 0.425; Terra given S-NPP 0.069 / 0.200; Aqua given NOAA-20 0.330 / 0.528; Terra given NOAA-20 0.095 / 0.235. Under the 2,261 VNP14A1 fire pixels, MYD14A1 shows 1,714 non-fire land, 65 cloud, 5 missing, 1 water and 476 fire. Geolocation: 1,328/1,328 FIRMS Aqua points fall on MYD14A1 fire pixels and 99.9% of 1,042 Terra points on MOD14A1 fire pixels (0.1% after flipping rows). Burned area, Sep 2019 h20v10: MCD64A1 298,635 burned 500 m px (equals BurnedCells; about 64,105 km2), DOY 244-273, water 48,153, unmapped 0; VNP64A1 286,276 px (about 61,452 km2), unmapped 4. 51.7% of MOD14A1 fire pixels from DOY 244-248 lie in 1 km cells with an MCD64A1 burn on DOY 244-252, against 3.4% with rows flipped and a 3.2% base rate. Coordinates: h20v10 pixel (0,0) centre is -10.00417, 20.31302; 15.0S 25.0E falls in h20v10 row 600 col 497 (centre -15.00417, 24.99809); a VNP14A1 high-confidence pixel at row 328 col 546 is at -12.73750, 25.17368, and the inverse function returns the same row and col. Year end: MYD14A1 h30v10 2019-12-31 fire 24, missing 40,149; VNP14A1 fire 19; MOD14A1 layer 7 = 2020-01-03.",
+   "use_for_fire_harmony": "This is a calibration sample, not global coverage: 10 tiles, 2019 only, so results must carry to other areas through covariates such as region, land cover (MCD12C1) and FRP. Per H3 cell and month, built from pixel centres (tile_latlon) on the shared 1 km grid: (1) P(MODIS fire | VIIRS fire), counted separately for Terra and Aqua against S-NPP and NOAA-20, by FireMask confidence. Use same-UTC-day pairs, leave out pixels where MODIS has class 0 (gap) or 4 (cloud), and allow a 1-2 px tolerance or count per H3 cell-day, because MODIS footprints spread over neighbouring cells. (2) The reverse probability, and the ratio of fire cell-days, as harmonization factors. Note these grids give 750 m VIIRS vs 1 km MODIS behaviour; the 375 m FIRMS VIIRS needs its own step (FIRMS points can be mapped onto the same grid with latlon_to_tile, as tested). (3) Detection-limit curves: P(MODIS detects | VIIRS MaxFRP), from MaxFRP (x0.1 MW). (4) Observation-opportunity covariates: cloud (4) and missing (0) frequency per cell-month, and day/night share from QA bit 2. (5) Validation: monthly burned area per cell (count of Burn Date > 0 times 0.214659 km2) from MCD64A1 and VNP64A1, burn-date timing against active-fire dates, and burned area with no active fire (omission). Neither haze nor outlook data are in these products."
+  }
+ ]
+}

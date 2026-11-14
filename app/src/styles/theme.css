@@ -1,0 +1,320 @@
+/* Fire Harmony "Mission Control" theme: dark first, light on request (html[data-theme="light"]).
+   Semantic tokens first, then the legacy token names every existing component uses, mapped onto them, so the whole app
+   changes theme from here. Data scales keep the project's validated hues; on dark they run dark to bright, so more
+   fire always looks hotter. */
+
+@font-face { font-family: "JetBrains Mono"; src: url("/fonts/JetBrainsMono-Variable.woff2") format("woff2"), url("/fonts/JetBrainsMono-Variable.ttf") format("truetype"); font-weight: 100 800; font-display: swap; }
+
+:root, :root[data-theme="dark"] {
+  color-scheme: dark;
+  /* surfaces, from the page up */
+  --bg: #07090d;
+  --bg-glow: radial-gradient(1100px 540px at 8% -12%, rgba(231, 86, 35, 0.10), transparent 62%),
+             radial-gradient(900px 480px at 100% -6%, rgba(57, 135, 229, 0.08), transparent 60%);
+  --surface: #0d1118;
+  --surface-2: #121822;
+  --surface-3: #19212d;
+  --glass: rgba(12, 16, 23, 0.74);
+  --glass-strong: rgba(12, 16, 23, 0.88);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  /* text */
+  --text: #e9ebee;
+  --text-2: #a9b1bd;
+  --text-3: #808896;   /* 4.5:1 or more on every dark surface */
+  /* accent: the fire */
+  --accent: #ff7a3d;
+  --accent-strong: #ff9a5c;
+  --accent-soft: rgba(255, 122, 61, 0.14);
+  --accent-glow: 0 0 0 1px rgba(255, 122, 61, 0.35), 0 8px 28px rgba(255, 122, 61, 0.18);
+  --focus: #ffb27a;
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--focus);
+  /* elevation: 1 cards on hover and the segmented thumb, 2 anything floating (map panels, popovers, toasts),
+     3 the palette, dialogs and sheets. Black shadows plus a faint top highlight, since dark surfaces hide shadows. */
+  --elev-1: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 8px -4px rgba(0, 0, 0, 0.4);
+  --elev-2: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 4px 8px -4px rgba(0, 0, 0, 0.5), 0 16px 32px -8px rgba(0, 0, 0, 0.55);
+  --elev-3: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 8px 16px -4px rgba(0, 0, 0, 0.6), 0 32px 64px -12px rgba(0, 0, 0, 0.65);
+  --shadow-1: var(--elev-1); --shadow-2: var(--elev-2);   /* older names */
+  /* materials for panels over the map: thin for small chips and rails, regular for panels with text, thick for
+     dialogs. Nearly opaque, so the map's colours never show through behind text. */
+  --material-thin: rgba(12, 16, 23, 0.8); --material-regular: rgba(12, 16, 23, 0.96); --material-thick: rgba(12, 16, 23, 0.97);
+  --row-hover: rgba(255, 255, 255, 0.045);
+  --tip-bg: #19212d; --tip-border: rgba(255, 255, 255, 0.16);   /* chart and control tooltips */
+  --band: rgba(242, 243, 245, 0.12);
+
+  /* legacy names (tokens.css), mapped */
+  --page: var(--bg); --surface-1: var(--surface);
+  --ink: var(--text); --ink-2: var(--text-2); --muted: var(--text-3);
+  --grid: rgba(255, 255, 255, 0.07); --baseline: rgba(255, 255, 255, 0.18);
+  --harmonized: #f2f3f5;
+  --sensor-modis: #4a93ec; --sensor-snpp: #e8693a; --sensor-noaa20: #22b984; --sensor-noaa21: #e2a51a;
+  /* one colour per meaning on every page and the hub: the two smoke regions are two categorical hues (not steps of
+     the fire ramp), and the naive join has its own (not MODIS blue, not the accent). Checked with the dataviz palette
+     validator: lightness band, chroma, colour blind separation and 3:1 on the surface, in both themes. */
+  --fh-sumatra: #f0622a; --fh-borneo: #8b7cf6; --fh-naive: #e0619c; --fh-on-region: #0d1118;   /* text on those fills */
+  /* fire amount: least fire = ember-100 (dark), most = ember-900 (bright) */
+  --ember-100: #2a0c0f; --ember-200: #4d1112; --ember-300: #7a1a15; --ember-400: #a8271b; --ember-500: #d43f20;
+  --ember-600: #f0622a; --ember-700: #fb8a3f; --ember-800: #ffb467; --ember-900: #ffe3ab;
+  /* against normal: dim at normal, bright when far from it (lightness mirrors on both sides) */
+  --anom-b4: #73b4ff; --anom-b3: #4b8bd9; --anom-b2: #33679f; --anom-b1: #253f5d; --anom-0: #262a31;
+  --anom-r1: #5a2b29; --anom-r2: #93403a; --anom-r3: #d65c48; --anom-r4: #ff8d6e;
+  --good: #3fcf72; --warning: #ffc23d; --serious: #ff8a5c; --critical: #ff5d5d;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --bg-glow: radial-gradient(1100px 540px at 8% -12%, rgba(231, 86, 35, 0.07), transparent 62%);
+  --surface: #ffffff; --surface-2: #fbfbf9; --surface-3: #f1f1ed;
+  --glass: rgba(255, 255, 255, 0.82); --glass-strong: rgba(255, 255, 255, 0.94);
+  --border: #e3e2db; --border-strong: #c9c8bf;
+  --text: #0b0b0b; --text-2: #52514e; --text-3: #6b6a65;   /* 4.8:1 or more on every light surface */
+  --accent: #e75623; --accent-strong: #c8331a; --accent-soft: rgba(231, 86, 35, 0.1);
+  --accent-glow: 0 0 0 1px rgba(231, 86, 35, 0.3), 0 8px 24px rgba(231, 86, 35, 0.12);
+  --focus: #e75623;
+  --elev-1: 0 1px 1px rgba(11, 11, 11, 0.03), 0 2px 4px -2px rgba(11, 11, 11, 0.06), 0 4px 8px -4px rgba(11, 11, 11, 0.06);
+  --elev-2: 0 1px 1px rgba(11, 11, 11, 0.03), 0 4px 8px -4px rgba(11, 11, 11, 0.08), 0 16px 24px -8px rgba(11, 11, 11, 0.12);
+  --elev-3: 0 1px 1px rgba(11, 11, 11, 0.03), 0 8px 16px -4px rgba(11, 11, 11, 0.1), 0 24px 48px -8px rgba(11, 11, 11, 0.18);
+  --shadow-1: var(--elev-1); --shadow-2: var(--elev-2);
+  --material-thin: rgba(255, 255, 255, 0.8); --material-regular: rgba(255, 255, 255, 0.95); --material-thick: rgba(255, 255, 255, 0.97);
+  --row-hover: rgba(11, 11, 11, 0.035);
+  --tip-bg: #ffffff; --tip-border: #c9c8bf;
+  --band: rgba(11, 11, 11, 0.1);
+  --page: var(--bg); --surface-1: var(--surface); --ink: var(--text); --ink-2: var(--text-2); --muted: var(--text-3);
+  --grid: #e1e0d9; --baseline: #c3c2b7; --harmonized: #0b0b0b;
+  --sensor-modis: #2a78d6; --sensor-snpp: #eb6834; --sensor-noaa20: #1baf7a; --sensor-noaa21: #eda100;
+  --fh-sumatra: #cf4419; --fh-borneo: #6250d6; --fh-naive: #c4407e; --fh-on-region: #ffffff;
+  --ember-100: #fff3e4; --ember-200: #fed6af; --ember-300: #feb079; --ember-400: #fc7f41; --ember-500: #e75623;
+  --ember-600: #c8331a; --ember-700: #a21b18; --ember-800: #790d14; --ember-900: #520d13;
+  --anom-b4: #0b4c92; --anom-b3: #3a75bf; --anom-b2: #78a1d6; --anom-b1: #b7cde8; --anom-0: #f0efec;
+  --anom-r1: #e7c0bc; --anom-r2: #d6857f; --anom-r3: #bc4a41; --anom-r4: #862723;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+}
+
+/* the motion, type, space and shape scales are in tokens.css */
+:root { --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+html { background: var(--bg); }
+body { background: var(--bg-glow), var(--bg); background-attachment: fixed; color: var(--text); }
+::selection { background: color-mix(in srgb, var(--accent) 35%, transparent); color: var(--text); }
+/* one focus ring for every control: 2 px of --focus, 2 px away (it follows the corner radius) */
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+* { scrollbar-color: var(--border-strong) transparent; scrollbar-width: thin; }
+
+.ui-mono, .ui-stat-value, .ui-table td.ui-num, .ui-num-anim { font-family: var(--font-mono); font-feature-settings: "zero" 1; }
+
+/* glass panels over the map: nearly opaque (the hexagons behind never tint the text), with a soft blur at the edges.
+   .ui-glass is the regular material for panels with text; -thin for small rails and chips; -thick for dialogs. */
+.ui-glass { background: var(--material-regular); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--elev-2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.ui-glass.ui-glass-thin { background: var(--material-thin); backdrop-filter: blur(12px) saturate(120%); -webkit-backdrop-filter: blur(12px) saturate(120%); }
+.ui-glass.ui-glass-thick { background: var(--material-thick); box-shadow: var(--elev-3); }
+
+/* ---------------------------------------------------------------- tactile feedback
+   Everything you press answers at once: it dips to 97% for 90 ms with a short glow of the accent, then springs back.
+   Buttons, chips, tabs and segmented options get it here; add .ui-press to any other control for the same feel. */
+:root {
+  --press-glow: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent), 0 0 16px color-mix(in srgb, var(--accent) 22%, transparent);
+  --glow-accent: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);   /* the glow of indicator lines */
+  --ring-hairline: inset 0 0 0 1px var(--border-strong);                         /* a raised thumb's edge */
+  --ring-accent: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);   /* a chosen row */
+}
+.ui-btn, .ui-chip, .ui-tab, .ui-segmented-option, .fh-btn, .ui-press { -webkit-tap-highlight-color: transparent; }
+.ui-press { transition: transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+:is(.ui-btn, .ui-chip, .ui-tab, .ui-segmented-option, .fh-btn, .ui-press):active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.97); box-shadow: var(--press-glow); transition-duration: var(--t-press); }
+
+/* buttons */
+.ui-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: var(--ctl); padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text);
+  font: inherit; font-size: var(--fs-14); font-weight: 500; cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
+    transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+.ui-btn:hover { background: var(--surface-3); border-color: var(--text-3); }
+.ui-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.ui-btn-primary { border-color: transparent; background: linear-gradient(180deg, var(--accent-strong), var(--accent)); color: #1a0a04; font-weight: 600; box-shadow: var(--accent-glow); }
+.ui-btn-primary:hover { background: linear-gradient(180deg, #ffad74, var(--accent-strong)); }
+.ui-btn-primary:active:not(:disabled) { box-shadow: var(--accent-glow), var(--press-glow); }
+.ui-btn-ghost { border-color: transparent; background: transparent; color: var(--text-2); }
+.ui-btn-ghost:hover { background: var(--surface-3); color: var(--text); }
+.ui-btn-icon { min-width: var(--ctl); padding: var(--sp-1); }
+
+/* chips (filters) */
+.ui-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.ui-chip { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: var(--ctl-sm); padding: var(--sp-1) var(--sp-3); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); background: transparent; color: var(--text-2); font: inherit; font-size: var(--fs-13); cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
+    transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+.ui-chip:hover { border-color: var(--border-strong); color: var(--text); }
+.ui-chip[aria-pressed="true"] { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); color: var(--text); }
+
+/* tabs: the accent line under the chosen tab slides to the next one (CSS anchor positioning; where a browser lacks
+   it, the line simply moves at once) */
+.ui-tabs { position: relative; display: flex; gap: 2px; border-bottom: 1px solid var(--border); }
+.ui-tab { position: relative; padding: var(--sp-2) var(--sp-3); border: none; background: transparent; color: var(--text-2); font: inherit;
+  font-size: var(--fs-14); font-weight: 500; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-press) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+.ui-tab:hover { color: var(--text); }
+.ui-tab[aria-selected="true"] { color: var(--text); }
+.ui-tab[aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px;
+  border-radius: 2px; background: var(--accent); box-shadow: var(--glow-accent); }
+@supports (anchor-name: --a) {
+  .ui-tabs { anchor-scope: --ui-tab; }
+  .ui-tab[aria-selected="true"] { anchor-name: --ui-tab; }
+  .ui-tab[aria-selected="true"]::after { opacity: 0; }
+  .ui-tabs::after { content: ""; position: absolute; position-anchor: --ui-tab; left: calc(anchor(left) + 10px); right: calc(anchor(right) + 10px);
+    bottom: 0; height: 2px; border-radius: 2px; background: var(--accent); box-shadow: var(--glow-accent);
+    pointer-events: none; transition: left var(--t-med) var(--ease-out), right var(--t-med) var(--ease-out); }
+}
+
+/* keyboard key */
+.ui-kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 var(--sp-1);
+  border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: var(--radius-sm); background: var(--surface-2);
+  color: var(--text-2); font-family: var(--font-mono); font-size: var(--fs-11); line-height: 1; }
+.ui-kbd + .ui-kbd { margin-left: var(--sp-1); }
+/* Touch screens have no keys: hide the key hints (the shortcuts list itself keeps them). */
+@media (hover: none) and (pointer: coarse) {
+  .ui-kbd:not(.ui-shortcuts .ui-kbd), .ui-kbd-hint, .fh-lightbox-keys, .fh-ex-keys-btn { display: none !important; }
+}
+
+/* command palette: the shell, shared with the shortcuts dialog (the palette's rows are in palette.css, loaded with it).
+   It opens with a fade and a scale from 98% in 140 ms, and closes faster (100 ms); not at all under reduced motion. */
+.ui-palette-backdrop { position: fixed; inset: 0; z-index: var(--z-modal); display: flex; justify-content: center; align-items: flex-start;
+  padding: 12vh var(--sp-4) var(--sp-4); background: rgba(3, 5, 8, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  animation: ui-fade var(--t-fast) var(--ease-out); }
+:root[data-theme="light"] .ui-palette-backdrop { background: rgba(24, 24, 20, 0.3); }
+.ui-palette { width: min(640px, 100%); max-height: min(70vh, 620px); display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--border-strong); border-radius: 16px; background: var(--surface); box-shadow: var(--elev-3);
+  transform-origin: 50% 0; animation: ui-palette-in var(--t-fast) var(--ease-out); }
+.ui-palette-backdrop[data-closing] { pointer-events: none; animation: ui-fade-out 100ms ease-in forwards; }
+.ui-palette-backdrop[data-closing] .ui-palette { animation: ui-palette-out 100ms ease-in forwards; }
+@keyframes ui-palette-in { from { opacity: 0; transform: scale(0.98); } }
+@keyframes ui-palette-out { to { opacity: 0; transform: scale(0.98); } }
+@media (max-width: 560px) {
+  .ui-palette-backdrop { padding: max(var(--sp-2), env(safe-area-inset-top)) var(--sp-2) var(--sp-2); }
+  .ui-palette { max-height: min(78dvh, 100%); }
+}
+@media (prefers-reduced-motion: reduce) { .ui-palette-backdrop, .ui-palette, .ui-palette-backdrop[data-closing] .ui-palette { animation: none; } }
+
+/* toasts */
+/* toasts: bottom right on a laptop, bottom centre above the safe area on a phone */
+.ui-toasts { position: fixed; right: var(--sp-5); bottom: var(--sp-5); z-index: var(--z-toast); display: grid; gap: var(--sp-2); pointer-events: none; }
+.ui-toast { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--ctl-touch); padding: var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--material-thick); box-shadow: var(--elev-3); color: var(--text);
+  font-size: var(--fs-14); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); pointer-events: auto;
+  animation: ui-toast-in var(--t-med) var(--ease-out); }
+.ui-toast-icon { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border-radius: var(--radius-pill); }
+.ui-toast-success .ui-toast-icon { background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
+.ui-toast-info .ui-toast-icon { background: var(--accent-soft); color: var(--accent); }
+.ui-toast.is-leaving { animation: ui-toast-out var(--t-fast) var(--ease-in) forwards; }
+@keyframes ui-toast-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes ui-toast-out { to { opacity: 0; transform: translateY(4px) scale(0.98); } }
+@media (max-width: 560px) {
+  .ui-toasts { right: var(--sp-4); left: var(--sp-4); bottom: calc(var(--sp-4) + env(safe-area-inset-bottom, 0px)); justify-items: center; }
+}
+
+/* tooltips. <Tooltip> (components/Tooltip.tsx) for controls: on focus at once, on hover after 400 ms, on a long press
+   on touch screens. .ui-tip with data-tip="..." is the plain CSS version for static text. */
+.ui-tooltip { position: fixed; top: 0; left: 0; z-index: var(--z-tooltip); display: inline-flex; align-items: center; gap: var(--sp-2);
+  max-width: min(240px, calc(100vw - 16px)); padding: var(--sp-1) var(--sp-2); border: 1px solid var(--tip-border); border-radius: var(--radius-sm);
+  background: var(--tip-bg); box-shadow: var(--elev-2); color: var(--text); font-size: var(--fs-12); font-weight: 500; line-height: var(--lh-12);
+  pointer-events: none; opacity: 0; visibility: hidden;
+  translate: var(--tip-x, 0px) var(--tip-y, 0px);   /* the place: never animated */
+  transform: translateY(2px);                         /* the small rise as it appears */
+  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out), visibility 0s linear var(--t-fast); }
+.ui-tooltip[data-side="top"] { transform: translateY(-2px); }
+.ui-tooltip[data-open] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.ui-tooltip .ui-kbd { height: 18px; min-width: 18px; background: var(--surface-3); }
+.ui-tooltip-keys { display: inline-flex; }
+.ui-tip { position: relative; }
+.ui-tip::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: var(--z-sticky); width: max-content; max-width: 240px;
+  padding: var(--sp-1) var(--sp-2); border: 1px solid var(--tip-border); border-radius: var(--radius-sm); background: var(--tip-bg); box-shadow: var(--elev-2); color: var(--text);
+  font-size: var(--fs-12); font-weight: 500; line-height: var(--lh-12); opacity: 0; pointer-events: none; transform: translate(-50%, 2px);
+  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+.ui-tip:hover::after, .ui-tip:focus-visible::after { opacity: 1; transform: translate(-50%, 0); transition-delay: 400ms; }
+.ui-tip:focus-visible::after { transition-delay: 0s; }
+
+/* Observable Plot tooltips, the same on every chart: the theme's raised surface, a hairline border, the first line in
+   bold. Plot draws its box with var(--plot-background), white by default. */
+svg[class*="plot-"] { --plot-background: var(--tip-bg); }
+svg[class*="plot-"] g[aria-label="tip"] > g > path { fill: var(--tip-bg); stroke: var(--tip-border); stroke-width: 1px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18)); }
+:root:not([data-theme="light"]) svg[class*="plot-"] g[aria-label="tip"] > g > path { filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5)); }
+svg[class*="plot-"] g[aria-label="tip"] text { fill: var(--text-2); }
+svg[class*="plot-"] g[aria-label="tip"] text > tspan:first-child { fill: var(--text); font-weight: 600; }
+
+/* sparkline */
+.ui-sparkline { display: block; overflow: visible; }
+
+/* entrance: add .ui-reveal and style="--i: n" for a 40 ms stagger */
+.ui-reveal { animation: ui-rise var(--t-slow) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 40ms); }
+
+@keyframes ui-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ui-rise { from { opacity: 0; transform: translateY(8px) scale(0.99); } to { opacity: 1; transform: none; } }
+
+/* rows that scroll sideways (chips, contents bars, tab strips): .ui-scroll-x scrolls, .ui-scroll-fade only adds the
+   cue to a row whose own CSS makes it scroll. Edges fade where there is more to see, and only there: the fades follow
+   the scroll position (a scroll driven animation), so a row that fits, or does not scroll at this width, has none
+   and nothing is masked. Items snap to the start. */
+.ui-scroll-x { overflow-x: auto; overscroll-behavior-x: contain; }
+.ui-scroll-x, .ui-scroll-fade.ui-scroll-fade { scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: var(--sp-4);
+  -webkit-mask-image: none; mask-image: none; }
+.ui-scroll-x::-webkit-scrollbar, .ui-scroll-fade::-webkit-scrollbar { display: none; }
+.ui-scroll-x > *, .ui-scroll-fade > * { scroll-snap-align: start; }
+@supports (animation-timeline: scroll()) {
+  .ui-scroll-x, .ui-scroll-fade.ui-scroll-fade { animation: ui-scroll-fade auto linear both; animation-timeline: scroll(self inline); }
+}
+@keyframes ui-scroll-fade {
+  0%, 2% { mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
+  4%, 96% { mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 32px), transparent); }
+  98%, 100% { mask-image: linear-gradient(90deg, transparent, #000 28px); }
+}
+/* browsers without scroll driven animations: <ScrollFade> sets the two fades from the scroll position */
+.ui-scroll-x[data-fade] { mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%); }
+/* <ScrollFade arrows>: 28 px arrow buttons at the ends, on devices with a mouse only */
+.ui-scroll-wrap { position: relative; min-width: 0; }
+.ui-scroll-arrow { position: absolute; top: 50%; z-index: var(--z-raised); display: none; place-items: center; width: 28px; height: 28px; padding: 0;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: var(--material-thick); box-shadow: var(--elev-1); color: var(--text);
+  cursor: pointer; transform: translateY(-50%); transition: opacity var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out); }
+.ui-scroll-arrow-start { left: 0; }
+.ui-scroll-arrow-end { right: 0; }
+.ui-scroll-arrow:hover { background: var(--surface-3); }
+@media (hover: hover) and (pointer: fine) { .ui-scroll-wrap .ui-scroll-arrow { display: grid; opacity: 0; } .ui-scroll-wrap:hover .ui-scroll-arrow { opacity: 1; } }
+
+/* page changes: the new page fades in and rises 6 px (nothing moves under reduced motion) */
+.fh-route { animation: fh-route-in var(--t-route) var(--ease-out); }
+@keyframes fh-route-in { from { opacity: 0; transform: translateY(6px); } }
+
+/* page transitions (Chrome, Edge, Safari 18): a soft crossfade between routes */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: ui-fade-out var(--t-fast) var(--ease-in) both; }
+::view-transition-new(root) { animation: ui-fade var(--t-med) var(--ease-out) both; }
+@keyframes ui-fade-out { to { opacity: 0; } }
+
+/* ---------------------------------------------------------------- shell
+   The header, the page menu and the footer are styled in app.css; the building blocks (cards, tables...) in ui.css. */
+
+/* ---------------------------------------------------------------- shortcuts dialog */
+.ui-shortcuts { width: min(640px, 100%); }
+.ui-shortcuts-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-5);
+  border-bottom: 1px solid var(--border); }
+.ui-shortcuts-head h2 { margin: 0; font-size: var(--fs-16); font-weight: 650; }
+.ui-shortcuts-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-6) var(--sp-8);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5); overflow-y: auto; overscroll-behavior: contain; }
+/* on a short screen the list scrolls: its lower edge fades while there is more below, the upper edge once scrolled */
+@supports (animation-timeline: scroll()) {
+  .ui-shortcuts-body { animation: ui-scroll-fade-y auto linear both; animation-timeline: scroll(self block); }
+}
+@keyframes ui-scroll-fade-y {
+  0%, 2% { mask-image: linear-gradient(#000 calc(100% - 40px), transparent); }
+  4%, 96% { mask-image: linear-gradient(transparent, #000 24px, #000 calc(100% - 40px), transparent); }
+  98%, 100% { mask-image: linear-gradient(transparent, #000 24px); }
+}
+.ui-shortcuts-body h3 { margin: 0 0 var(--sp-2); color: var(--text-3); font-size: var(--fs-12); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.ui-shortcuts-body dl { display: grid; gap: 2px; margin: 0; }
+.ui-shortcuts-body dl > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--sp-4);
+  min-height: var(--ctl-sm); padding: 0 var(--sp-2); margin: 0 calc(-1 * var(--sp-2)); border-radius: var(--radius-sm); }
+.ui-shortcuts-body dl > div:hover { background: var(--row-hover); }
+.ui-shortcuts-body dt { display: flex; order: 2; justify-content: flex-end; }
+.ui-shortcuts-body dd { margin: 0; color: var(--text-2); font-size: var(--fs-13); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 400px) { .ui-shortcuts-body dd { white-space: normal; } }

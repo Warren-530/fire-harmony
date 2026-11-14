@@ -1,0 +1,77 @@
+/* Fire Harmony design tokens: same values as fireharmony_style.py (web app + HTML report) */
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; }
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Bold.ttf") format("truetype"); font-weight: 700; }
+
+.viz-root, :root {
+  color-scheme: light;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --surface-1: #fcfcfb; --page: #f9f9f7;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781; --grid: #e1e0d9; --baseline: #c3c2b7;
+  /* sensors: fixed order, colour follows the entity */
+  --sensor-modis: #2a78d6; --sensor-snpp: #eb6834; --sensor-noaa20: #1baf7a; --sensor-noaa21: #eda100;
+  --harmonized: #0b0b0b;  /* emphasis line, not a hue */
+  /* sequential: ember (fire amount) */
+  --ember-100:#fff3e4; --ember-200:#fed6af; --ember-300:#feb079; --ember-400:#fc7f41; --ember-500:#e75623;
+  --ember-600:#c8331a; --ember-700:#a21b18; --ember-800:#790d14; --ember-900:#520d13;
+  /* diverging: anomaly below <- normal -> above */
+  --anom-b4:#0b4c92; --anom-b3:#3a75bf; --anom-b2:#78a1d6; --anom-b1:#b7cde8; --anom-0:#f0efec;
+  --anom-r1:#e7c0bc; --anom-r2:#d6857f; --anom-r3:#bc4a41; --anom-r4:#862723;
+  /* status: reserved, always with icon + label */
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark; --surface-1:#1a1a19; --page:#0d0d0d; --ink:#f0efec; --ink-2:#c3c2b7; --grid:#2c2c2a; --baseline:#383835;
+    --sensor-modis:#3987e5; --sensor-snpp:#d95926; --sensor-noaa20:#199e70; --sensor-noaa21:#c98500; --harmonized:#f0efec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark; --surface-1:#1a1a19; --page:#0d0d0d; --ink:#f0efec; --ink-2:#c3c2b7; --grid:#2c2c2a; --baseline:#383835;
+  --sensor-modis:#3987e5; --sensor-snpp:#d95926; --sensor-noaa20:#199e70; --sensor-noaa21:#c98500; --harmonized:#f0efec;
+}
+
+/* ------------------------------------------------------------------------------------------------ design scale
+   One scale for every page (DESIGN.md). Colours live in theme.css (they change with the theme); sizes live here.
+   Use the tokens, never a literal: var(--fs-13), var(--sp-4), var(--radius-md), var(--elev-2), var(--t-fast). */
+:root {
+  /* type: size and line height. 11 is for SVG axis ticks and key caps only. */
+  --fs-11: 0.6875rem;
+  --fs-12: 0.75rem;   --lh-12: 1rem;       /* caps labels (with --tracking-caps), axes, footnotes */
+  --fs-13: 0.8125rem; --lh-13: 1.25rem;    /* labels, tabs, chips, table cells */
+  --fs-14: 0.875rem;  --lh-14: 1.25rem;    /* buttons, inputs, nav */
+  --fs-15: 0.9375rem; --lh-15: 1.55;       /* body */
+  --fs-16: 1rem;      --lh-16: 1.5rem;     /* lead text, prose, palette input */
+  --fs-20: 1.25rem;   --lh-20: 1.75rem;    /* section titles (weight 650) */
+  --fs-30: 1.875rem;  --lh-30: 2.25rem;    /* page titles (weight 700) */
+  --fs-stat-s: 1.25rem; --fs-stat-m: 1.75rem; --fs-stat-l: 2.75rem;   /* numbers in JetBrains Mono, tabular */
+  --tracking-caps: 0.06em;
+
+  /* space: 4 px steps (cards 20 padding, 16 gaps, 40 between sections) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+  /* control heights: compact, default, touch (44 px is the least a finger can hit) */
+  --ctl-sm: 32px; --ctl: 36px; --ctl-touch: 44px;
+
+  /* shape: cards and panels (lg 14), controls (md 9), small parts such as kbd, badges and tooltips (sm 6), chips (pill) */
+  --radius-lg: 14px; --radius-md: 9px; --radius-sm: 6px; --radius-pill: 999px;
+  --radius: var(--radius-lg); --radius-xs: var(--radius-sm);   /* older names, same values */
+
+  /* motion: one rhythm. Press 90, hover 140, panels 220, large moves 360; page changes 180. Exits are faster. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --t-press: 90ms; --t-fast: 140ms; --t-med: 220ms; --t-slow: 360ms; --t-route: 180ms;
+  --t-track: 90ms;   /* scroll linked progress bars only (linear) */
+
+  /* layers */
+  --z-raised: 2; --z-sticky: 30; --z-header: 40; --z-modal: 1000; --z-toast: 1100; --z-tooltip: 1200;
+
+  /* the app header: its height (48 px in phone landscape), how far it has slid away on phones (App.tsx sets
+     html[data-header-hidden] while the reader scrolls down), and so where a sticky bar under it must stick */
+  --fh-header-h: 56px; --fh-header-shift: 0px;
+  --fh-header-visible-h: calc(var(--fh-header-h) + var(--fh-header-shift));
+}
+/* phones: page titles a step smaller */
+@media (max-width: 560px) { :root { --fs-30: 1.625rem; --lh-30: 2rem; } }
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-press: 0ms; --t-fast: 0ms; --t-med: 0ms; --t-slow: 0ms; --t-route: 0ms; --t-track: 0ms; }
+}
